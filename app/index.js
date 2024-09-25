@@ -7,7 +7,7 @@ const Splash = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.replace("/main"); 
+      router.replace("/survey"); 
     }, 3000);
 
     return () => clearTimeout(timer); 
@@ -20,4 +20,4 @@ const Splash = () => {
   );
 }
 
-export default Splash;
+export default Splash;0
