@@ -4,6 +4,8 @@ import arrow_left from "../assets/icons/arrow_left.svg";
 import arrow_up from "../assets/icons/arrow_up.svg";
 import check from "../assets/icons/check.svg";
 import checked from "../assets/icons/checked.svg";
+import walking_arrow_back from "../assets/icons/walking_arrow_back.svg"
+import walking_connect from "../assets/icons/walking_connect.svg"
 
 
 export default{
@@ -13,4 +15,6 @@ export default{
     arrow_up,
     check,
     checked,
+    walking_arrow_back,
+    walking_connect
 };
