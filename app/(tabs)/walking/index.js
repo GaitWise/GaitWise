@@ -1,122 +1,111 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, TouchableOpacity, Image, Animated, Easing, StyleSheet } from "react-native";
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid'
+import React, {useCallback} from 'react';
 import { icons } from "../../../constants";
+import { Sensors } from "../../../components/walking/Sensor";
+import { insertSensorData} from "../../../components/walking/SQLite";
+import { sendDatabaseFile } from "../../../components/walking/api/Senddata";
+import { useTimerAnimation } from "../../../components/walking/UseTimerAnimation";
+import { Text, View, TouchableOpacity, Animated, StyleSheet } from "react-native";
 
 const Walking = () => {
-  const [seconds, setSeconds] = useState(0);
-  const [isStop, setIsStop] = useState(false); 
-  const [isActive, setIsActive] = useState(false); 
-  const animation = useRef(new Animated.Value(0)).current; 
-  
-  const maxPosition = 2500;
+  // Sensor
+  const { subscribeSensors, unsubscribeSensors, sensorLog } = Sensors(25);
+  // Timer Animation
+  const { seconds, setIsActive, setIsStop, formatTime, animation, Timerreset, isActive, isStop } = useTimerAnimation(2500);
 
-  // 타이머 작동
-  useEffect(() => {
-    let interval = null;
-    if (isActive && !isStop) {
-      interval = setInterval(() => {
-        setSeconds((prevSeconds) => prevSeconds + 1);
-      }, 1000);
-
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(animation, {
-            toValue: maxPosition, 
-            duration: 10000, 
-            easing: Easing.linear,
-            useNativeDriver: true,
-          })
-        ])
-      ).start();
-    } else if (!isActive && seconds !== 0) {
-      clearInterval(interval);
-      animation.stopAnimation();
+  // SQLite DB data Server Send Callback
+  const handleSendDatabaseFile = useCallback(async () => {
+    try {
+      const TableName = uuidv4();
+      await insertSensorData(sensorLog, TableName)
+      const result = await sendDatabaseFile(TableName); 
+      console.log('Database file sent:', result);
+      sensorLog.current = []; // Sensor Array Initialization
+    } catch (error) {
+      console.log('Error sending the database file:', error);
     }
-    return () => clearInterval(interval);
-  }, [isActive, isStop, seconds]);
+  }, []);
 
-
-  // 타이머 계산
-  const formatTime = () => {
-    const minutes = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${minutes.toString().padStart(2, '0')} : ${secs.toString().padStart(2, '0')}`;
-  };
-
-  // Start 버튼 클릭 시
+  // Start Button Click Event
   const handleStart = () => {
+    setIsStop(false);
     setIsActive(true);
-    setIsStop(false);
+    subscribeSensors();
   };
 
-  // Stop 버튼 클릭 시
+  // Stop Button Click Event
   const handleStop = () => {
-    animation.stopAnimation();
     setIsStop(true);
+    unsubscribeSensors();
+    animation.stopAnimation();
   };
 
-  // Reset 버튼 클릭 시
+  // Reset Button Click Event
   const handleReset = () => {
-    setSeconds(0);
-    setIsActive(false);
+    Timerreset(); // Timer animation Reset
     setIsStop(false);
+    setIsActive(false);
+    sensorLog.current = []; // Sensor Array Initialization
     animation.setValue(0); 
   };
 
-  // Resume 버튼 클릭 시
+  // Resume Button Click Event
   const handleResume = () => {
     setIsStop(false);
+    subscribeSensors();
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titleText}>{isActive ? 'Recording...' : "Ready to walk"}</Text>
+      <Text style={styles.titleText}>{seconds > 0 ? 'Recording...' : "Ready to walk"}</Text>
       <Text style={styles.timerText}>{formatTime()}</Text>
 
       <View style={styles.iconContainer}>
-        <Animated.Image
-          style={[styles.runningIcon, { transform: [{ translateX: animation }] }]}
-          source={icons.walking_people}
-        />
-        <Image style={styles.lineIcon} source={icons.walking_line} />
+        <Animated.View style={{ transform: [{ translateX: animation }] }}>
+          <icons.walking_people width={60} height={68} /> 
+        </Animated.View>
+          <icons.walking_line width={320} height={10} /> 
       </View>
 
       {!isActive && (
-        <TouchableOpacity style={styles.startButton} onPress={handleStart}>
+        <TouchableOpacity style={styles.startButton} onPress={handleStart} >
           <Text style={styles.ButtonText}>Start</Text>
         </TouchableOpacity>
       )}
       
       {isActive && !isStop && (
       <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
+            <TouchableOpacity style={styles.resetButton} onPress={handleReset} pointerEvents="auto">
               <Text style={styles.ButtonText}>Reset</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.stopButton} onPress={handleStop}>
+            <TouchableOpacity style={styles.stopButton} onPress={handleStop} pointerEvents="auto">
               <Text style={styles.ButtonText}>Stop</Text>
             </TouchableOpacity>
       </View>
       )}
 
-    {isActive && isStop && (
-      <View>
-        <View style={styles.buttonRow}>
-          <TouchableOpacity style={styles.resumeButton} onPress={handleResume}>
-            <Text style={styles.ButtonText}>Resume</Text>
-          </TouchableOpacity>
+      {isActive && isStop && (
+        <View>
+          <View style={styles.buttonRow}>
+            <TouchableOpacity style={styles.resumeButton} onPress={handleResume}>
+              <Text style={styles.ButtonText}>Resume</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
-            <Text style={styles.ButtonText}>Reset</Text>
+            <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
+              <Text style={styles.ButtonText}>Reset</Text>
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity style={[styles.saveButton]} onPress={() => handleSendDatabaseFile()}>
+            <Text style={styles.ButtonText}>Save</Text>
           </TouchableOpacity>
         </View>
+      )}
 
-        <TouchableOpacity style={[styles.saveButton]} onPress={() => console.log("Save")}>
-          <Text style={styles.ButtonText}>Save</Text>
-        </TouchableOpacity>
-      </View>
-    )}
     </View>
+
   );
 };
 
@@ -191,8 +180,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 160,
     borderRadius: 30,
     marginTop: 20,
-    position: 'absolute',
-    top: 65
   },
   
 });

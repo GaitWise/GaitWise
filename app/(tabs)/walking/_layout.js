@@ -8,22 +8,14 @@ export default function WalkingLayout() {
   // 뒤로 가기 버튼 UI 
   const renderBackButton = () => (
     <TouchableOpacity style={styles.button} onPress={() => router.back()}>
-      <Image
-        style={styles.icon}
-        resizeMode="contain"
-        source={icons.walking_arrow_back}
-      />
+         <icons.walking_arrow_back></icons.walking_arrow_back>
     </TouchableOpacity>
   );
 
   // 분석가와 모니터링 연결 버튼 UI
   const renderConnectButton = () => (
     <TouchableOpacity style={styles.button} onPress={() => console.log("Connect Button")}>
-      <Image
-        style={styles.connecticon}
-        resizeMode="contain"
-        source={icons.walking_connect}
-      />
+      <icons.walking_connect></icons.walking_connect>
     </TouchableOpacity>
   )
 
