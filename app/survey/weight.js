@@ -1,11 +1,11 @@
 import { Text, View } from "react-native"
 
-const Home = () => {
+const weight = () => {
   return (
     <View>
-      <Text>Home2</Text>
+      <Text>weight</Text>
     </View>
   )
 }
 
-export default Home
+export default weight

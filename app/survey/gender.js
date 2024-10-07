@@ -2,7 +2,6 @@ import * as React from "react";
 import styled from "styled-components/native";
 import { useState } from "react";
 import { TouchableOpacity } from "react-native";
-import { Image, Pressable, Text } from "react-native";
 import { COLORS, icons } from "../../constants";
 import { useNavigation } from "expo-router";
 

@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import { TouchableOpacity, TextInput, ScrollView } from "react-native";
 import { Image } from "react-native";
-import styled from "styled-components/native"; 
+import styled from "styled-components/native"
 import { COLORS, icons } from "../../constants";
 import { useNavigation } from "expo-router";
 
@@ -24,7 +24,6 @@ const Login = () => {
         <ProfileImage source={icons.profile} />
         <EditIcon source={icons.pen} />
       </ProfileFrame>
-      <ScrollView>
         <Form>
           <InputField>
             <Label>First Name</Label>
@@ -73,7 +72,6 @@ const Login = () => {
               placeholder="Please Enter It Again"            />
           </InputField>
         </Form>
-      </ScrollView>
       <StartButton onPress={() => navigation.navigate("gender")}>
         <ButtonText>Start</ButtonText>
       </StartButton>

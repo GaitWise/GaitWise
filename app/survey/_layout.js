@@ -1,38 +1,39 @@
-import { icons } from "../../constants"; 
+import styled from "styled-components/native";
+import { icons } from "../../constants";
 import { Stack, useRouter } from "expo-router";
-import { TouchableOpacity, Image, StyleSheet } from "react-native";
+import { TouchableOpacity, Image } from "react-native";
 
 export function SurveyLayout() {
   const router = useRouter();
 
-  // 뒤로 가기 버튼 UI 
+  // 뒤로 가기 버튼 UI
   const renderBackButton = () => (
-    <TouchableOpacity style={styles.button} onPress={() => router.back()}>
-      <Image source={icons.arrow_back}/>
-    </TouchableOpacity>
+    <BackButton onPress={() => router.back()}>
+      <BackIcon source={icons.arrow_back} />
+    </BackButton>
   );
 
   return (
     <Stack
       screenOptions={{
         title: "Back",
-        headerTitleStyle: { fontSize: 20},
+        headerTitleStyle: { fontSize: 20 },
         headerLeft: renderBackButton,
       }}
     />
   );
 }
 
-const styles = StyleSheet.create({
-  button: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 10
-  },
-  backicon: {
-    width: 24,
-    height: 16,
-  }
-});
+// styled-components로 스타일 정의
+const BackButton = styled.TouchableOpacity`
+  flex-direction: row;
+  align-items: center;
+  padding-horizontal: 10px;
+`;
 
-export default SurveyLayout
+const BackIcon = styled.Image`
+  width: 24px;
+  height: 16px;
+`;
+
+export default SurveyLayout;
