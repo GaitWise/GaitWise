@@ -5,52 +5,51 @@ import { TouchableOpacity, FlatList } from "react-native";
 import { COLORS } from "../../constants";
 import { useNavigation } from "expo-router";
 
-const Age = () => {
+const Height = () => {
   const navigation = useNavigation();
-  const [selectedAge, setSelectedAge] = useState(0);
+  const [selectedHeight, setSelectedHeight] = useState(50);
   const flatListRef = useRef(null);
 
-  const ageArray = Array.from({ length: 101 }, (_, index) => index);
+  const heightArray = Array.from({ length: 201 }, (_, index) => index + 50);
 
   const handleScroll = (event) => {
-    const offsetX = event.nativeEvent.contentOffset.x;
-    const newIndex = Math.round(offsetX / 50, 50);
-    setSelectedAge(ageArray[newIndex]);
+    const offsetY = event.nativeEvent.contentOffset.y;
+    const newIndex = Math.round(offsetY / 50);
+    setSelectedHeight(heightArray[newIndex]);
   };
 
-  const scrollToAge = (age) => {
-    flatListRef.current?.scrollToOffset({ offset: age * 50, animated: true });
+  const scrollToHeight = (height) => {
+    flatListRef.current?.scrollToOffset({ offset: (height - 50) * 50, animated: true });
   };
 
   return (
     <BaseContainer>
       <FrameContainer>
-        <HowOldAreYouContainer>
-          <HowOldAreText>How Old Are You?</HowOldAreText>
-        </HowOldAreYouContainer>
+        <QuestionContainer>
+          <HeightText>What Is Your Height?</HeightText>
+        </QuestionContainer>
 
-        <AgeText>{selectedAge}</AgeText>
-        <AgeContainer>
+        <QuestionText>{selectedHeight}cm</QuestionText>
+
         <FlatList
-          horizontal
-          ref={scrollToAge}
-          data={ageArray}
+          ref={scrollToHeight}
+          data={heightArray}
           keyExtractor={(item) => item.toString()}
-          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
           onScroll={handleScroll}
           snapToInterval={50}
           decelerationRate="fast"
-          contentContainerStyle={{ paddingHorizontal: 100 }}
+          contentContainerStyle={{ paddingVertical: 100 }}
           renderItem={({ item }) => (
-            <AgeItem>
-              <StyledAgeText isSelected={item === selectedAge}>
+            <HeightItem>
+              <StyledHeightText isSelected={item === selectedHeight}>
                 {item}
-              </StyledAgeText>
-            </AgeItem>
+              </StyledHeightText>
+            </HeightItem>
           )}
         />
-        </AgeContainer>
-        <ContinueButton onPress={() => navigation.navigate("weight")}>
+
+        <ContinueButton onPress={() => navigation.navigate("grade")}>
           <ContinueText>Continue</ContinueText>
         </ContinueButton>
       </FrameContainer>
@@ -58,13 +57,11 @@ const Age = () => {
   );
 };
 
-export default Age;
-const AgeContainer = styled.View`
-  flex-direction: row;
-`;
+export default Height;
 
+// 스타일 컴포넌트들
 const BaseContainer = styled.View`
-  background-color: ${COLORS.white};
+  background-color: #fff;
   flex: 1;
   height: 844px;
   overflow: hidden;
@@ -77,7 +74,7 @@ const FrameContainer = styled.View`
   align-items: center;
 `;
 
-const HowOldAreYouContainer = styled.View`
+const QuestionContainer = styled.View`
   height: 167px;
   padding-vertical: 50px;
   gap: 35px;
@@ -86,8 +83,8 @@ const HowOldAreYouContainer = styled.View`
   align-items: center;
 `;
 
-const HowOldAreText = styled.Text`
-  color: ${COLORS.dark_indigo};
+const HeightText = styled.Text`
+  color: #27187e;
   font-family: Poppins-Bold;
   font-weight: 700;
   text-transform: capitalize;
@@ -95,25 +92,24 @@ const HowOldAreText = styled.Text`
   text-align: left;
 `;
 
-const AgeText = styled.Text`
+const QuestionText = styled.Text`
   font-size: 64px;
-  color: ${COLORS.dark_indigo};
+  color: #27187e;
   font-family: Poppins-Bold;
   font-weight: 700;
   text-align: center;
 `;
 
-const AgeItem = styled.View`
-  width: 50px;
+const HeightItem = styled.View`
   height: 50px;
   justify-content: center;
   align-items: center;
 `;
 
-const StyledAgeText = styled.Text`
+const StyledHeightText = styled.Text`
   font-size: ${(props) => (props.isSelected ? "35px" : "25px")};
   opacity: ${(props) => (props.isSelected ? "1" : "0.5")};
-  color: ${COLORS.dark_indigo};
+  color: #27187e;
   font-family: Poppins-Bold;
   font-weight: 700;
 `;
@@ -124,14 +120,14 @@ const ContinueButton = styled(TouchableOpacity)`
   border-radius: 100px;
   background-color: ${COLORS.dark_indigo};
   border-width: 1px;
-  border-color: ${COLORS.white};
+  border-color: #fff;
   justify-content: center;
   align-items: center;
 `;
 
 const ContinueText = styled.Text`
   font-size: 18px;
-  color: ${COLORS.white};
+  color: #fff;
   font-family: Poppins-Bold;
   font-weight: 700;
   text-transform: capitalize;

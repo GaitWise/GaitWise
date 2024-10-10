@@ -1,7 +1,6 @@
 import styled from "styled-components/native";
 import { icons } from "../../constants";
 import { Stack, useRouter } from "expo-router";
-import { TouchableOpacity, Image } from "react-native";
 
 export function SurveyLayout() {
   const router = useRouter();
@@ -24,6 +23,8 @@ export function SurveyLayout() {
   );
 }
 
+export default SurveyLayout;
+
 // styled-components로 스타일 정의
 const BackButton = styled.TouchableOpacity`
   flex-direction: row;
@@ -36,4 +37,3 @@ const BackIcon = styled.Image`
   height: 16px;
 `;
 
-export default SurveyLayout;

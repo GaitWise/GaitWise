@@ -48,7 +48,7 @@ const AGender = () => {
           selected={selectedMale || selectedFemale}
           bothSelected={selectedMale && selectedFemale}
           onPress={() => navigation.navigate("age")}
-        >
+          >
           <ContinueText>Continue</ContinueText>
         </ContinueButton>
       </GenderContent>
@@ -56,13 +56,15 @@ const AGender = () => {
   );
 };
 
+export default AGender;
+
 const GenderContainer = styled.Pressable`
   flex: 1;
   align-items: center;
-  background-color: #fff;
+  background-color: ${COLORS.white};
   height: 852px;
   border-width: 1px;
-  border-color: #fff;
+  border-color: ${COLORS.white};
   overflow: hidden;
 `;
 
@@ -88,7 +90,7 @@ const GenderContent = styled.View`
 
 const TitleText = styled.Text`
   font-size: 25px;
-  color: #27187e;
+  color: ${COLORS.dark_indigo};
   font-family: "Poppins-Bold";
   font-weight: bold;
   text-align: left;
@@ -133,7 +135,7 @@ const GenderLabel = styled.Text`
   font-size: 20px;
   font-family: "Poppins-Bold";
   font-weight: 700;
-  color: #000;
+  color: ${COLORS.black};
   margin-top: 10px;
 `;
 
@@ -146,15 +148,14 @@ const ContinueButton = styled(TouchableOpacity)`
       ? COLORS.dark_indigo
       : COLORS.continue_gray};
   border-width: 1px;
-  border-color: #fff;
+  border-color: ${COLORS.white};
   justify-content: center;
   align-items: center;
 `;
 
 const ContinueText = styled.Text`
   font-size: 18px;
-  color: #fff;
+  color: ${COLORS.white};
   font-family: "Poppins-Bold";
 `;
 
-export default AGender;
