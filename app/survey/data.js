@@ -13,6 +13,13 @@ export const pagesData = [
       { label: 'Senior', value: 'Senior' },
       { label: 'Other', value: 'Other' },
     ],
+    nextPage: 'goal', // 다음 페이지
+  },
+  {
+    id: 'goal',
+    title: 'What Is Your Goal?',
+    profile_img: icons.profile,
+    options: [], // 옵션이 없는 페이지
     nextPage: 'health', // 다음 페이지
   },
   {
@@ -25,6 +32,13 @@ export const pagesData = [
       { label: 'Fair', value: 'Fair' },
       { label: 'Poor', value: 'Poor' },
     ],
+    nextPage: 'feeling', // 다음 페이지
+  },
+  {
+    id: 'feeling',
+    title: 'How Are You Feeling Today?',
+    profile_img: icons.profile,
+    options: [], // 옵션이 없는 페이지
     nextPage: 'pain', // 다음 페이지
   },
   {
@@ -55,6 +69,13 @@ export const pagesData = [
       { label: 'Yes', value: 'Yes' },
       { label: 'No', value: 'No' },
     ],
+    nextPage: 'condition', // 다음 페이지
+  },
+  {
+    id: 'condition',
+    title: 'Do You Want To Share Anythin Else About Your Health Or Condition Today?',
+    profile_img: icons.profile,
+    options: [], // 옵션이 없는 페이지
     nextPage: 'race/ethnicity', // 다음 페이지
   },
   {
