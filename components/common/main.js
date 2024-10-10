@@ -17,6 +17,9 @@ const Main = () => {
       setPageIndex(pageIndex + 1); // 다음 페이지로 이동
       setSelectedOption(null); // 선택 초기화
       setInputValue(''); // 입력 초기화
+    } else {
+      // 마지막 페이지에서 다른 화면으로 이동
+      navigation.navigate('age'); // 'NextScreen'은 이동할 화면의 이름
     }
   };
 
