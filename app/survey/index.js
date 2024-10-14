@@ -1,11 +1,11 @@
-import { Text, View } from "react-native-web";
+import { Text, View } from "react-native";
 
-const Home = () => {
+const Survey = () => {
   return (
     <View>
-      <Text>Home1</Text>
-    </View>
+    <Text>Survey</Text>
+  </View>
   )
 }
 
-export default Home
+export default Survey
