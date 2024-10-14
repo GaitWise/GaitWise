@@ -28,7 +28,6 @@ const Age = () => {
         <HowOldAreYouContainer>
           <HowOldAreText>How Old Are You?</HowOldAreText>
         </HowOldAreYouContainer>
-
         <AgeText>{selectedAge}</AgeText>
         <AgeContainer>
         <FlatList

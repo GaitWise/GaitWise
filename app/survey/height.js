@@ -10,7 +10,7 @@ const Height = () => {
   const [selectedHeight, setSelectedHeight] = useState(50);
   const flatListRef = useRef(null);
 
-  const heightArray = Array.from({ length: 201 }, (_, index) => index + 50);
+  const heightArray = Array.from({ length: 201 }, (_, index) => index + 50); 
 
   const handleScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y;

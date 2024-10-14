@@ -1,20 +1,20 @@
-import * as React from "react";
-import { useState } from "react";
-import { TouchableOpacity, TextInput } from "react-native";
-import { Image } from "react-native";
-import styled from "styled-components/native";
-import { COLORS, icons } from "../../constants";
-import { useNavigation } from "expo-router";
+import * as React from 'react';
+import { useState } from 'react';
+import { TouchableOpacity, TextInput } from 'react-native';
+import { Image } from 'react-native';
+import styled from 'styled-components/native';
+import { COLORS, icons } from '../../constants';
+import { useNavigation } from 'expo-router';
 
-const Login = () => {
+const Profile = () => {
   const navigation = useNavigation();
   const [inputs, setInputs] = useState({
-    firstName: "",
-    lastName: "",
-    job: "",
-    email: "",
-    pw: "",
-    pw2: "",
+    firstName: '',
+    lastName: '',
+    job: '',
+    email: '',
+    pw: '',
+    pw2: '',
   });
   const { firstName, lastName, job, email, pw, pw2 } = inputs;
 
@@ -40,7 +40,7 @@ const Login = () => {
           <Input
             name="firstName"
             value={firstName}
-            onChangeText={(text) => handleInputChange("firstName", text)}
+            onChangeText={(text) => handleInputChange('firstName', text)}
             placeholder="Enter Your First Name"
           />
         </InputField>
@@ -49,7 +49,7 @@ const Login = () => {
           <Input
             name="lastName"
             value={lastName}
-            onChangeText={(text) => handleInputChange("lastName", text)}
+            onChangeText={(text) => handleInputChange('lastName', text)}
             placeholder="Enter Your Last Name"
           />
         </InputField>
@@ -58,7 +58,7 @@ const Login = () => {
           <Input
             name="job"
             value={job}
-            onChangeText={(text) => handleInputChange("job", text)}
+            onChangeText={(text) => handleInputChange('job', text)}
             placeholder="Enter Your Job"
           />
         </InputField>
@@ -67,7 +67,7 @@ const Login = () => {
           <Input
             name="email"
             value={email}
-            onChangeText={(text) => handleInputChange("email", text)}
+            onChangeText={(text) => handleInputChange('email', text)}
             placeholder="Enter Your Email"
           />
         </InputField>
@@ -76,7 +76,7 @@ const Login = () => {
           <Input
             name="pw"
             value={pw}
-            onChangeText={(text) => handleInputChange("pw", text)}
+            onChangeText={(text) => handleInputChange('pw', text)}
             placeholder="Enter Your Password"
             secureTextEntry
           />
@@ -86,20 +86,20 @@ const Login = () => {
           <Input
             name="pw2"
             value={pw2}
-            onChangeText={(text) => handleInputChange("pw2", text)}
+            onChangeText={(text) => handleInputChange('pw2', text)}
             placeholder="Please Enter It Again"
             secureTextEntry
           />
         </InputField>
       </Form>
-      <StartButton onPress={() => navigation.navigate("gender")}>
+      <StartButton onPress={() => navigation.navigate('gender')}>
         <ButtonText>Start</ButtonText>
       </StartButton>
     </Container>
   );
 };
 
-export default Login;
+export default Profile;
 
 // styled-components
 const Container = styled.View`
@@ -121,7 +121,7 @@ const HeaderText = styled.Text`
   font-size: 25px;
   color: ${COLORS.dark_indigo};
   text-align: left;
-  font-family: "Poppins-Bold";
+  font-family: 'Poppins-Bold';
   font-weight: bold;
 `;
 
@@ -160,7 +160,7 @@ const InputField = styled.View`
 const Label = styled.Text`
   font-size: 18px;
   color: ${COLORS.black};
-  font-family: "LeagueSpartan-Medium";
+  font-family: 'LeagueSpartan-Medium';
   font-weight: bold;
 `;
 
@@ -170,7 +170,7 @@ const Input = styled(TextInput)`
   border-radius: 15px;
   background-color: ${COLORS.white};
   color: ${COLORS.soft_blue};
-  font-family: "LeagueSpartan-Medium";
+  font-family: 'LeagueSpartan-Medium';
   font-weight: 500;
   font-size: 18px;
 `;
@@ -189,7 +189,7 @@ const StartButton = styled(TouchableOpacity)`
 const ButtonText = styled.Text`
   color: ${COLORS.white};
   font-size: 18px;
-  font-family: "Poppins-Bold";
+  font-family: 'Poppins-Bold';
   font-weight: bold;
   text-align: center;
 `;

@@ -1,7 +1,50 @@
-// data.js
-import { icons } from '../../constants'; // 아이콘을 가져옵니다.
+// app/survey/grade.js
+import * as React from 'react';
+import { useState } from 'react';
+import styled from 'styled-components/native';
+import Surveytemplate from '../../components/survey/surveytemplate';
+import { icons } from '../../constants';
+import { useNavigation } from 'expo-router';
 
-export const pagesData = [
+export const SurveyPage = () => {
+  const [currentPageId, setCurrentPageId] = useState('grade');
+  const navigation = useNavigation();
+
+  const currentPageData = pagesData.find((page) => page.id === currentPageId);
+
+  const goToNextPage = () => {
+    if (currentPageData.nextPage) {
+      setCurrentPageId(currentPageData.nextPage);
+    } else {
+      // 마지막 페이지일 때 홈으로 이동
+      navigation.navigate('home');
+    }
+  };
+
+  const handleContinue = () => {
+    goToNextPage(); // Continue 버튼 클릭 시 페이지 이동
+  };
+
+  return (
+    <BaseFrameContainer>
+      <Surveytemplate
+        currentPageData={currentPageData}
+        onNextPage={goToNextPage}
+        onContinue={handleContinue} // onContinue prop 전달
+      />
+    </BaseFrameContainer>
+  );
+};
+
+export default SurveyPage;
+
+// styled-components
+const BaseFrameContainer = styled.View`
+  flex: 1;
+  background-color: #fff;
+`;
+
+const pagesData = [
   {
     id: 'grade',
     title: 'What Is Your Grade?',
@@ -73,7 +116,8 @@ export const pagesData = [
   },
   {
     id: 'condition',
-    title: 'Do You Want To Share Anythin Else About Your Health Or Condition Today?',
+    title:
+      'Do You Want To Share Anythin Else About Your Health Or Condition Today?',
     profile_img: icons.profile,
     options: [], // 옵션이 없는 페이지
     nextPage: 'race/ethnicity', // 다음 페이지
@@ -83,10 +127,10 @@ export const pagesData = [
     title: 'Race/Ethnicity?',
     profile_img: icons.profile,
     options: [
-        { label: 'Asian', value: 'Asian' },
-        { label: 'Black', value: 'Black' },
-        { label: 'white', value: 'white' },
-        { label: 'Other', value: 'Other' },
+      { label: 'Asian', value: 'Asian' },
+      { label: 'Black', value: 'Black' },
+      { label: 'White', value: 'White' },
+      { label: 'Other', value: 'Other' },
     ],
     nextPage: 'hispanic/latino', // 다음 페이지
   },
@@ -98,7 +142,7 @@ export const pagesData = [
       { label: 'Yes', value: 'Yes' },
       { label: 'No', value: 'No' },
     ],
-    nextPage: 'age', // 다음 페이지
+    nextPage: null, // 마지막 페이지일 경우 nextPage를 null로 설정
   },
   // 더 많은 페이지 데이터를 여기에 추가할 수 있습니다.
 ];
