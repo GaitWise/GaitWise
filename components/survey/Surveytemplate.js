@@ -3,13 +3,14 @@ import { Pressable, TextInput } from 'react-native';
 import { useState } from 'react';
 import styled from 'styled-components/native';
 import { COLORS, icons } from '../../constants';
+//TODO:grade.js에서 pagesData를 가져오기 props사용해서 아래 삭제 필요함
 import { pagesData } from '../../app/survey/data';
 
-const Main = () => {
+const Surveytemplate = () => {
   const [pageIndex, setPageIndex] = useState(0); // 현재 페이지 인덱스 상태 관리
   const [selectedOption, setSelectedOption] = useState(null);
   const [inputValue, setInputValue] = useState(''); // 입력값 상태 추가
-
+  //TODO: 아래 삭제 필요함
   const currentPageData = pagesData[pageIndex]; // 현재 페이지 데이터 가져오기
 
   const handleContinue = () => {
@@ -19,14 +20,14 @@ const Main = () => {
       setInputValue(''); // 입력 초기화
     } else {
       // 마지막 페이지에서 다른 화면으로 이동
-      navigation.navigate('age'); // 'NextScreen'은 이동할 화면의 이름
+      navigation.navigate('/home'); // 'NextScreen'은 이동할 화면의 이름
     }
   };
 
   const optionsContainerHeight =
-  currentPageData.options && currentPageData.options.length > 0 
-    ? Math.max(150, currentPageData.options.length * 90) // 옵션이 있는 경우 높이 계산
-    : 392; // 기본 최소 높이
+    currentPageData.options && currentPageData.options.length > 0
+      ? Math.max(150, currentPageData.options.length * 90) // 옵션이 있는 경우 높이 계산
+      : 392; // 기본 최소 높이
 
   return (
     <BaseFrameContainer>
@@ -179,4 +180,4 @@ const Input = styled(TextInput)`
   align-self: stretch;
 `;
 
-export default Main;
+export default Surveytemplate;
