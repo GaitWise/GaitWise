@@ -2,8 +2,8 @@
 import * as React from 'react';
 import { useState } from 'react';
 import styled from 'styled-components/native';
-import Surveytemplate from '../../components/survey/surveytemplate';
-import { icons } from '../../constants';
+import { Surveytemplate } from '@/components';
+import { icons, IMAGES } from '@/constants';
 import { useNavigation } from 'expo-router';
 
 export const SurveyPage = () => {
@@ -26,13 +26,11 @@ export const SurveyPage = () => {
   };
 
   return (
-    <BaseFrameContainer>
-      <Surveytemplate
-        currentPageData={currentPageData}
-        onNextPage={goToNextPage}
-        onContinue={handleContinue} // onContinue prop 전달
-      />
-    </BaseFrameContainer>
+    <Surveytemplate
+      currentPageData={currentPageData}
+      onNextPage={goToNextPage}
+      onContinue={handleContinue} // onContinue prop 전달
+    />
   );
 };
 
@@ -48,7 +46,7 @@ const pagesData = [
   {
     id: 'grade',
     title: 'What Is Your Grade?',
-    profile_img: icons.profile,
+    profile_img: IMAGES.profile,
     options: [
       { label: 'Freshman', value: 'Freshman' },
       { label: 'Sophomore', value: 'Sophomore' },
@@ -61,14 +59,14 @@ const pagesData = [
   {
     id: 'goal',
     title: 'What Is Your Goal?',
-    profile_img: icons.profile,
+    profile_img: IMAGES.profile,
     options: [], // 옵션이 없는 페이지
     nextPage: 'health', // 다음 페이지
   },
   {
     id: 'health',
-    title: 'How Would You Describe Your Current State Of Health?',
-    profile_img: icons.profile,
+    title: 'How Would You Describe \n Your Current State Of Health?',
+    profile_img: IMAGES.profile,
     options: [
       { label: 'Excellent', value: 'Excellent' },
       { label: 'Good', value: 'Good' },
@@ -80,14 +78,14 @@ const pagesData = [
   {
     id: 'feeling',
     title: 'How Are You Feeling Today?',
-    profile_img: icons.profile,
+    profile_img: IMAGES.profile,
     options: [], // 옵션이 없는 페이지
     nextPage: 'pain', // 다음 페이지
   },
   {
     id: 'pain',
-    title: 'Do You Experience Any Kind Of Pain?',
-    profile_img: icons.profile,
+    title: 'Do You Experience \n Any Kind Of Pain?',
+    profile_img: IMAGES.profile,
     options: [
       { label: 'Yes', value: 'Yes' },
       { label: 'No', value: 'No' },
@@ -96,8 +94,8 @@ const pagesData = [
   },
   {
     id: 'walking',
-    title: 'Have You Had Any Problems Walking?',
-    profile_img: icons.profile,
+    title: 'Have You Had \n Any Problems Walking?',
+    profile_img: IMAGES.profile,
     options: [
       { label: 'Yes', value: 'Yes' },
       { label: 'No', value: 'No' },
@@ -106,8 +104,8 @@ const pagesData = [
   },
   {
     id: 'concussion',
-    title: 'Have You Ever Had A Concussion?',
-    profile_img: icons.profile,
+    title: 'Have You Ever \n Had A Concussion?',
+    profile_img: IMAGES.profile,
     options: [
       { label: 'Yes', value: 'Yes' },
       { label: 'No', value: 'No' },
@@ -117,15 +115,15 @@ const pagesData = [
   {
     id: 'condition',
     title:
-      'Do You Want To Share Anythin Else About Your Health Or Condition Today?',
-    profile_img: icons.profile,
+      'Do You Want To Share \n Anything Else About \n Your Health Or Condition Today?',
+    profile_img: IMAGES.profile,
     options: [], // 옵션이 없는 페이지
     nextPage: 'race/ethnicity', // 다음 페이지
   },
   {
     id: 'race/ethnicity',
     title: 'Race/Ethnicity?',
-    profile_img: icons.profile,
+    profile_img: IMAGES.profile,
     options: [
       { label: 'Asian', value: 'Asian' },
       { label: 'Black', value: 'Black' },
@@ -137,7 +135,7 @@ const pagesData = [
   {
     id: 'hispanic/latino',
     title: 'Hispanic/Latino?',
-    profile_img: icons.profile,
+    profile_img: IMAGES.profile,
     options: [
       { label: 'Yes', value: 'Yes' },
       { label: 'No', value: 'No' },

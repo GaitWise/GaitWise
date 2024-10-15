@@ -1,5 +1,5 @@
 import styled from "styled-components/native";
-import { icons } from "../../constants";
+import { icons } from "@/constants";
 import { Stack, useRouter } from "expo-router";
 
 export function SurveyLayout() {

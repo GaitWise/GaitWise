@@ -49,7 +49,7 @@ const Height = () => {
           )}
         />
 
-        <ContinueButton onPress={() => navigation.navigate("grade")}>
+        <ContinueButton onPress={() => navigation.navigate("surveyPage")}>
           <ContinueText>Continue</ContinueText>
         </ContinueButton>
       </FrameContainer>

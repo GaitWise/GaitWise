@@ -1,11 +1,10 @@
-// components/survey/surveytemplate.js
 import * as React from 'react';
 import { Pressable, TextInput } from 'react-native';
 import { useState } from 'react';
 import styled from 'styled-components/native';
 import { COLORS, icons } from '../../constants';
 
-const Surveytemplate = ({ currentPageData, onNextPage, onContinue }) => { // onContinue prop 추가
+const Surveytemplate = ({ currentPageData, onNextPage, onContinue }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [inputValue, setInputValue] = useState('');
 
@@ -21,6 +20,12 @@ const Surveytemplate = ({ currentPageData, onNextPage, onContinue }) => { // onC
     currentPageData.options && currentPageData.options.length > 0
       ? Math.max(150, currentPageData.options.length * 90)
       : 392;
+
+  // Continue 버튼 색상 결정
+  const isContinueEnabled = selectedOption !== null || inputValue.trim() !== '';
+  const continueButtonColor = isContinueEnabled
+    ? COLORS.dark_indigo
+    : COLORS.continue_gray; // 선택되지 않았을 때 회색
 
   return (
     <BaseFrameContainer>
@@ -39,9 +44,7 @@ const Surveytemplate = ({ currentPageData, onNextPage, onContinue }) => { // onC
               <CheckIcon
                 resizeMode="cover"
                 source={
-                  selectedOption === option.value
-                    ? icons.checked
-                    : icons.check
+                  selectedOption === option.value ? icons.checked : icons.check
                 }
               />
               <OptionText>{option.label}</OptionText>
@@ -53,11 +56,16 @@ const Surveytemplate = ({ currentPageData, onNextPage, onContinue }) => { // onC
               placeholder="Type your answer here..."
               value={inputValue}
               onChangeText={setInputValue}
+              multiline={true} // 여러 줄 입력 허용
+              numberOfLines={4} // 기본적으로 4줄을 표시하도록 설정
             />
           </InputContainer>
         )}
       </OptionsContainer>
-      <ContinueButton onPress={handleContinue}>
+      <ContinueButton
+        onPress={handleContinue}
+        style={{ backgroundColor: continueButtonColor }}
+      >
         <ContinueText>Continue</ContinueText>
       </ContinueButton>
     </BaseFrameContainer>
@@ -115,8 +123,8 @@ const OptionButton = styled(Pressable)`
   width: 323px;
   background-color: ${COLORS.white};
   flex-direction: row;
-  align-items: center; /* align-items를 center로 수정 */
-  justify-content: center; /* justify-content를 center로 수정 */
+  align-items: center;
+  justify-content: center;
   opacity: ${({ isSelected }) => (isSelected ? 1 : 0.7)};
   margin-bottom: 25px;
 `;
@@ -141,7 +149,6 @@ const OptionText = styled.Text`
 
 const ContinueButton = styled(Pressable)`
   border-radius: 100px;
-  background-color: ${COLORS.dark_indigo};
   border: 1px solid ${COLORS.white};
   width: 179px;
   padding: 15px 36px;
@@ -167,10 +174,11 @@ const InputContainer = styled.View`
 `;
 
 const Input = styled(TextInput)`
+  font-size: 20px;
   border-radius: 15px;
   background-color: #f1f2f6;
   border-color: #27187e;
   height: 248px;
-  padding-horizontal: 20px;
+  padding: 20px;
   align-self: stretch;
 `;

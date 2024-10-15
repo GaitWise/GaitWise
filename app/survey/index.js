@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { TouchableOpacity, TextInput } from 'react-native';
 import { Image } from 'react-native';
 import styled from 'styled-components/native';
-import { COLORS, icons } from '../../constants';
+import { COLORS, IMAGES } from '../../constants';
 import { useNavigation } from 'expo-router';
 
 const Profile = () => {
@@ -25,14 +25,18 @@ const Profile = () => {
     });
   };
 
+  // 모든 입력값이 존재하는지 및 pw와 pw2가 같은지 확인
+  const isFormValid = () => {
+    return firstName && lastName && job && email && pw && pw2 && pw === pw2;
+  };
+
   return (
     <Container>
       <Header>
         <HeaderText>Fill Your Profile</HeaderText>
       </Header>
       <ProfileFrame>
-        <ProfileImage source={icons.profile} />
-        <EditIcon source={icons.pen} />
+        <ProfileImage source={IMAGES.profile} />
       </ProfileFrame>
       <Form>
         <InputField>
@@ -71,7 +75,6 @@ const Profile = () => {
             placeholder="Enter Your Email"
           />
         </InputField>
-        {/* TODO: PW 같은지 확인 필요함 */}
         <InputField>
           <Label>Password</Label>
           <Input
@@ -93,8 +96,17 @@ const Profile = () => {
           />
         </InputField>
       </Form>
-      {/* TODO: 입략이 다 끝났을때 그리고 pw가 같을때만 버튼 활성화 */}
-      <StartButton onPress={() => navigation.navigate('gender')}>
+
+      <StartButton
+        onPress={() => {
+          if (isFormValid()) {
+            navigation.navigate('gender');
+          }
+        }}
+        disabled={!isFormValid()}
+        isFormValid={isFormValid()}
+        activeOpacity={0.7}
+      >
         <ButtonText>Start</ButtonText>
       </StartButton>
     </Container>
@@ -140,18 +152,11 @@ const ProfileImage = styled(Image)`
   height: 125px;
 `;
 
-const EditIcon = styled(Image)`
-  position: absolute;
-  top: 102px;
-  left: 231px;
-  width: 27px;
-  height: 27px;
-`;
-
 const Form = styled.View`
   padding: 15px 10px;
   flex-direction: center;
   align-items: center;
+  width: 100%;
 `;
 
 const InputField = styled.View`
@@ -178,14 +183,15 @@ const Input = styled(TextInput)`
 `;
 
 const StartButton = styled(TouchableOpacity)`
-  position: absolute;
-  top: 720px;
-  left: 106px;
   border-radius: 100px;
-  background-color: ${COLORS.dark_indigo};
+  background-color: ${({ isFormValid }) =>
+    isFormValid ? COLORS.dark_indigo : COLORS.continue_gray};
   width: 179px;
   padding: 10px;
   justify-content: center;
+  align-items: center;
+  align-self: center;
+  margin-top: 20px;
 `;
 
 const ButtonText = styled.Text`

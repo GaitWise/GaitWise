@@ -14,7 +14,7 @@ const Age = () => {
 
   const handleScroll = (event) => {
     const offsetX = event.nativeEvent.contentOffset.x;
-    const newIndex = Math.round(offsetX / 50, 50);
+    const newIndex = Math.round(offsetX / 50); // 수정된 부분
     setSelectedAge(ageArray[newIndex]);
   };
 
@@ -30,24 +30,24 @@ const Age = () => {
         </HowOldAreYouContainer>
         <AgeText>{selectedAge}</AgeText>
         <AgeContainer>
-        <FlatList
-          horizontal
-          ref={scrollToAge}
-          data={ageArray}
-          keyExtractor={(item) => item.toString()}
-          showsHorizontalScrollIndicator={false}
-          onScroll={handleScroll}
-          snapToInterval={50}
-          decelerationRate="fast"
-          contentContainerStyle={{ paddingHorizontal: 100 }}
-          renderItem={({ item }) => (
-            <AgeItem>
-              <StyledAgeText isSelected={item === selectedAge}>
-                {item}
-              </StyledAgeText>
-            </AgeItem>
-          )}
-        />
+          <FlatList
+            horizontal
+            ref={flatListRef} // 수정된 부분
+            data={ageArray}
+            keyExtractor={(item) => item.toString()}
+            showsHorizontalScrollIndicator={false}
+            onScroll={handleScroll}
+            snapToInterval={50}
+            decelerationRate="fast"
+            contentContainerStyle={{ paddingHorizontal: 100 }}
+            renderItem={({ item }) => (
+              <AgeItem>
+                <StyledAgeText isSelected={item === selectedAge}>
+                  {item}
+                </StyledAgeText>
+              </AgeItem>
+            )}
+          />
         </AgeContainer>
         <ContinueButton onPress={() => navigation.navigate("weight")}>
           <ContinueText>Continue</ContinueText>
@@ -58,6 +58,7 @@ const Age = () => {
 };
 
 export default Age;
+
 const AgeContainer = styled.View`
   flex-direction: row;
 `;
