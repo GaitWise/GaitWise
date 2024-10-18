@@ -8,6 +8,10 @@ import { sendDatabaseFile } from "../../../components/walking/api/Senddata";
 import { useTimerAnimation } from "../../../components/walking/UseTimerAnimation";
 import { Text, View, TouchableOpacity, Animated, StyleSheet } from "react-native";
 
+// TODO
+// 1. Save 버튼 누를시 초기화.
+// 2. 테이블 이름 교체
+
 const Walking = () => {
   // Sensor
   const { subscribeSensors, unsubscribeSensors, sensorLog } = Sensors(25);
@@ -17,11 +21,13 @@ const Walking = () => {
   // SQLite DB data Server Send Callback
   const handleSendDatabaseFile = useCallback(async () => {
     try {
-      const TableName = uuidv4();
-      await insertSensorData(sensorLog, TableName)
-      const result = await sendDatabaseFile(TableName); 
-      console.log('Database file sent:', result);
-      sensorLog.current = []; // Sensor Array Initialization
+      console.log(sensorLog)
+      console.log("sensorlog: ", sensorLog.current[0]['accData'])
+      // const TableName = uuidv4();
+      // await insertSensorData(sensorLog, TableName)
+      // const result = await sendDatabaseFile(TableName); 
+      // console.log('Database file sent:', result);
+      // sensorLog.current = []; // Sensor Array Initialization
     } catch (error) {
       console.log('Error sending the database file:', error);
     }
