@@ -1,4 +1,5 @@
 import 'react-native-get-random-values';
+import CryptoJS from 'crypto-js';
 import { v4 as uuidv4 } from 'uuid'
 import React, {useCallback} from 'react';
 import { icons } from "../../../constants";
@@ -9,6 +10,8 @@ import { useTimerAnimation } from "../../../components/walking/UseTimerAnimation
 import { Text, View, TouchableOpacity, Animated, StyleSheet } from "react-native";
 
 // TODO
+// 단위 테스트 console ㄲ
+// 코드 분리 위에 주석
 // 1. Save 버튼 누를시 초기화.
 // 2. 테이블 이름 교체
 
@@ -21,13 +24,94 @@ const Walking = () => {
   // SQLite DB data Server Send Callback
   const handleSendDatabaseFile = useCallback(async () => {
     try {
-      console.log(sensorLog)
-      console.log("sensorlog: ", sensorLog.current[0]['accData'])
-      // const TableName = uuidv4();
-      // await insertSensorData(sensorLog, TableName)
-      // const result = await sendDatabaseFile(TableName); 
+      const chunkSize = 100000; // 조각당 전송할 데이터 크기 설정
+
+      const chunkData = (data) => {
+        const stringData = JSON.stringify(data)
+        const chuncks = []
+        for (let i = 0; i < stringData.length; i+= chunkSize){
+          chuncks.push(stringData.slice(i, i+chunkSize))
+        }
+        return chuncks
+      }
+
+      const generateHash = (data) => {
+        const stringData = JSON.stringify(data);
+        const hash = CryptoJS.SHA256(stringData).toString(CryptoJS.enc.Hex);
+        return hash;
+      };
+
+       // 데이터를 조각별로 서버에 전송하고, 누락된 조각을 다시 전송하는 함수
+      const resendMissingChunks = async (missingChunks, chunks) => {
+        try {
+          for (let i = 0; i < missingChunks.length; i++) {
+            const chunkIndex = missingChunks[i]; // 누락된 조각의 인덱스
+            const response = await fetch('http://192.168.25.56:4000/sensor-data/upload-chunk', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ chunk: chunks[chunkIndex], index: chunkIndex, totalChunks: chunks.length }),
+            });
+            const result = await response.json();
+            console.log(`Resent chunk ${chunkIndex} status:`, result);
+          }
+        } catch (error) {
+          console.error('Error resending missing chunks:', error);
+        }
+      };
+
+      const sendDataWithRetry = async () => {
+        const chunks = chunkData(sensorLog.current); // 데이터를 조각화
+        const dataHash = generateHash(sensorLog.current); // 전체 데이터 해시 값 생성
+
+        try {
+          // 모든 조각을 서버에 순차적으로 전송
+          for (let i = 0; i < chunks.length; i++) {
+            const response = await fetch('http://192.168.25.56:4000/sensor-data/data-chunk', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({ chunk: chunks[i], index: i, totalChunks: chunks.length, clientId: "123124" }),
+            });
+
+            const result = await response.json();
+            console.log(`Chunk ${i} upload status:`, result);
+          }
+
+          // 서버에서 조각 검증 후, 누락된 조각 요청
+          const compareResponse = await fetch('http://192.168.25.56:4000/sensor-data/compare-hash', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({ clientHash: dataHash, clientId: "123124" }), // 클라이언트 해시 전송
+          });
+          const compareResult = await compareResponse.json();
+          console.log("compareResult: ", compareResult)
+          if (compareResponse.ok && compareResult.status === 'incomplete') {
+            console.log('Resending missing chunks:', compareResult.missingChunks);
+            await resendMissingChunks(compareResult.missingChunks, chunks); // 누락된 조각 다시 전송
+          } else if (compareResponse.ok && compareResult.status === 'match') {
+            console.log('Data fully synchronized and verified');
+          } else {
+            console.error('Data mismatch detected');
+          }
+          sensorLog.current = []; // Sensor Array Initialization
+
+        } catch (error) {
+          console.error('Error sending data to server:', error);
+        }
+      };
+
+      await sendDataWithRetry()
+      console.log("sendDataWithRetry out")
+
+
+      
+      // DB파일 생성 (이떄 디비 파일은 그냥 계속 insert)
+      const TableName = "Jiseungmin" // 닉네임으로 변경
+      //await insertSensorData(sensorLog, TableName)
+      //const result = await sendDatabaseFile(TableName); 
       // console.log('Database file sent:', result);
-      // sensorLog.current = []; // Sensor Array Initialization
+      sensorLog.current = []; // Sensor Array Initialization
     } catch (error) {
       console.log('Error sending the database file:', error);
     }
