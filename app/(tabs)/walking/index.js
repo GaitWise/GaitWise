@@ -1,19 +1,24 @@
 import 'react-native-get-random-values';
-import React, {useCallback} from 'react';
 import { icons } from "../../../constants";
+import React, {useCallback, useState} from 'react';
 import { Sensors } from "../../../components/walking/Sensor";
 import { insertSensorData} from "../../../components/walking/SQLite";
 import { sendDatabaseFile } from "../../../components/walking/api/Senddata";
 import { useTimerAnimation } from "../../../components/walking/UseTimerAnimation";
-import { Text, View, TouchableOpacity, Animated, StyleSheet } from "react-native";
 import { chunkData, generateHash } from '../../../components/walking/DataProcessing';
 import { sendChunk, compareHash, resendMissingChunks } from '../../../components/walking/api/Senddata';
+import { Text, View, TouchableOpacity, Animated, StyleSheet, Modal, ActivityIndicator } from "react-native";
+
 
 // TODO
 // 1. Save 버튼 누를시 초기화.
-// 2. 테이블 이름 교체
 
 const Walking = () => {
+  
+   // 로딩 및 모달 상태 관리
+  const [loading, setLoading] = useState(false); 
+  const [modalVisible, setModalVisible] = useState(false); // 다이얼로그 표시 여부 관리
+  
   // Sensor
   const { subscribeSensors, unsubscribeSensors, sensorLog } = Sensors(25);
   // Timer Animation
@@ -21,6 +26,9 @@ const Walking = () => {
   
   // TODO 추후 UDP 통신 구현
   const handleSendDatabaseFile = useCallback(async () => {
+    setLoading(true); // 저장 버튼 클릭 시 로딩 시작
+    setModalVisible(true); // 모달 표시
+    
     try {
       // chunkSize는 100000
       const chunkSize = 100000;
@@ -58,6 +66,10 @@ const Walking = () => {
   
     } catch (error) {
       console.error('Error during the process:', error);
+    }finally {
+      setLoading(false); // 로딩 중지
+      setModalVisible(false); // 모달 닫기
+      handleReset(); // 데이터 저장 완료 후 초기화
     }
   }, []);
 
@@ -78,11 +90,12 @@ const Walking = () => {
 
   // Reset Button Click Event
   const handleReset = () => {
+    sensorLog.current = []; // Sensor Array Initialization
     Timerreset(); // Timer animation Reset
     setIsStop(false);
+    unsubscribeSensors();
     setIsActive(false);
-    sensorLog.current = []; // Sensor Array Initialization
-    animation.setValue(0); 
+    animation.setValue(0);
   };
 
   // Resume Button Click Event
@@ -95,6 +108,24 @@ const Walking = () => {
     <View style={styles.container}>
       <Text style={styles.titleText}>{seconds > 0 ? 'Recording...' : "Ready to walk"}</Text>
       <Text style={styles.timerText}>{formatTime()}</Text>
+
+      <Modal
+        transparent={true}
+        animationType="fade"  // 부드러운 fade 애니메이션으로 변경
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}  // 모달 닫기
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>Saving Data...</Text>
+            {loading && (
+              <View style={styles.loaderContainer}>
+                <ActivityIndicator size="large" color="#4C2A86" />
+              </View>
+            )}
+          </View>
+        </View>
+      </Modal>
 
       <View style={styles.iconContainer}>
         <Animated.View style={{ transform: [{ translateX: animation }] }}>
@@ -150,6 +181,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff'
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
   },
   titleText: {
     fontSize: 24,
@@ -216,6 +265,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginTop: 20,
   },
+  
   
 });
 
