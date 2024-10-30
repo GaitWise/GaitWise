@@ -1,9 +1,9 @@
-import * as React from "react";
-import styled from "styled-components/native";
-import { useState, useRef } from "react";
-import { TouchableOpacity, FlatList } from "react-native";
-import { COLORS } from "../../constants";
-import { useNavigation } from "expo-router";
+import * as React from 'react';
+import styled from 'styled-components/native';
+import { useState, useRef } from 'react';
+import { TouchableOpacity, FlatList } from 'react-native';
+import { COLORS, icons } from '../../constants';
+import { useNavigation } from 'expo-router';
 
 const Age = () => {
   const navigation = useNavigation();
@@ -12,14 +12,10 @@ const Age = () => {
 
   const ageArray = Array.from({ length: 101 }, (_, index) => index);
 
-  const handleScroll = (event) => {
+  const handleScrollEnd = (event) => {
     const offsetX = event.nativeEvent.contentOffset.x;
-    const newIndex = Math.round(offsetX / 50); // 수정된 부분
+    const newIndex = Math.round(offsetX / 68);
     setSelectedAge(ageArray[newIndex]);
-  };
-
-  const scrollToAge = (age) => {
-    flatListRef.current?.scrollToOffset({ offset: age * 50, animated: true });
   };
 
   return (
@@ -29,29 +25,36 @@ const Age = () => {
           <HowOldAreText>How Old Are You?</HowOldAreText>
         </HowOldAreYouContainer>
         <AgeText>{selectedAge}</AgeText>
-        <AgeContainer>
-          <FlatList
-            horizontal
-            ref={flatListRef} // 수정된 부분
-            data={ageArray}
-            keyExtractor={(item) => item.toString()}
-            showsHorizontalScrollIndicator={false}
-            onScroll={handleScroll}
-            snapToInterval={50}
-            decelerationRate="fast"
-            contentContainerStyle={{ paddingHorizontal: 100 }}
-            renderItem={({ item }) => (
-              <AgeItem>
-                <StyledAgeText isSelected={item === selectedAge}>
-                  {item}
-                </StyledAgeText>
-              </AgeItem>
-            )}
-          />
-        </AgeContainer>
-        <ContinueButton onPress={() => navigation.navigate("weight")}>
-          <ContinueText>Continue</ContinueText>
-        </ContinueButton>
+        <ArrowIconContainer>
+          <ArrowIcon source={icons.arrow_up} />
+        </ArrowIconContainer>
+          <AgeContainer>
+            <FlatList
+              horizontal
+              ref={flatListRef}
+              data={ageArray}
+              keyExtractor={(item) => item.toString()}
+              showsHorizontalScrollIndicator={false}
+              onScroll={handleScrollEnd}
+              snapToInterval={25}
+              snapToAlignment="center"
+              decelerationRate="normal"
+              scrollEnabled={true}
+              contentContainerStyle={{ paddingHorizontal: 160 }}
+              renderItem={({ item }) => (
+                <AgeItem>
+                  <StyledAgeText isSelected={item === selectedAge}>
+                    {item}
+                  </StyledAgeText>
+                </AgeItem>
+              )}
+            />
+          </AgeContainer>
+        <ButtonContainer>
+          <ContinueButton onPress={() => navigation.navigate('weight')}>
+            <ContinueText>Continue</ContinueText>
+          </ContinueButton>
+        </ButtonContainer>
       </FrameContainer>
     </BaseContainer>
   );
@@ -59,8 +62,29 @@ const Age = () => {
 
 export default Age;
 
+const ButtonContainer = styled.View`
+  padding: 30%;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ArrowIconContainer = styled.View`
+  justify-content: center;
+  align-items: center;
+  border-radius: 100px;
+`;
+
+const ArrowIcon = styled.Image`
+  width: 46px;
+  height: 32px;
+`;
+
 const AgeContainer = styled.View`
+  background-color: ${COLORS.soft_blue};
   flex-direction: row;
+  width: 100%;
+  height: 150px;
+  align-items: center;
 `;
 
 const BaseContainer = styled.View`
@@ -72,9 +96,9 @@ const BaseContainer = styled.View`
 `;
 
 const FrameContainer = styled.View`
-  height: 680px;
   gap: 38px;
   align-items: center;
+  flex: 1;
 `;
 
 const HowOldAreYouContainer = styled.View`
@@ -91,7 +115,7 @@ const HowOldAreText = styled.Text`
   font-family: Poppins-Bold;
   font-weight: 700;
   text-transform: capitalize;
-  font-size: 25px;
+  font-size: 30px;
   text-align: left;
 `;
 
@@ -104,18 +128,18 @@ const AgeText = styled.Text`
 `;
 
 const AgeItem = styled.View`
-  width: 50px;
-  height: 50px;
+  width: 68px;
   justify-content: center;
   align-items: center;
 `;
 
 const StyledAgeText = styled.Text`
-  font-size: ${(props) => (props.isSelected ? "35px" : "25px")};
-  opacity: ${(props) => (props.isSelected ? "1" : "0.5")};
+  font-size: ${(props) => (props.isSelected ? '45px' : '30px')};
+  opacity: ${(props) => (props.isSelected ? '1' : '0.5')};
   color: ${COLORS.dark_indigo};
   font-family: Poppins-Bold;
   font-weight: 700;
+  justify-content: center;
 `;
 
 const ContinueButton = styled(TouchableOpacity)`
@@ -123,7 +147,7 @@ const ContinueButton = styled(TouchableOpacity)`
   padding: 10px 36px;
   border-radius: 100px;
   background-color: ${COLORS.dark_indigo};
-  border-width: 1px;
+  border-width: 3px;
   border-color: ${COLORS.white};
   justify-content: center;
   align-items: center;
