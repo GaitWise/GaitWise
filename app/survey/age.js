@@ -2,7 +2,7 @@ import * as React from "react";
 import styled from "styled-components/native";
 import { useState, useRef } from "react";
 import { TouchableOpacity, FlatList } from "react-native";
-import { COLORS } from "../../constants";
+import { COLORS } from "@/constants";
 import { useNavigation } from "expo-router";
 
 const Age = () => {
