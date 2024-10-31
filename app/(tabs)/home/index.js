@@ -4,6 +4,8 @@ import Iconbox from '@/components/home/Box';
 import styled from 'styled-components/native';
 import { Banner } from '@/components';
 import { ScrollView } from 'react-native';
+import { COLORS } from '../../../constants';
+
 
 const stepsData = [
   { date: '2024년 10월 22일', steps: '2000걸음/5min' },
@@ -20,14 +22,46 @@ const stepsData = [
 ];
 
 const iconData = [
-  { text: '予約1', innerImageSource: icons.female, backgroundColor: '#ff6347' },
-  { text: '予約2', innerImageSource: icons.male, backgroundColor: '#87ceeb' },
-  { text: '予約3', innerImageSource: icons.male, backgroundColor: '#32cd32' },
-  { text: '予約4', innerImageSource: icons.female, backgroundColor: '#ff6347' },
-  { text: '予約5', innerImageSource: icons.male, backgroundColor: '#87ceeb' },
-  { text: '予約6', innerImageSource: icons.male, backgroundColor: '#32cd32' },
-  { text: '予約6', innerImageSource: icons.male, backgroundColor: '#32cd32' },
-  { text: '予約6', innerImageSource: icons.male, backgroundColor: '#32cd32' },
+  {
+    text: '予約1',
+    innerImageSource: icons.female,
+    backgroundColor: COLORS.tomato,
+  },
+  {
+    text: '予約2',
+    innerImageSource: icons.male,
+    backgroundColor: COLORS.sky_blue,
+  },
+  {
+    text: '予約3',
+    innerImageSource: icons.male,
+    backgroundColor: COLORS.lime_green,
+  },
+  {
+    text: '予約4',
+    innerImageSource: icons.female,
+    backgroundColor: COLORS.tomato,
+  },
+  {
+    text: '予約5',
+    innerImageSource: icons.male,
+    backgroundColor: COLORS.sky_blue,
+  },
+  {
+    text: '予約6',
+    innerImageSource: icons.male,
+    backgroundColor: COLORS.tomato,
+  },
+  {
+    text: '予約6',
+    innerImageSource: icons.male,
+    backgroundColor: COLORS.sky_blue,
+  },
+  {
+    text: '予約6',
+    innerImageSource: icons.male,
+    backgroundColor: COLORS.lime_green,
+  },
 ];
 
 const HomePage = () => {
@@ -98,14 +132,14 @@ const HomePage = () => {
 const HomePageWrapper = styled.View`
   flex: 1;
   width: 100%;
-  background-color: #fff;
+  background-color: ${COLORS.white};
 `;
 
 const Content = styled.View`
   padding: 0 24px;
   flex: 1;
   width: 100%;
-  background-color: #fff;
+  background-color: ${COLORS.white};
   gap: 16px;
 `;
 
@@ -116,6 +150,7 @@ const TopSection = styled.View`
 
 const BannerWrapper = styled.View`
   align-items: center;
+  width: 100%;
 `;
 
 const MiddleContainer = styled.View`
@@ -146,7 +181,7 @@ const CardShadowBox = styled.View`
   shadow-radius: 2px;
   shadow-offset: 3px 3px;
   shadow-color: rgba(0, 0, 0, 0.05);
-  background-color: #fff;
+  background-color: ${COLORS.white};
   border-radius: 8px;
   align-self: stretch;
 `;
@@ -170,7 +205,7 @@ const CardTitle = styled.Text`
   font-family: Inter-Bold;
   font-size: 14px;
   line-height: 21px;
-  color: #27187e;
+  color: ${COLORS.dark_indigo};
   text-align: center;
 `;
 
@@ -189,7 +224,7 @@ const StepsText = styled.Text`
   font-family: Inter-Regular;
   font-size: 12px;
   line-height: 18px;
-  color: #6b7280;
+  color: ${COLORS.slate_gray};
 `;
 
 const TitleRow = styled.View`
@@ -201,7 +236,7 @@ const TitleRow = styled.View`
 const TitleText = styled.Text`
   font-size: 16px;
   line-height: 24px;
-  color: #1c2a3a;
+  color: ${COLORS.deep_slate_blue};
   font-family: Inter-Bold;
   font-weight: 700;
 `;
@@ -209,7 +244,7 @@ const TitleText = styled.Text`
 const SeeAllText = styled.Text`
   font-size: 14px;
   line-height: 21px;
-  color: #6b7280;
+  color: ${COLORS.slate_gray};
   font-family: Inter-Medium;
   font-weight: 500;
 `;

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Image, View } from 'react-native';
+import { Dimensions, Image, View } from 'react-native';
 import styled from 'styled-components/native';
 import { Carousel } from '@material-tailwind/react';
+import { COLORS } from '../../constants';
+import { Link } from 'expo-router';
 
 export default function Banner() {
   const [bannerList, setBannerList] = useState([
@@ -36,24 +38,38 @@ export default function Banner() {
       month: '10',
       day: '17',
       hour: '16',
-      url: null, // URLがない場合
+      url: null, // URL가 없는 경우
     },
   ]);
 
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [adjustedWidth, setAdjustedWidth] = useState(Dimensions.get('window').width - 48);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
 
+    const handleResize = () => {
+      setAdjustedWidth(Dimensions.get('window').width - 48);
+    };
+
+    // Add event listener for dimension change
+    Dimensions.addEventListener('change', handleResize);
+
     return () => {
       clearInterval(timer);
+      Dimensions.removeEventListener('change', handleResize); // Clean up listener
     };
   }, []);
 
   return (
-    <StyledCarousel autoplay={true} loop={true}>
+    <StyledCarousel
+      autoplay={true}
+      loop={true}
+      autoplayDelay={3000}
+      interval={5000}
+    >
       {bannerList.map((content, i) => {
         const formatTime =
           content.year +
@@ -80,28 +96,30 @@ export default function Banner() {
           displayText = 'For Sale';
         }
 
-        const isDisabled = !content.url; // URLがない場合に無効とする
+        const isDisabled = !content.url; // URL가 없는 경우에 무효화
 
         return (
           <View key={i}>
             {!isDisabled ? (
-              <a href={content.url} target="_blank">
-                <View>
+              <Link href={content.url} target="_blank">
+                <ImageContainer>
                   <Image
                     source={content.data}
-                    resizeMode="center" // 배너 안 사진 크기 조절 하기 머 옵션값넣고 뭐 넣고 해서 조절
+                    style={{ width: adjustedWidth, height: '100%' }}
+                    resizeMode="cover"
                   />
-                </View>
+                </ImageContainer>
                 <BannerText>{displayText}</BannerText>
-              </a>
+              </Link>
             ) : (
-              <View>
+              <ImageContainer>
                 <Image
                   source={content.data}
-                  resizeMode="center" // 배너 안 사진 크기 조절 하기 머 옵션값넣고 뭐 넣고 해서 조절
+                  style={{ width: adjustedWidth, height: '100%' }}
+                  resizeMode="cover"
                 />
                 <BannerText>{displayText}</BannerText>
-              </View>
+              </ImageContainer>
             )}
           </View>
         );
@@ -111,6 +129,16 @@ export default function Banner() {
 }
 
 // Styled components
+
+const ImageContainer = styled.View`
+  width: 100%;
+  height: 11rem;
+  align-items: center;
+  justify-content: center;
+  background-color: ${COLORS.white};
+  overflow: hidden;
+`;
+
 const StyledCarousel = styled(Carousel)`
   display: flex;
   width: 100%;
@@ -125,5 +153,5 @@ const BannerText = styled.Text`
   bottom: 10px;
   font-size: 2rem;
   font-weight: bold;
-  color: white;
+  color: ${COLORS.white};
 `;
