@@ -89,7 +89,7 @@ export default function Banner() {
                 <View>
                   <Image
                     source={content.data}
-                    resizeMode="center"
+                    resizeMode="center" // 배너 안 사진 크기 조절 하기 머 옵션값넣고 뭐 넣고 해서 조절
                   />
                 </View>
                 <BannerText>{displayText}</BannerText>
@@ -98,7 +98,7 @@ export default function Banner() {
               <View>
                 <Image
                   source={content.data}
-                  resizeMode="center"
+                  resizeMode="center" // 배너 안 사진 크기 조절 하기 머 옵션값넣고 뭐 넣고 해서 조절
                 />
                 <BannerText>{displayText}</BannerText>
               </View>
