@@ -5,7 +5,7 @@ import { TouchableOpacity } from "react-native";
 import { COLORS, icons } from "../../constants";
 import { useNavigation } from "expo-router";
 
-const AGender = () => {
+const Gender = () => {
   const navigation = useNavigation();
   const [selectedMale, setSelectedMale] = useState(true);
   const [selectedFemale, setSelectedFemale] = useState(true);
@@ -56,7 +56,7 @@ const AGender = () => {
   );
 };
 
-export default AGender;
+export default Gender;
 
 const GenderContainer = styled.Pressable`
   flex: 1;

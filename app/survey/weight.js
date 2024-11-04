@@ -11,7 +11,7 @@ const Weight = () => {
   const [selectedUnit, setSelectedUnit] = useState('KG'); // 기본 단위로 kG 설정
   const flatListRef = useRef(null);
 
-  const weightArray = Array.from({ length: 201 }, (_, index) => index);
+  const weightArray = Array.from({ length: 201 }, (_, index) => index); 
 
   const handleScrollEnd = (event) => {
     const offsetX = event.nativeEvent.contentOffset.x;

@@ -1,6 +1,6 @@
-import styled from 'styled-components/native';
-import { icons } from '@/constants';
-import { Stack, useRouter } from 'expo-router';
+import styled from "styled-components/native";
+import { icons } from "@/constants";
+import { Stack, useRouter } from "expo-router";
 
 export function SurveyLayout() {
   const router = useRouter();
@@ -15,7 +15,7 @@ export function SurveyLayout() {
   return (
     <Stack
       screenOptions={{
-        title: 'Back',
+        title: "Back",
         headerTitleStyle: { fontSize: 20 },
         headerLeft: renderBackButton,
       }}
@@ -36,3 +36,4 @@ const BackIcon = styled.Image`
   width: 24px;
   height: 16px;
 `;
+

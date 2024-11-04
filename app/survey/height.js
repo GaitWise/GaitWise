@@ -3,10 +3,9 @@ import styled from 'styled-components/native';
 import { useState, useRef } from 'react';
 import { TouchableOpacity, FlatList } from 'react-native';
 import { COLORS } from '../../constants';
-import { useNavigation } from 'expo-router';
+import { router } from 'expo-router';
 
 const Height = () => {
-  const navigation = useNavigation();
   const [selectedHeight, setSelectedHeight] = useState(50);
   const flatListRef = useRef(null);
 
@@ -34,7 +33,7 @@ const Height = () => {
         <QuestionText>{selectedHeight}cm</QuestionText>
         <HeightContainer>
           <FlatList
-            ref={scrollToHeight}
+            ref={flatListRef}
             data={heightArray}
             keyExtractor={(item) => item.toString()}
             showsVerticalScrollIndicator={false}
@@ -51,7 +50,7 @@ const Height = () => {
             )}
           />
         </HeightContainer>
-        <ContinueButton onPress={() => navigation.navigate('surveyPage')}>
+        <ContinueButton onPress={() => router.push('/project_select')}>
           <ContinueText>Continue</ContinueText>
         </ContinueButton>
       </FrameContainer>
@@ -70,7 +69,7 @@ const HeightContainer = styled.View`
   height: 371px;
   width: 115px;
   border-radius: 10px;
-`
+`;
 
 const BaseContainer = styled.View`
   background-color: ${COLORS.white};
