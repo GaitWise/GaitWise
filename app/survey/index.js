@@ -1,11 +1,11 @@
 import { Text, View } from "react-native";
 
-const Calendar = () => {
+const Home = () => {
   return (
     <View>
-      <Text>Calendar</Text>
+      <Text>Home1</Text>
     </View>
   )
 }
 
-export default Calendar
+export default Home
