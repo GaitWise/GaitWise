@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components/native';
 import { useState, useRef } from 'react';
 import { TouchableOpacity, FlatList } from 'react-native';
-import { COLORS } from '../../constants';
+import { COLORS } from '@/constants';
 import { router } from 'expo-router';
 
 const Height = () => {
@@ -17,20 +17,15 @@ const Height = () => {
     setSelectedHeight(heightArray[newIndex]);
   };
 
-  const scrollToHeight = (height) => {
-    flatListRef.current?.scrollToOffset({
-      offset: (height - 50) * 50,
-      animated: true,
-    });
-  };
-
   return (
     <BaseContainer>
       <FrameContainer>
         <QuestionContainer>
           <HeightText>What Is Your Height?</HeightText>
         </QuestionContainer>
+        {/* 선택된 키 나오는 곳 */}
         <QuestionText>{selectedHeight}cm</QuestionText>
+        {/* 키 스크롤 하는 곳 */}
         <HeightContainer>
           <FlatList
             ref={flatListRef}
@@ -50,6 +45,7 @@ const Height = () => {
             )}
           />
         </HeightContainer>
+        {/* continue 버튼 */}
         <ContinueButton onPress={() => router.push('/project_select')}>
           <ContinueText>Continue</ContinueText>
         </ContinueButton>

@@ -16,10 +16,10 @@ const Profile = () => {
     lastName: '',
     job: '',
     email: '',
-    pw: '',
-    pw2: '',
+    passwd: '',
+    Cpasswd: '',
   });
-  const { firstName, lastName, job, email, pw, pw2 } = inputs;
+  const { firstName, lastName, job, email, passwd, Cpasswd } = inputs;
 
   const handleInputChange = (name, value) => {
     setInputs({
@@ -29,11 +29,11 @@ const Profile = () => {
   };
 
   const isFormValid = () => {
-    return firstName && lastName && job && email && pw && pw2 && pw === pw2;
+    return firstName && lastName && job && email && passwd && Cpasswd && passwd === Cpasswd;
   };
 
   const navigateToHome = (projectName) => {
-    navigation.navigate('home');
+    router.push('/home');
     console.log(`${projectName} 프로젝트로 이동합니다.`);
   };
 
@@ -46,6 +46,7 @@ const Profile = () => {
         <ProfileFrame>
           <ProfileImage source={IMAGES.profile} />
         </ProfileFrame>
+        {/* 프로필 내용 입력*/}
         <Form>
           <InputField>
             <Label>First Name</Label>
@@ -86,9 +87,9 @@ const Profile = () => {
           <InputField>
             <Label>Password</Label>
             <Input
-              name="pw"
-              value={pw}
-              onChangeText={(text) => handleInputChange('pw', text)}
+              name="passwd"
+              value={passwd}
+              onChangeText={(text) => handleInputChange('passwd', text)}
               placeholder="Enter Your Password"
               secureTextEntry
             />
@@ -96,15 +97,15 @@ const Profile = () => {
           <InputField>
             <Label>Please Enter It Again</Label>
             <Input
-              name="pw2"
-              value={pw2}
-              onChangeText={(text) => handleInputChange('pw2', text)}
+              name="Cpasswd"
+              value={Cpasswd}
+              onChangeText={(text) => handleInputChange('Cpasswd', text)}
               placeholder="Please Enter It Again"
               secureTextEntry
             />
           </InputField>
         </Form>
-
+        {/* Start 버튼 */}
         <StartButton
           onPress={() => {
             if (isFormValid()) {

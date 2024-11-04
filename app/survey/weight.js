@@ -2,11 +2,10 @@ import * as React from 'react';
 import styled from 'styled-components/native';
 import { useState, useRef } from 'react';
 import { TouchableOpacity, FlatList, View, Pressable } from 'react-native';
-import { COLORS, icons } from '../../constants';
-import { useNavigation } from 'expo-router';
+import { COLORS, icons } from '@/constants';
+import { router } from 'expo-router';
 
 const Weight = () => {
-  const navigation = useNavigation();
   const [selectedWeight, setSelectedWeight] = useState(0);
   const [selectedUnit, setSelectedUnit] = useState('KG'); // 기본 단위로 kG 설정
   const flatListRef = useRef(null);
@@ -28,6 +27,7 @@ const Weight = () => {
       <QContainer>
         <QText>What Is Your Weight?</QText>
       </QContainer>
+      {/* KG, LB 바꾸는 곳 */}
       <KgContainer>
         <TouchableOpacity onPress={() => toggleUnit('KG')}>
           <Text isSelected={selectedUnit === 'KG'}>KG</Text>
@@ -37,6 +37,7 @@ const Weight = () => {
           <Text isSelected={selectedUnit === 'LB'}>LB</Text>
         </TouchableOpacity>
       </KgContainer>
+      {/* 몸무게 스크롤 */}
       <WeightContainer>
         <FlatList
           horizontal
@@ -60,12 +61,14 @@ const Weight = () => {
           />
       </WeightContainer>
       <LogoImage source={icons.arrow_up} />
+      {/* 몸무게 보이는 곳 */}
       <ResultContainer>
         <WeightText>
           {selectedWeight} {selectedUnit} {/* 선택한 단위 표시 */}
         </WeightText>
       </ResultContainer>
-      <ContinueButton onPress={() => navigation.navigate('height')}>
+      {/* continue 버튼 */}
+      <ContinueButton onPress={() => router.push('/survey/height')}>
         <ContinueButtonText>Continue</ContinueButtonText>
       </ContinueButton>
     </BaseFrameContainer>

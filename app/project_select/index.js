@@ -1,13 +1,19 @@
 import * as React from 'react';
 import styled from 'styled-components/native';
-import { ScrollView, Modal, TextInput, Button, StatusBar } from 'react-native';
-import { COLORS } from '../../constants';
-import { useNavigation, router } from 'expo-router';
-import { TouchableOpacity } from 'react-native';
+import {
+  Text,
+  ScrollView,
+  Modal,
+  TextInput,
+  Button,
+  StatusBar,
+  TouchableOpacity,
+} from 'react-native';
+import { COLORS } from '@/constants';
+import { router } from 'expo-router';
 
 const ProjectSelect = () => {
-  const navigation = useNavigation();
-  const [modalVisible, setModalVisible] = React.useState(false);
+  const [modalVisible, setModalVisible] = React.useState(true);
   const [codeInput, setCodeInput] = React.useState('');
   const [stepsData, setStepsData] = React.useState([
     { projectName: '프로젝트A', organization: '조직X' },
@@ -35,6 +41,7 @@ const ProjectSelect = () => {
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
       <StatusBarContainer>
         <MainText>Join Your Project</MainText>
+        {/* 프로젝트 초대코드 입력 */}
         <AddButton onPress={() => setModalVisible(true)}>
           <PlusText>+</PlusText>
         </AddButton>
@@ -43,11 +50,16 @@ const ProjectSelect = () => {
       <Modal
         visible={modalVisible}
         transparent={true}
-        animationType="slide"
+        animationType="none"
         onRequestClose={() => setModalVisible(false)}
       >
         <ModalContainer>
           <ModalContent>
+            <XButtonWrapper>
+              <XButton onPress={() => setModalVisible(false)}>
+                <XText>x</XText>
+              </XButton>
+            </XButtonWrapper>
             <ModalTitle>참여 코드 입력</ModalTitle>
             <TextInput
               placeholder="참여 코드를 입력하세요"
@@ -68,12 +80,9 @@ const ProjectSelect = () => {
           </ModalContent>
         </ModalContainer>
       </Modal>
-
+      {/* 프로젝트 나열 */}
       <Content>
         <ScrollViewContainer>
-          <TitleRow>
-            <TitleText>{`LIST`}</TitleText>
-          </TitleRow>
           <ScrollView
             contentContainerStyle={{ paddingBottom: 16 }}
             horizontal={false}
@@ -94,20 +103,26 @@ const ProjectSelect = () => {
           </ScrollView>
         </ScrollViewContainer>
       </Content>
-      <ContinueContain>
-        <ContinueButton onPress={() => router.push('/home')}>
-          <ContinueText>Continue</ContinueText>
-        </ContinueButton>
-      </ContinueContain>
     </HomePageWrapper>
   );
 };
 
+export default ProjectSelect;
+
 // Styled components
 
-const ContinueContain = styled.View`
+const XButtonWrapper = styled.View`
+  width: 100%;
+  background-color: ${COLORS.white};
+  align-items: flex-end;
+`;
+
+const XButton = styled.TouchableOpacity`
+  width: 24px;
+  height: 24px;
+  flex-direction: row;
   align-items: center;
-  margin: 10px;
+  color: ${COLORS.white};
 `;
 
 const HomePageWrapper = styled.View`
@@ -133,6 +148,10 @@ const MainText = styled.Text`
 
 const AddButton = styled.Pressable`
   padding: 8px;
+`;
+
+const XText = styled.Text`
+  font-size: 40px;
 `;
 
 const PlusText = styled.Text`
@@ -245,5 +264,3 @@ const ContinueText = styled.Text`
   text-transform: capitalize;
   text-align: center;
 `;
-
-export default ProjectSelect;

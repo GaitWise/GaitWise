@@ -2,11 +2,11 @@ import * as React from 'react';
 import styled from 'styled-components/native';
 import { useState, useRef } from 'react';
 import { TouchableOpacity, FlatList } from 'react-native';
-import { COLORS, icons } from '../../constants';
-import { useNavigation } from 'expo-router';
+import { COLORS, icons } from '@/constants';
+import { useRouter } from 'expo-router';
 
 const Age = () => {
-  const navigation = useNavigation();
+  const router = useRouter();
   const [selectedAge, setSelectedAge] = useState(0);
   const flatListRef = useRef(null);
 
@@ -24,34 +24,37 @@ const Age = () => {
         <HowOldAreYouContainer>
           <HowOldAreText>How Old Are You?</HowOldAreText>
         </HowOldAreYouContainer>
+        {/* 선택된 나이 보이는 곳 */}
         <AgeText>{selectedAge}</AgeText>
         <ArrowIconContainer>
           <ArrowIcon source={icons.arrow_up} />
         </ArrowIconContainer>
-          <AgeContainer>
-            <FlatList
-              horizontal
-              ref={flatListRef}
-              data={ageArray}
-              keyExtractor={(item) => item.toString()}
-              showsHorizontalScrollIndicator={false}
-              onScroll={handleScrollEnd}
-              snapToInterval={25}
-              snapToAlignment="center"
-              decelerationRate="normal"
-              scrollEnabled={true}
-              contentContainerStyle={{ paddingHorizontal: 160 }}
-              renderItem={({ item }) => (
-                <AgeItem>
-                  <StyledAgeText isSelected={item === selectedAge}>
-                    {item}
-                  </StyledAgeText>
-                </AgeItem>
-              )}
-            />
-          </AgeContainer>
+        {/* 나이 스크롤해서 선택할 수 있는 곳 */}
+        <AgeContainer>
+          <FlatList
+            horizontal
+            ref={flatListRef}
+            data={ageArray}
+            keyExtractor={(item) => item.toString()}
+            showsHorizontalScrollIndicator={false}
+            onScroll={handleScrollEnd}
+            snapToInterval={25}
+            snapToAlignment="center"
+            decelerationRate="normal"
+            scrollEnabled={true}
+            contentContainerStyle={{ paddingHorizontal: 160 }}
+            renderItem={({ item }) => (
+              <AgeItem>
+                <StyledAgeText isSelected={item === selectedAge}>
+                  {item}
+                </StyledAgeText>
+              </AgeItem>
+            )}
+          />
+        </AgeContainer>
+        {/* continue 버튼 */}
         <ButtonContainer>
-          <ContinueButton onPress={() => navigation.navigate('weight')}>
+          <ContinueButton onPress={() => router.push('/survey/weight')}>
             <ContinueText>Continue</ContinueText>
           </ContinueButton>
         </ButtonContainer>

@@ -3,12 +3,11 @@ import * as React from 'react';
 import { useState } from 'react';
 import styled from 'styled-components/native';
 import { Surveytemplate } from '@/components';
-import { icons, IMAGES } from '@/constants';
-import { useNavigation } from 'expo-router';
+import { IMAGES, COLORS } from '@/constants';
+import { router } from 'expo-router';
 
 export const SurveyPage = () => {
   const [currentPageId, setCurrentPageId] = useState('grade');
-  const navigation = useNavigation();
 
   const currentPageData = pagesData.find((page) => page.id === currentPageId);
 
@@ -17,7 +16,7 @@ export const SurveyPage = () => {
       setCurrentPageId(currentPageData.nextPage);
     } else {
       // 마지막 페이지일 때 홈으로 이동
-      navigation.navigate('home');
+      router.push('/home');
     }
   };
 
@@ -39,7 +38,7 @@ export default SurveyPage;
 // styled-components
 const BaseFrameContainer = styled.View`
   flex: 1;
-  background-color: #fff;
+  background-color: ${COLORS.white};
 `;
 
 const pagesData = [
