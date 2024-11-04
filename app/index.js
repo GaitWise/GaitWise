@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Text, View } from "react-native-web";
+import { Text, View } from "react-native";
 import { useRouter } from "expo-router";
 
 const Splash = () => {
@@ -7,7 +7,7 @@ const Splash = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.replace("/survey"); 
+      router.replace("/profile"); 
     }, 3000);
 
     return () => clearTimeout(timer); 
