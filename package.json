@@ -11,11 +11,16 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+<<<<<<< HEAD
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
     "@react-navigation/stack": "^6.4.1",
     "crypto-js": "^4.2.0",
+=======
+    "@material-tailwind/react": "^2.1.10",
+    "@types/react": "~18.2.79",
+>>>>>>> b28a69765aa40bad0674e71cf03746d4e29d755c
     "expo": "^51.0.0",
     "expo-constants": "~16.0.1",
     "expo-file-system": "~17.0.1",
@@ -40,7 +45,8 @@
     "react-native-svg": "^15.7.1",
     "react-native-swiper": "^1.6.0",
     "react-native-web": "~0.19.6",
-    "styled-components": "^6.1.13"
+    "styled-components": "^6.1.13",
+    "typescript": "~5.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
