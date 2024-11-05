@@ -92,7 +92,6 @@ const QuestionContainer = styled.View`
 
 const HeightText = styled.Text`
   color: ${COLORS.dark_indigo};
-  font-family: Poppins-Bold;
   font-weight: 700;
   text-transform: capitalize;
   font-size: 25px;
@@ -102,7 +101,6 @@ const HeightText = styled.Text`
 const QuestionText = styled.Text`
   font-size: 64px;
   color: ${COLORS.dark_indigo};
-  font-family: Poppins-Bold;
   font-weight: 700;
   text-align: center;
 `;
@@ -117,7 +115,6 @@ const StyledHeightText = styled.Text`
   font-size: ${(props) => (props.isSelected ? '35px' : '25px')};
   opacity: ${(props) => (props.isSelected ? '1' : '0.5')};
   color: ${COLORS.dark_indigo};
-  font-family: Poppins-Bold;
   font-weight: 700;
 `;
 
@@ -135,7 +132,6 @@ const ContinueButton = styled(TouchableOpacity)`
 const ContinueText = styled.Text`
   font-size: 18px;
   color: ${COLORS.white};
-  font-family: Poppins-Bold;
   font-weight: 700;
   text-transform: capitalize;
   text-align: center;

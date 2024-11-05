@@ -142,7 +142,6 @@ const StatusBarContainer = styled.View`
 const MainText = styled.Text`
   font-size: 25px;
   color: ${COLORS.dark_indigo};
-  font-family: 'Poppins-Bold';
   font-weight: bold;
 `;
 
@@ -241,7 +240,6 @@ const TitleRow = styled.View`
 const TitleText = styled.Text`
   font-size: 20px;
   color: ${COLORS.black};
-  font-family: 'Inter-Bold';
   font-weight: bold;
 `;
 
@@ -259,7 +257,6 @@ const ContinueButton = styled(TouchableOpacity)`
 const ContinueText = styled.Text`
   font-size: 18px;
   color: ${COLORS.white};
-  font-family: Poppins-Bold;
   font-weight: 700;
   text-transform: capitalize;
   text-align: center;

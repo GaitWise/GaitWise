@@ -80,7 +80,6 @@ export default Weight;
 const WeightText = styled.Text`
   font-size: 64px;
   color: ${COLORS.dark_indigo};
-  font-family: Poppins-Bold;
   font-weight: 700;
   text-align: center;
 `;
@@ -89,7 +88,6 @@ const StyledWeightText = styled.Text`
   font-size: ${(props) => (props.isSelected ? '45px' : '30px')};
   opacity: ${(props) => (props.isSelected ? '1' : '0.5')};
   color: ${COLORS.dark_indigo};
-  font-family: Poppins-Bold;
   font-weight: 700;
   justify-content: center;
 `;
@@ -145,7 +143,6 @@ const KgContainer = styled.View`
 
 const Text = styled.Text`
   width: 144px;
-  font-family: 'Poppins-Bold';
   font-weight: 700;
   font-size: 20px;
   text-transform: capitalize;

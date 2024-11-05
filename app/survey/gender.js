@@ -91,7 +91,6 @@ const GenderContent = styled.View`
 const TitleText = styled.Text`
   font-size: 25px;
   color: ${COLORS.dark_indigo};
-  font-family: 'Poppins-Bold';
   font-weight: bold;
   text-align: left;
 `;
@@ -133,7 +132,6 @@ const GenderIcon = styled.Image`
 
 const GenderLabel = styled.Text`
   font-size: 20px;
-  font-family: 'Poppins-Bold';
   font-weight: 700;
   color: ${COLORS.black};
   margin-top: 10px;
@@ -156,5 +154,4 @@ const ContinueButton = styled(TouchableOpacity)`
 const ContinueText = styled.Text`
   font-size: 18px;
   color: ${COLORS.white};
-  font-family: 'Poppins-Bold';
 `;

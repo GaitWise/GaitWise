@@ -144,7 +144,6 @@ const Header = styled.View`
 const HeaderText = styled.Text`
   font-size: ${width * 0.06}px;
   color: ${COLORS.dark_indigo};
-  font-family: 'Poppins-Bold';
   font-weight: bold;
 `;
 
@@ -176,7 +175,6 @@ const InputField = styled.View`
 const Label = styled.Text`
   font-size: ${width * 0.045}px;
   color: ${COLORS.black};
-  font-family: 'LeagueSpartan-Medium';
   font-weight: bold;
 `;
 
@@ -186,7 +184,6 @@ const Input = styled(TextInput)`
   border-radius: ${width * 0.04}px;
   background-color: ${COLORS.white};
   color: ${COLORS.soft_blue};
-  font-family: 'LeagueSpartan-Medium';
   font-weight: 500;
   font-size: ${width * 0.045}px;
 `;
@@ -206,7 +203,6 @@ const StartButton = styled(TouchableOpacity)`
 const ButtonText = styled.Text`
   color: ${COLORS.white};
   font-size: ${width * 0.045}px;
-  font-family: 'Poppins-Bold';
   font-weight: bold;
   text-align: center;
 `;
