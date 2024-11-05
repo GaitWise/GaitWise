@@ -6,6 +6,8 @@ import check from "../assets/icons/check.svg";
 import checked from "../assets/icons/checked.svg";
 import pen from "../assets/icons/pen.svg";
 import profile from "../assets/icons/profile.svg"
+import notifcation from '../assets/icons/Notification.svg';
+import circle from '../assets/icons/circle.svg';
 import arrow_back from "../assets/icons/arrow_back.svg";
 import walking_line from "../assets/icons/walking_line.svg"
 import walking_people from "../assets/icons/walking_people.svg"
@@ -26,5 +28,7 @@ export default{
     walking_arrow_back,
     walking_connect,
     walking_line,
-    walking_people
+    walking_people,
+    notifcation,
+    circle
 };
