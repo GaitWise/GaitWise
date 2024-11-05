@@ -3,31 +3,29 @@ import { Pressable, TextInput } from 'react-native';
 import { useState } from 'react';
 import styled from 'styled-components/native';
 import { COLORS, icons } from '../../constants';
-//TODO:grade.js에서 pagesData를 가져오기 props사용해서 아래 삭제 필요함
-import { pagesData } from '../../app/survey/data';
 
-const Surveytemplate = () => {
-  const [pageIndex, setPageIndex] = useState(0); // 현재 페이지 인덱스 상태 관리
+const Surveytemplate = ({ currentPageData, onNextPage, onContinue }) => {
   const [selectedOption, setSelectedOption] = useState(null);
-  const [inputValue, setInputValue] = useState(''); // 입력값 상태 추가
-  //TODO: 아래 삭제 필요함
-  const currentPageData = pagesData[pageIndex]; // 현재 페이지 데이터 가져오기
+  const [inputValue, setInputValue] = useState('');
 
   const handleContinue = () => {
-    if (pageIndex < pagesData.length - 1) {
-      setPageIndex(pageIndex + 1); // 다음 페이지로 이동
-      setSelectedOption(null); // 선택 초기화
-      setInputValue(''); // 입력 초기화
-    } else {
-      // 마지막 페이지에서 다른 화면으로 이동
-      navigation.navigate('/home'); // 'NextScreen'은 이동할 화면의 이름
+    if (selectedOption !== null || inputValue.trim() !== '') {
+      onContinue(); // 부모 컴포넌트의 onContinue 호출
+      setSelectedOption(null);
+      setInputValue('');
     }
   };
 
   const optionsContainerHeight =
     currentPageData.options && currentPageData.options.length > 0
-      ? Math.max(150, currentPageData.options.length * 90) // 옵션이 있는 경우 높이 계산
-      : 392; // 기본 최소 높이
+      ? Math.max(150, currentPageData.options.length * 90)
+      : 392;
+
+  // Continue 버튼 색상 결정
+  const isContinueEnabled = selectedOption !== null || inputValue.trim() !== '';
+  const continueButtonColor = isContinueEnabled
+    ? COLORS.dark_indigo
+    : COLORS.continue_gray; // 선택되지 않았을 때 회색
 
   return (
     <BaseFrameContainer>
@@ -46,9 +44,7 @@ const Surveytemplate = () => {
               <CheckIcon
                 resizeMode="cover"
                 source={
-                  selectedOption === option.value
-                    ? icons.checked // 선택된 경우
-                    : icons.check // 선택되지 않은 경우
+                  selectedOption === option.value ? icons.checked : icons.check
                 }
               />
               <OptionText>{option.label}</OptionText>
@@ -60,16 +56,23 @@ const Surveytemplate = () => {
               placeholder="Type your answer here..."
               value={inputValue}
               onChangeText={setInputValue}
+              multiline={true} // 여러 줄 입력 허용
+              numberOfLines={4} // 기본적으로 4줄을 표시하도록 설정
             />
           </InputContainer>
         )}
       </OptionsContainer>
-      <ContinueButton onPress={handleContinue}>
+      <ContinueButton
+        onPress={handleContinue}
+        style={{ backgroundColor: continueButtonColor }}
+      >
         <ContinueText>Continue</ContinueText>
       </ContinueButton>
     </BaseFrameContainer>
   );
 };
+
+export default Surveytemplate;
 
 // styled-components
 const BaseFrameContainer = styled.View`
@@ -77,11 +80,11 @@ const BaseFrameContainer = styled.View`
   overflow: hidden;
   width: 100%;
   background-color: ${COLORS.white};
-  align-items: center; /* 수평 중앙 정렬 */
+  align-items: center;
 `;
 
 const TitleContainer = styled.View`
-  align-items: center; /* 수평 중앙 정렬 */
+  align-items: center;
   margin: 30px auto;
 `;
 
@@ -120,8 +123,8 @@ const OptionButton = styled(Pressable)`
   width: 323px;
   background-color: ${COLORS.white};
   flex-direction: row;
-  align-items: bottom;
-  justify-content: bottom;
+  align-items: center;
+  justify-content: center;
   opacity: ${({ isSelected }) => (isSelected ? 1 : 0.7)};
   margin-bottom: 25px;
 `;
@@ -146,7 +149,6 @@ const OptionText = styled.Text`
 
 const ContinueButton = styled(Pressable)`
   border-radius: 100px;
-  background-color: ${COLORS.dark_indigo};
   border: 1px solid ${COLORS.white};
   width: 179px;
   padding: 15px 36px;
@@ -167,17 +169,16 @@ const ContinueText = styled.Text`
 `;
 
 const InputContainer = styled.View`
-  width: 80%; /* 텍스트 입력 칸의 폭 */
-  margin-bottom: 20px; /* 옵션 컨테이너와 컨티뉴 버튼 간의 간격 */
+  width: 80%;
+  margin-bottom: 20px;
 `;
 
 const Input = styled(TextInput)`
+  font-size: 20px;
   border-radius: 15px;
   background-color: #f1f2f6;
   border-color: #27187e;
   height: 248px;
-  padding-horizontal: 20px;
+  padding: 20px;
   align-self: stretch;
 `;
-
-export default Surveytemplate;

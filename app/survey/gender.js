@@ -1,12 +1,11 @@
-import * as React from "react";
-import styled from "styled-components/native";
-import { useState } from "react";
-import { TouchableOpacity } from "react-native";
-import { COLORS, icons } from "../../constants";
-import { useNavigation } from "expo-router";
+import * as React from 'react';
+import styled from 'styled-components/native';
+import { useState } from 'react';
+import { TouchableOpacity } from 'react-native';
+import { COLORS, icons } from '@/constants';
+import { router } from 'expo-router';
 
-const AGender = () => {
-  const navigation = useNavigation();
+const Gender = () => {
   const [selectedMale, setSelectedMale] = useState(true);
   const [selectedFemale, setSelectedFemale] = useState(true);
 
@@ -43,12 +42,13 @@ const AGender = () => {
             <GenderLabel>Female</GenderLabel>
           </GenderButton>
         </GenderSelection>
+        {/* continue 버튼 */}
         <ContinueButton
           disabled={selectedMale && selectedFemale}
           selected={selectedMale || selectedFemale}
           bothSelected={selectedMale && selectedFemale}
-          onPress={() => navigation.navigate("age")}
-          >
+          onPress={() => router.push('/survey/age')}
+        >
           <ContinueText>Continue</ContinueText>
         </ContinueButton>
       </GenderContent>
@@ -56,7 +56,7 @@ const AGender = () => {
   );
 };
 
-export default AGender;
+export default Gender;
 
 const GenderContainer = styled.Pressable`
   flex: 1;
@@ -91,7 +91,7 @@ const GenderContent = styled.View`
 const TitleText = styled.Text`
   font-size: 25px;
   color: ${COLORS.dark_indigo};
-  font-family: "Poppins-Bold";
+  font-family: 'Poppins-Bold';
   font-weight: bold;
   text-align: left;
 `;
@@ -133,7 +133,7 @@ const GenderIcon = styled.Image`
 
 const GenderLabel = styled.Text`
   font-size: 20px;
-  font-family: "Poppins-Bold";
+  font-family: 'Poppins-Bold';
   font-weight: 700;
   color: ${COLORS.black};
   margin-top: 10px;
@@ -156,6 +156,5 @@ const ContinueButton = styled(TouchableOpacity)`
 const ContinueText = styled.Text`
   font-size: 18px;
   color: ${COLORS.white};
-  font-family: "Poppins-Bold";
+  font-family: 'Poppins-Bold';
 `;
-
