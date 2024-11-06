@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Dimensions, Image, View, Text } from 'react-native';
 import styled from 'styled-components/native';
-// import Carousel from 'react-native-snap-carousel';
+import Carousel from 'react-native-snap-carousel';
 import { COLORS } from '../../constants';
 import { Link } from 'expo-router';
 
@@ -18,7 +18,6 @@ export default function Banner() {
       month: '10',
       day: '15',
       hour: '12',
-      url: 'https://example.com/banner1',
     },
     {
       name: 'Banner 2',
@@ -29,7 +28,6 @@ export default function Banner() {
       month: '10',
       day: '16',
       hour: '14',
-      url: 'https://example.com/banner2',
     },
     {
       name: 'Banner 3',
@@ -71,7 +69,7 @@ export default function Banner() {
         .toString()
         .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     } else {
-      displayText = 'For Sale';
+      displayText = '준비중';
     }
 
     const isDisabled = !item.url;
@@ -102,24 +100,30 @@ export default function Banner() {
   };
 
   return (
-    <Carousel
-      data={bannerList}
-      renderItem={renderItem}
-      sliderWidth={screenWidth - 48}
-      itemWidth={screenWidth - 48}
-      autoplay={true}
-      loop={true}
-      autoplayDelay={3000}
-      autoplayInterval={5000}
-    />
+    <CarouselContainer>
+      <Carousel
+        data={bannerList}
+        renderItem={renderItem}
+        sliderWidth={screenWidth - 48}
+        itemWidth={screenWidth - 48}
+        autoplay={true}
+        loop={true}
+        autoplayDelay={3000}
+        autoplayInterval={5000}
+      />
+    </CarouselContainer>
   );
 }
 
 // Styled components
 
+const CarouselContainer = styled.View`
+  margin-top: 20px;
+`;
+
 const CarouselItem = styled.View`
   width: 100%;
-  height: 200px;
+  height: 150px;
   border-radius: 16px;
   overflow: hidden;
   background-color: ${COLORS.white};

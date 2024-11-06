@@ -1,22 +1,24 @@
 import React from 'react';
 import styled from 'styled-components/native';
+import { Pressable } from 'react-native';
 
-export default function Iconbox({
+const Iconbox = ({
   text = '기능면',
-  IconComponent,
+  innerSvgComponent: InnerSvgComponent,
   backgroundColor = '#93c19e',
-}) {
-  return (
-    <StyledPressable>
-      <ImageContainer backgroundColor={backgroundColor}>
-        <IconComponent width={35} height={31} /> 
-      </ImageContainer>
-      <StyledText>{text}</StyledText>
-    </StyledPressable>
-  );
-}
+}) => (
+  <StyledPressable>
+    <ImageContainer backgroundColor={backgroundColor}>
+      {InnerSvgComponent && <InnerSvgComponent width={35} height={35} />}
+    </ImageContainer>
+    <StyledText>{text}</StyledText>
+  </StyledPressable>
+);
 
-const StyledPressable = styled.Pressable`
+export default Iconbox;
+
+// Styled Components for Iconbox
+const StyledPressable = styled(Pressable)`
   gap: 4px;
   align-items: center;
   width: 23%;
@@ -30,12 +32,10 @@ const ImageContainer = styled.View`
   width: 62px;
   justify-content: center;
   border-radius: 8px;
-  gap: 10px;
   align-items: center;
 `;
 
 const StyledText = styled.Text`
-  line-height: 18px;
   font-size: 12px;
   color: #4b5563;
   font-weight: 700;

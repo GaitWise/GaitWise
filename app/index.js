@@ -8,7 +8,7 @@ const Splash = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       router.replace("/profile"); 
-    }, 1000);
+    }, 3000);
 
     return () => clearTimeout(timer); 
   }, []);
