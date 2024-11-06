@@ -1,64 +1,62 @@
 import * as React from 'react';
-import { icons } from '@/constants';
-import Iconbox from '@/components/home/Box';
-import styled from 'styled-components/native';
 import { Banner } from '@/components';
 import { ScrollView } from 'react-native';
-import { COLORS } from '../../../constants';
-
+import { icons, COLORS } from '@/constants';
+import Iconbox from '@/components/home/Box';
+import styled from 'styled-components/native';
 
 const stepsData = [
   { date: '2024년 10월 22일', steps: '2000걸음/5min' },
-  { date: '2024년 10月 15日', steps: '3000걸음/5min' },
-  { date: '2024年 10月 2日', steps: '3100걸음/5min' },
-  { date: '2024年 9月 20日', steps: '2800걸음/5min' },
-  { date: '2024年 9月 20日', steps: '2800걸음/5min' },
-  { date: '2024年 9月 20日', steps: '2800걸음/5min' },
-  { date: '2024年 9月 20日', steps: '2800걸음/5min' },
-  { date: '2024年 9月 20日', steps: '2800걸음/5min' },
-  { date: '2024年 9月 20日', steps: '2800걸음/5min' },
-  { date: '2024年 9月 20日', steps: '2800걸음/5min' },
-  { date: '2024年 9月 20日', steps: '2800걸음/5min' },
+  { date: '2024년 10월 15일', steps: '3000걸음/5min' },
+  { date: '2024년 10월 2일', steps: '3100걸음/5min' },
+  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
+  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
+  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
+  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
+  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
+  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
+  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
+  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
 ];
 
 const iconData = [
   {
-    text: '予約1',
-    innerImageSource: icons.female,
+    text: 'Walking',
+    IconComponent: icons.female,
     backgroundColor: COLORS.tomato,
   },
   {
-    text: '予約2',
-    innerImageSource: icons.male,
+    text: 'Project',
+    IconComponent: icons.female,
     backgroundColor: COLORS.sky_blue,
   },
   {
-    text: '予約3',
+    text: '준비중',
     innerImageSource: icons.male,
     backgroundColor: COLORS.lime_green,
   },
   {
-    text: '予約4',
+    text: '준비중',
     innerImageSource: icons.female,
     backgroundColor: COLORS.tomato,
   },
   {
-    text: '予約5',
+    text: '준비중',
     innerImageSource: icons.male,
     backgroundColor: COLORS.sky_blue,
   },
   {
-    text: '予約6',
+    text: '준비중',
     innerImageSource: icons.male,
     backgroundColor: COLORS.tomato,
   },
   {
-    text: '予約6',
+    text: '준비중',
     innerImageSource: icons.male,
     backgroundColor: COLORS.sky_blue,
   },
   {
-    text: '予約6',
+    text: '준비중',
     innerImageSource: icons.male,
     backgroundColor: COLORS.lime_green,
   },
@@ -72,9 +70,10 @@ const HomePage = () => {
         <TopSection />
 
         {/* banner */}
-        <BannerWrapper>
+        {/* <BannerWrapper>
           <Banner />
-        </BannerWrapper>
+        </BannerWrapper> */}
+        
         {/* 기능 */}
         <MiddleContainer>
           <TitleRow>
@@ -84,12 +83,11 @@ const HomePage = () => {
           <CategoriesContainer>
             <GridContainer>
               {iconData.map((item, index) => (
-                <Iconbox
-                  key={index}
+                <Iconbox key={index}
                   text={item.text}
                   innerImageSource={item.innerImageSource}
                   backgroundColor={item.backgroundColor}
-                />
+                ></Iconbox>
               ))}
             </GridContainer>
           </CategoriesContainer>
@@ -170,7 +168,7 @@ const GridContainer = styled.View`
 `;
 
 const ScrollViewContainer = styled.View`
-  flex: 1; /* ScrollViewが有効になるようにflexを追加 */
+  flex: 1;
   align-self: stretch;
   gap: 16px;
 `;
@@ -202,8 +200,7 @@ const TextRow = styled.View`
 const TextWrapper = styled.View``;
 
 const CardTitle = styled.Text`
-  font-family: Inter-Bold;
-  font-size: 14px;
+  font-size: 14px; 
   line-height: 21px;
   color: ${COLORS.dark_indigo};
   text-align: center;
@@ -221,8 +218,7 @@ const StyledImage = styled.Image`
 `;
 
 const StepsText = styled.Text`
-  font-family: Inter-Regular;
-  font-size: 12px;
+  font-size: 12px; 
   line-height: 18px;
   color: ${COLORS.slate_gray};
 `;
@@ -237,15 +233,13 @@ const TitleText = styled.Text`
   font-size: 16px;
   line-height: 24px;
   color: ${COLORS.deep_slate_blue};
-  font-family: Inter-Bold;
   font-weight: 700;
 `;
 
 const SeeAllText = styled.Text`
-  font-size: 14px;
+  font-size: 14px; 
   line-height: 21px;
   color: ${COLORS.slate_gray};
-  font-family: Inter-Medium;
   font-weight: 500;
 `;
 

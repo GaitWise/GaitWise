@@ -1,6 +1,6 @@
-import styled from "styled-components/native";
-import { icons } from "@/constants";
-import { Stack, useRouter } from "expo-router";
+import styled from 'styled-components/native';
+import { icons } from '@/constants';
+import { Stack, useRouter } from 'expo-router';
 
 export function SurveyLayout() {
   const router = useRouter();
@@ -8,14 +8,14 @@ export function SurveyLayout() {
   // 뒤로 가기 버튼 UI
   const renderBackButton = () => (
     <BackButton onPress={() => router.back()}>
-      <BackIcon source={icons.arrow_back} />
+      <icons.arrow_back/>
     </BackButton>
   );
 
   return (
     <Stack
       screenOptions={{
-        title: "Back",
+        title: 'Back',
         headerTitleStyle: { fontSize: 20 },
         headerLeft: renderBackButton,
       }}
@@ -32,8 +32,4 @@ const BackButton = styled.TouchableOpacity`
   padding-horizontal: 10px;
 `;
 
-const BackIcon = styled.Image`
-  width: 24px;
-  height: 16px;
-`;
 

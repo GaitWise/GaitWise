@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Dimensions, Image, View } from 'react-native';
+import { Dimensions, Image, View, Text } from 'react-native';
 import styled from 'styled-components/native';
-import { Carousel } from '@material-tailwind/react';
+// import Carousel from 'react-native-snap-carousel';
 import { COLORS } from '../../constants';
 import { Link } from 'expo-router';
+
+const { width: screenWidth } = Dimensions.get('window');
 
 export default function Banner() {
   const [bannerList, setBannerList] = useState([
@@ -38,120 +40,96 @@ export default function Banner() {
       month: '10',
       day: '17',
       hour: '16',
-      url: null, // URL가 없는 경우
+      url: null, 
     },
   ]);
 
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [adjustedWidth, setAdjustedWidth] = useState(Dimensions.get('window').width - 48);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
 
-    const handleResize = () => {
-      setAdjustedWidth(Dimensions.get('window').width - 48);
-    };
-
-    // Add event listener for dimension change
-    Dimensions.addEventListener('change', handleResize);
-
-    return () => {
-      clearInterval(timer);
-      Dimensions.removeEventListener('change', handleResize); // Clean up listener
-    };
+    return () => clearInterval(timer);
   }, []);
 
+  const renderItem = ({ item }) => {
+    const formatTime = `${item.year}-${item.month}-${item.day} ${item.hour}:00:00`;
+    const saleStartTime = new Date(formatTime);
+    const remainingTime = saleStartTime.getTime() - currentTime.getTime();
+
+    let displayText;
+    if (remainingTime > 0) {
+      const seconds = Math.floor((remainingTime / 1000) % 60);
+      const minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
+      const hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
+      const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+      displayText = `${days.toString().padStart(2, '0')}:${hours
+        .toString()
+        .padStart(2, '0')}:${minutes
+        .toString()
+        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    } else {
+      displayText = 'For Sale';
+    }
+
+    const isDisabled = !item.url;
+
+    return (
+      <CarouselItem key={item.name}>
+        {!isDisabled ? (
+          <Link href={item.url}>
+            <Image
+              source={item.data}
+              style={{ width: '100%', height: '100%' }}
+              resizeMode="cover"
+            />
+            <BannerText>{displayText}</BannerText>
+          </Link>
+        ) : (
+          <>
+            <Image
+              source={item.data}
+              style={{ width: '100%', height: '100%' }}
+              resizeMode="cover"
+            />
+            <BannerText>{displayText}</BannerText>
+          </>
+        )}
+      </CarouselItem>
+    );
+  };
+
   return (
-    <StyledCarousel
+    <Carousel
+      data={bannerList}
+      renderItem={renderItem}
+      sliderWidth={screenWidth - 48}
+      itemWidth={screenWidth - 48}
       autoplay={true}
       loop={true}
       autoplayDelay={3000}
-      interval={5000}
-    >
-      {bannerList.map((content, i) => {
-        const formatTime =
-          content.year +
-          '-' +
-          content.month +
-          '-' +
-          content.day +
-          '-' +
-          content.hour +
-          ':00:00';
-        const saleStartTime = new Date(formatTime);
-        const remainingTime = saleStartTime.getTime() - currentTime.getTime();
-
-        let displayText;
-        if (remainingTime > 0) {
-          const seconds = Math.floor((remainingTime / 1000) % 60);
-          const minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
-          const hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
-          const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-          displayText = `${days.toString().padStart(2, '0')}:${hours.toString().padStart(2, '0')}:${minutes
-            .toString()
-            .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        } else {
-          displayText = 'For Sale';
-        }
-
-        const isDisabled = !content.url; // URL가 없는 경우에 무효화
-
-        return (
-          <View key={i}>
-            {!isDisabled ? (
-              <Link href={content.url} target="_blank">
-                <ImageContainer>
-                  <Image
-                    source={content.data}
-                    style={{ width: adjustedWidth, height: '100%' }}
-                    resizeMode="cover"
-                  />
-                </ImageContainer>
-                <BannerText>{displayText}</BannerText>
-              </Link>
-            ) : (
-              <ImageContainer>
-                <Image
-                  source={content.data}
-                  style={{ width: adjustedWidth, height: '100%' }}
-                  resizeMode="cover"
-                />
-                <BannerText>{displayText}</BannerText>
-              </ImageContainer>
-            )}
-          </View>
-        );
-      })}
-    </StyledCarousel>
+      autoplayInterval={5000}
+    />
   );
 }
 
 // Styled components
 
-const ImageContainer = styled.View`
+const CarouselItem = styled.View`
   width: 100%;
-  height: 11rem;
-  align-items: center;
-  justify-content: center;
+  height: 200px;
+  border-radius: 16px;
+  overflow: hidden;
   background-color: ${COLORS.white};
-  overflow: hidden;
-`;
-
-const StyledCarousel = styled(Carousel)`
-  display: flex;
-  width: 100%;
-  height: 11rem;
-  border-radius: 1rem;
-  overflow: hidden;
 `;
 
 const BannerText = styled.Text`
   position: absolute;
   left: 10px;
   bottom: 10px;
-  font-size: 2rem;
+  font-size: 24px;
   font-weight: bold;
   color: ${COLORS.white};
 `;
