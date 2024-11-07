@@ -1,12 +1,8 @@
 import * as React from "react";
 import styled from "styled-components/native";
 import { useState } from "react";
-import { Pressable } from "react-native";
-import { COLORS } from "../../../constants";
-import { Platform } from "react-native";
-import { SafeAreaView } from "react-native";
-
-const isWeb = Platform.OS === "web";
+import { Pressable, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { COLORS } from "@/constants";
 
 const Contact = () => {
   const [inputs, setInputs] = useState({
@@ -20,7 +16,33 @@ const Contact = () => {
     setInputs({ ...inputs, [name]: value });
   };
 
+  const isFormComplete = Object.values(inputs).every((value) => value !== "");
+
+  const handleContinue = () => {
+    if (isFormComplete) {
+      onSendButton();
+    }
+  };
+
+  const fields = [
+    { label: "First Name", name: "firstName", placeholder: "First Name" },
+    { label: "Last Name", name: "lastName", placeholder: "Last Name" },
+    {
+      label: "Email",
+      name: "email",
+      placeholder: "Email",
+      keyboardType: "email-address",
+    },
+    {
+      label: "Write your message",
+      name: "message",
+      placeholder: "Write your message..",
+      multiline: true,
+    },
+  ];
+
   return (
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <ProfileContainer>
         <MainFrame>
           <ContactSection>
@@ -37,52 +59,55 @@ const Contact = () => {
             </Description>
             {/* 작성 부분 */}
             <InputGroup>
-              <InputWrapper>
-                <InputLabel>First Name</InputLabel>
-                <StyledTextInput
-                  value={inputs.firstName}
-                  onChangeText={(value) => handleChange("firstName", value)}
-                  placeholder="First Name"
+              {fields.map((field, index) => (
+                <InputField
+                  key={index}
+                  label={field.label}
+                  value={inputs[field.name]}
+                  onChangeText={(value) => handleChange(field.name, value)}
+                  placeholder={field.placeholder}
+                  keyboardType={field.keyboardType}
+                  multiline={field.multiline}
                 />
-              </InputWrapper>
-              <InputWrapper>
-                <InputLabel>Last Name</InputLabel>
-                <StyledTextInput
-                  value={inputs.lastName}
-                  onChangeText={(value) => handleChange("lastName", value)}
-                  placeholder="Last Name"
-                />
-              </InputWrapper>
-              <InputWrapper>
-                <InputLabel>Email</InputLabel>
-                <StyledTextInput
-                  value={inputs.email}
-                  onChangeText={(value) => handleChange("email", value)}
-                  placeholder="Email"
-                  keyboardType="email-address"
-                />
-              </InputWrapper>
-              <MessageInputWrapper>
-                <InputLabel>Write your message</InputLabel>
-                <StyledTextInput
-                  value={inputs.message}
-                  onChangeText={(value) => handleChange("message", value)}
-                  placeholder="Write your message.."
-                  multiline
-                />
-              </MessageInputWrapper>
+              ))}
             </InputGroup>
-            {/* send 버튼 */}
-            <SendButton>
+            {/* Send 버튼 */}
+            <SendButton
+              onPress={handleContinue}
+              disabled={!isFormComplete}
+              isDisabled={!isFormComplete}
+            >
               <SendButtonText>Send Message</SendButtonText>
             </SendButton>
           </ContactSection>
         </MainFrame>
       </ProfileContainer>
+    </TouchableWithoutFeedback>
   );
 };
 
 export default Contact;
+
+const InputField = ({
+  label,
+  value,
+  onChangeText,
+  placeholder,
+  keyboardType,
+  multiline,
+}) => (
+  <InputWrapper style={{ height: multiline ? 120 : 50 }}>
+    <InputLabel>{label}</InputLabel>
+    <StyledTextInput
+      value={value}
+      onChangeText={onChangeText}
+      placeholder={placeholder}
+      placeholderTextColor={COLORS.dark_gray}
+      keyboardType={keyboardType}
+      multiline={multiline}
+    />
+  </InputWrapper>
+);
 
 const Description = styled.View`
   margin: 10px;
@@ -107,8 +132,9 @@ const ProfileContainer = styled.View`
 
 const MainFrame = styled.View`
   width: 390px;
+  height: 100%;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 `;
 
 const ContactSection = styled.View`
@@ -131,11 +157,10 @@ const ContactDescription = styled.Text`
 
 const InputGroup = styled.View`
   align-items: center;
-  margin-top: 42px;
+  margin-top: 30px;
 `;
 
 const InputWrapper = styled.View`
-  height: 55px;
   width: 278px;
   margin-bottom: 30px;
 `;
@@ -148,11 +173,6 @@ const InputLabel = styled.Text`
   margin-bottom: 10px;
 `;
 
-const MessageInputWrapper = styled.View`
-  height: 120px;
-  width: 278px;
-`;
-
 const StyledTextInput = styled.TextInput`
   width: 278px;
   font-size: 14px;
@@ -160,18 +180,19 @@ const StyledTextInput = styled.TextInput`
   border: 1px solid ${COLORS.dark_gray};
   padding: 10px;
   border-radius: 5px;
-  height: ${(props) => (props.multiline ? "100%" : "42px")};
+  height: 100%;
 `;
 
 const SendButton = styled(Pressable)`
   padding: 10px;
   border-radius: 10px;
-  background-color: ${COLORS.dark_indigo};
+  background-color: ${(props) =>
+    props.isDisabled ? COLORS.light_gray : COLORS.dark_indigo};
   width: 285px;
   height: 38px;
   justify-content: center;
   align-items: center;
-  margin-top: 59px;
+  margin-top: 45px;
 `;
 
 const SendButtonText = styled.Text`

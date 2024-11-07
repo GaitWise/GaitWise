@@ -3,14 +3,15 @@ import { Text, View } from "react-native";
 import { useRouter } from "expo-router";
 
 const Splash = () => {
-  const router = useRouter(); 
+  const router = useRouter();
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push("/setting"); 
+      // router.push("/survey"); FIXME 완료 시 수정
+      router.push("/setting");
     }, 3000);
 
-    return () => clearTimeout(timer); 
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -18,6 +19,7 @@ const Splash = () => {
       <Text>Splash</Text>
     </View>
   );
-}
+};
 
-export default Splash;0
+export default Splash;
+0;

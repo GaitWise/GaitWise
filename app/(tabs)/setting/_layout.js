@@ -1,20 +1,16 @@
-// /app/(tabs)/setting/_layout.js
-
 import { Stack, useRouter } from "expo-router";
 import styled from "styled-components/native";
-import { icons } from "../../../constants";
-import { Platform } from 'react-native';
-
-const isWeb = Platform.OS === 'web';
-
+import { Ionicons } from "@expo/vector-icons"; // 아이콘을 사용하려면 expo-vector-icons에서 import
 
 export default function SettingLayout() {
   const router = useRouter();
 
   // 뒤로 가기 버튼 UI
   const renderBackButton = () => (
-    <BackButton onPress={() => router.back('./index.js')}>
-      <BackIcon source={icons.arrow_back} />
+    <BackButton onPress={() => router.back("./index.js")}>
+      <BackbuttonContainer>
+        <Ionicons name="arrow-back" size={24} color="black" />
+      </BackbuttonContainer>
     </BackButton>
   );
 
@@ -36,7 +32,4 @@ const BackButton = styled.TouchableOpacity`
   padding-horizontal: 10px;
 `;
 
-const BackIcon = styled.Image`
-  width: 24px;
-  height: 16px;
-`;
+const BackbuttonContainer = styled.View``;
