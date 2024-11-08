@@ -1,16 +1,12 @@
-import * as React from 'react';
 import { useState } from 'react';
-import { TouchableOpacity, TextInput, Dimensions, ScrollView } from 'react-native';
-import { Image } from 'react-native';
-import styled from 'styled-components/native';
+import { router } from 'expo-router';
 import { COLORS, IMAGES } from '@/constants';
-import { router, useNavigation } from 'expo-router';
+import styled from 'styled-components/native';
+import { Image, TouchableOpacity, TextInput, Dimensions, ScrollView } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
 const Profile = () => {
-  const navigation = useNavigation();
-
   const [inputs, setInputs] = useState({
     firstName: '',
     lastName: '',
@@ -30,11 +26,6 @@ const Profile = () => {
 
   const isFormValid = () => {
     return firstName && lastName && job && email && passwd && Cpasswd && passwd === Cpasswd;
-  };
-
-  const navigateToHome = (projectName) => {
-    router.push('/home');
-    console.log(`${projectName} 프로젝트로 이동합니다.`);
   };
 
   return (
@@ -75,6 +66,7 @@ const Profile = () => {
               placeholder="Enter Your Job"
             />
           </InputField>
+          
           <InputField>
             <Label>Email</Label>
             <Input

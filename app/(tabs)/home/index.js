@@ -27,16 +27,16 @@ const iconData = [
     route: '/walking',
   },
   {
+    text: 'Survey',
+    IconComponent: icons.male,
+    backgroundColor: COLORS.sky_blue,
+    route: '/comingSoon',
+  },
+  {
     text: 'Project',
     IconComponent: icons.female,
     backgroundColor: COLORS.sky_blue,
     route: '/project_select',
-  },
-  {
-    text: '준비중',
-    IconComponent: icons.male,
-    backgroundColor: COLORS.sky_blue,
-    route: '/comingSoon',
   },
   {
     text: '준비중',

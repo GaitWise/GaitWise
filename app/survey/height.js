@@ -8,17 +8,13 @@ const { width, height } = Dimensions.get('window');
 
 const Height = () => {
   const flatListRef = useRef(null);
-  const [selectedHeight, setSelectedHeight] = useState(50);
+  const [selectedHeight, setSelectedHeight] = useState(0);
   const heightArray = Array.from({ length: 251 }, (_, index) => index);
 
   const handleScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y;
     const newIndex = Math.round(offsetY / 50);
     setSelectedHeight(heightArray[newIndex]);
-  };
-
-  const navigateToNext = () => {
-    router.push('/project_select');
   };
 
   return (
@@ -41,8 +37,9 @@ const Height = () => {
             keyExtractor={(item) => item.toString()}
             showsVerticalScrollIndicator={false}
             onScroll={handleScroll}
+            snapToAlignment="center"
             decelerationRate="fast"
-            contentContainerStyle={{ paddingVertical: height * 0.5 }}
+            scrollEnabled={true}
             renderItem={({ item }) => (
               <HeightItem>
                 <StyledHeightText isSelected={item === selectedHeight}>
@@ -54,7 +51,7 @@ const Height = () => {
         </HeightScrollContainer>
 
         {/* Continue Button */}
-        <ContinueButton onPress={navigateToNext}>
+        <ContinueButton onPress={() => {router.push('/project_select')}}>
           <ContinueButtonText>Continue</ContinueButtonText>
         </ContinueButton>
 
@@ -66,7 +63,6 @@ const Height = () => {
 export default Height;
 
 // Styled Components
-
 const BaseContainer = styled.View`
   flex: 1;
   background-color: ${COLORS.white};
