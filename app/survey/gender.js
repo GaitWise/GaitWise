@@ -1,9 +1,10 @@
-import * as React from 'react';
-import styled from 'styled-components/native';
 import { useState } from 'react';
-import { TouchableOpacity } from 'react-native';
-import { COLORS, icons } from '@/constants';
 import { router } from 'expo-router';
+import { COLORS, icons } from '@/constants';
+import styled from 'styled-components/native';
+import { Dimensions, TouchableOpacity } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
 
 const Gender = () => {
   const [selectedMale, setSelectedMale] = useState(true);
@@ -20,37 +21,38 @@ const Gender = () => {
   };
 
   return (
-    <GenderContainer onPress={() => {}}>
-      <StatusBarContainer>
-        <BackIcon onPress={() => {}} />
-      </StatusBarContainer>
+    <GenderContainer>
+
       <GenderContent>
-        <TitleText>What’s Your Gender</TitleText>
+        <TitleText>What’s Your Gender?</TitleText>
         <GenderSelection>
+
           {/* 남 버튼 */}
           <GenderButton onPress={handleMaleSelect}>
             <MaleIconContainer selected={selectedMale}>
-              <GenderIcon source={icons.male} />
+              <icons.male/> 
             </MaleIconContainer>
             <GenderLabel>Male</GenderLabel>
           </GenderButton>
+
           {/* 여 버튼 */}
           <GenderButton onPress={handleFemaleSelect}>
             <FemaleIconContainer selected={selectedFemale}>
-              <GenderIcon source={icons.female} />
+              <icons.female/>
             </FemaleIconContainer>
             <GenderLabel>Female</GenderLabel>
           </GenderButton>
         </GenderSelection>
+
         {/* continue 버튼 */}
         <ContinueButton
           disabled={selectedMale && selectedFemale}
           selected={selectedMale || selectedFemale}
           bothSelected={selectedMale && selectedFemale}
-          onPress={() => router.push('/survey/age')}
-        >
+          onPress={() => router.push('/survey/age')}>
           <ContinueText>Continue</ContinueText>
         </ContinueButton>
+
       </GenderContent>
     </GenderContainer>
   );
@@ -58,47 +60,32 @@ const Gender = () => {
 
 export default Gender;
 
-const GenderContainer = styled.Pressable`
+const GenderContainer = styled.View`
   flex: 1;
   align-items: center;
+  justify-content: center;
   background-color: ${COLORS.white};
-  height: 852px;
-  border-width: 1px;
-  border-color: ${COLORS.white};
-  overflow: hidden;
-`;
-
-const StatusBarContainer = styled.View`
-  margin-top: 51px;
-  align-items: center;
-  align-self: stretch;
-`;
-
-const BackIcon = styled.Pressable`
-  padding-left: 24px;
-  gap: 14px;
-  flex-direction: row;
-  align-items: center;
-  align-self: stretch;
 `;
 
 const GenderContent = styled.View`
-  height: 739px;
-  gap: 56px;
   align-items: center;
+  justify-content: space-between;
+  height: ${height * 0.75}px;
+  width: 100%;
 `;
 
 const TitleText = styled.Text`
-  font-size: 25px;
+  font-size: ${width * 0.08}px; 
   color: ${COLORS.dark_indigo};
   font-weight: bold;
-  text-align: left;
+  text-align: center;
 `;
 
 const GenderSelection = styled.View`
-  height: 450px;
-  flex-direction: column;
-  gap: 30px;
+  gap: ${height * 0.03}px;  
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 `;
 
 const GenderButton = styled(TouchableOpacity)`
@@ -106,52 +93,47 @@ const GenderButton = styled(TouchableOpacity)`
 `;
 
 const MaleIconContainer = styled.View`
-  width: 163px;
-  height: 163px;
+  width: ${width * 0.38}px;  
+  height: ${width * 0.38}px; 
   justify-content: center;
   align-items: center;
   background-color: ${(props) =>
     props.selected ? COLORS.soft_blue : COLORS.continue_gray};
-  border-radius: 100px;
+  border-radius: ${width * 0.2}px;  
 `;
 
 const FemaleIconContainer = styled.View`
-  width: 163px;
-  height: 163px;
+  width: ${width * 0.38}px;  
+  height: ${width * 0.38}px; 
   justify-content: center;
   align-items: center;
   background-color: ${(props) =>
     props.selected ? COLORS.bright_pink : COLORS.continue_gray};
-  border-radius: 100px;
-`;
-
-const GenderIcon = styled.Image`
-  width: 100px;
-  height: 100px;
+  border-radius: ${width * 0.2}px; 
 `;
 
 const GenderLabel = styled.Text`
-  font-size: 20px;
+  font-size: ${width * 0.05}px;  
   font-weight: 700;
   color: ${COLORS.black};
-  margin-top: 10px;
+  margin-top: ${height * 0.01}px;  
 `;
 
 const ContinueButton = styled(TouchableOpacity)`
-  width: 179px;
-  padding: 10px 36px;
-  border-radius: 100px;
+  width: ${width * 0.6}px;  
+  height: ${height * 0.08}px;
+  padding: ${height * 0.015}px;  
+  border-radius: ${width * 0.5}px; 
   background-color: ${(props) =>
     props.selected && !props.bothSelected
       ? COLORS.dark_indigo
       : COLORS.continue_gray};
-  border-width: 1px;
-  border-color: ${COLORS.white};
   justify-content: center;
   align-items: center;
 `;
 
 const ContinueText = styled.Text`
-  font-size: 18px;
+  font-size: ${width * 0.05}px; 
   color: ${COLORS.white};
+  font-weight: bold; 
 `;

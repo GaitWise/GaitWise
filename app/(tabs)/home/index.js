@@ -1,101 +1,106 @@
 import * as React from 'react';
-import { icons } from '@/constants';
-import Iconbox from '@/components/home/Box';
-import styled from 'styled-components/native';
 import { Banner } from '@/components';
-import { ScrollView } from 'react-native';
-import { COLORS } from '../../../constants';
-
+import { useRouter } from 'expo-router';
+import { icons, COLORS } from '@/constants';
+import styled from 'styled-components/native';
+import { ScrollView, Pressable } from 'react-native';
 
 const stepsData = [
   { date: '2024년 10월 22일', steps: '2000걸음/5min' },
-  { date: '2024년 10月 15日', steps: '3000걸음/5min' },
-  { date: '2024年 10月 2日', steps: '3100걸음/5min' },
-  { date: '2024年 9月 20日', steps: '2800걸음/5min' },
-  { date: '2024年 9月 20日', steps: '2800걸음/5min' },
-  { date: '2024年 9月 20日', steps: '2800걸음/5min' },
-  { date: '2024年 9月 20日', steps: '2800걸음/5min' },
-  { date: '2024年 9月 20日', steps: '2800걸음/5min' },
-  { date: '2024年 9月 20日', steps: '2800걸음/5min' },
-  { date: '2024年 9月 20日', steps: '2800걸음/5min' },
-  { date: '2024年 9月 20日', steps: '2800걸음/5min' },
+  { date: '2024년 10월 15일', steps: '3000걸음/5min' },
+  { date: '2024년 10월 2일', steps: '3100걸음/5min' },
+  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
+  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
+  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
+  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
+  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
+  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
+  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
+  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
 ];
 
 const iconData = [
   {
-    text: '予約1',
-    innerImageSource: icons.female,
-    backgroundColor: COLORS.tomato,
-  },
-  {
-    text: '予約2',
-    innerImageSource: icons.male,
+    text: 'Walking',
+    IconComponent: icons.walking_people,
     backgroundColor: COLORS.sky_blue,
+    route: '/walking',
   },
   {
-    text: '予約3',
-    innerImageSource: icons.male,
-    backgroundColor: COLORS.lime_green,
-  },
-  {
-    text: '予約4',
-    innerImageSource: icons.female,
-    backgroundColor: COLORS.tomato,
-  },
-  {
-    text: '予約5',
-    innerImageSource: icons.male,
+    text: 'Survey',
+    IconComponent: icons.male,
     backgroundColor: COLORS.sky_blue,
+    route: '/comingSoon',
   },
   {
-    text: '予約6',
-    innerImageSource: icons.male,
-    backgroundColor: COLORS.tomato,
-  },
-  {
-    text: '予約6',
-    innerImageSource: icons.male,
+    text: 'Project',
+    IconComponent: icons.female,
     backgroundColor: COLORS.sky_blue,
+    route: '/project_select',
   },
   {
-    text: '予約6',
-    innerImageSource: icons.male,
-    backgroundColor: COLORS.lime_green,
+    text: '준비중',
+    IconComponent: icons.male,
+    backgroundColor: COLORS.sky_blue,
+    route: '/comingSoon',
   },
+  {
+    text: '준비중',
+    IconComponent: icons.male,
+    backgroundColor: COLORS.sky_blue,
+    route: '/comingSoon',
+  },
+  {
+    text: '준비중',
+    IconComponent: icons.male,
+    backgroundColor: COLORS.sky_blue,
+    route: '/comingSoon',
+  },
+  {
+    text: '준비중',
+    IconComponent: icons.male,
+    backgroundColor: COLORS.sky_blue,
+    route: '/comingSoon',
+  },
+  {
+    text: '준비중',
+    IconComponent: icons.male,
+    backgroundColor: COLORS.sky_blue,
+    route: '/comingSoon',
+  }
 ];
 
 const HomePage = () => {
-  return (
+  const router = useRouter();
+
+   return (
     <HomePageWrapper>
       <Content>
-        {/* notification */}
         <TopSection />
 
         {/* banner */}
-        <BannerWrapper>
-          <Banner />
-        </BannerWrapper>
+        <Banner />
+        
         {/* 기능 */}
         <MiddleContainer>
           <TitleRow>
-            <TitleText>{`기능 `}</TitleText>
+            <TitleText>{`기능`}</TitleText>
             <SeeAllText>See All</SeeAllText>
           </TitleRow>
           <CategoriesContainer>
             <GridContainer>
-              {iconData.map((item, index) => (
-                <Iconbox
-                  key={index}
-                  text={item.text}
-                  innerImageSource={item.innerImageSource}
-                  backgroundColor={item.backgroundColor}
-                />
+            {iconData.map((item, index) => (
+                <StyledPressable key={index} onPress={() => router.push(item.route)}>
+                  <ImageContainer style={{ backgroundColor: item.backgroundColor }}>
+                    <item.IconComponent width={35} height={35} />
+                  </ImageContainer>
+                  <StyledText>{item.text}</StyledText>
+                </StyledPressable>
               ))}
             </GridContainer>
           </CategoriesContainer>
         </MiddleContainer>
 
-        {/* 최근 측정 결과 */}
         <ScrollViewContainer>
           <TitleRow>
             <TitleText>{`최근 측정 결과 `}</TitleText>
@@ -110,9 +115,7 @@ const HomePage = () => {
               <CardShadowBox key={index}>
                 <CardContent>
                   <TextRow>
-                    <TextWrapper>
                       <CardTitle>{item.date}</CardTitle>
-                    </TextWrapper>
                     <StepWrapper>
                       <StyledImage source={icons.steps} />
                       <StepsText>{item.steps}</StepsText>
@@ -148,13 +151,8 @@ const TopSection = styled.View`
   gap: 14px;
 `;
 
-const BannerWrapper = styled.View`
-  align-items: center;
-  width: 100%;
-`;
-
 const MiddleContainer = styled.View`
-  gap: 10px;
+  gap: 5px;
   width: 100%;
 `;
 
@@ -170,9 +168,10 @@ const GridContainer = styled.View`
 `;
 
 const ScrollViewContainer = styled.View`
-  flex: 1; /* ScrollViewが有効になるようにflexを追加 */
+  flex: 1;
   align-self: stretch;
-  gap: 16px;
+  gap: 5px;
+  margin-top: -10px;
 `;
 
 const CardShadowBox = styled.View`
@@ -199,11 +198,8 @@ const TextRow = styled.View`
   align-self: stretch;
 `;
 
-const TextWrapper = styled.View``;
-
 const CardTitle = styled.Text`
-  font-family: Inter-Bold;
-  font-size: 14px;
+  font-size: 14px; 
   line-height: 21px;
   color: ${COLORS.dark_indigo};
   text-align: center;
@@ -221,8 +217,7 @@ const StyledImage = styled.Image`
 `;
 
 const StepsText = styled.Text`
-  font-family: Inter-Regular;
-  font-size: 12px;
+  font-size: 12px; 
   line-height: 18px;
   color: ${COLORS.slate_gray};
 `;
@@ -237,16 +232,39 @@ const TitleText = styled.Text`
   font-size: 16px;
   line-height: 24px;
   color: ${COLORS.deep_slate_blue};
-  font-family: Inter-Bold;
   font-weight: 700;
 `;
 
 const SeeAllText = styled.Text`
-  font-size: 14px;
+  font-size: 14px; 
   line-height: 21px;
   color: ${COLORS.slate_gray};
-  font-family: Inter-Medium;
   font-weight: 500;
+`;
+
+// Styled Components for Iconbox
+const StyledPressable = styled(Pressable)`
+  gap: 4px;
+  align-items: center;
+  width: 23%;
+  margin-bottom: 16px;
+`;
+
+const ImageContainer = styled.View`
+  background-color: ${(props) => props.backgroundColor || '#93c19e'};
+  padding: 10px;
+  height: 62px;
+  width: 62px;
+  justify-content: center;
+  border-radius: 8px;
+  align-items: center;
+`;
+
+const StyledText = styled.Text`
+  font-size: 12px;
+  color: #4b5563;
+  font-weight: 700;
+  text-align: center;
 `;
 
 export default HomePage;

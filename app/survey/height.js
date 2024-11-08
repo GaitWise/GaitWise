@@ -1,14 +1,14 @@
-import * as React from 'react';
-import styled from 'styled-components/native';
-import { useState, useRef } from 'react';
-import { TouchableOpacity, FlatList } from 'react-native';
 import { COLORS } from '@/constants';
 import { router } from 'expo-router';
+import { useState, useRef } from 'react';
+import styled from 'styled-components/native';
+import { TouchableOpacity, FlatList, Dimensions } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
 
 const Height = () => {
-  const [selectedHeight, setSelectedHeight] = useState(50);
   const flatListRef = useRef(null);
-
+  const [selectedHeight, setSelectedHeight] = useState(0);
   const heightArray = Array.from({ length: 251 }, (_, index) => index);
 
   const handleScroll = (event) => {
@@ -20,22 +20,26 @@ const Height = () => {
   return (
     <BaseContainer>
       <FrameContainer>
+        
+        {/* Question Section */}
         <QuestionContainer>
-          <HeightText>What Is Your Height?</HeightText>
+          <QuestionText>What Is Your Height?</QuestionText>
         </QuestionContainer>
-        {/* 선택된 키 나오는 곳 */}
-        <QuestionText>{selectedHeight}cm</QuestionText>
-        {/* 키 스크롤 하는 곳 */}
-        <HeightContainer>
+
+        {/* Selected Height Display */}
+        <HeightText>{selectedHeight}cm</HeightText>
+
+        {/* Height Scroll Section */}
+        <HeightScrollContainer>
           <FlatList
             ref={flatListRef}
             data={heightArray}
             keyExtractor={(item) => item.toString()}
             showsVerticalScrollIndicator={false}
             onScroll={handleScroll}
-            snapToInterval={50}
+            snapToAlignment="center"
             decelerationRate="fast"
-            contentContainerStyle={{ paddingVertical: 100 }}
+            scrollEnabled={true}
             renderItem={({ item }) => (
               <HeightItem>
                 <StyledHeightText isSelected={item === selectedHeight}>
@@ -44,11 +48,13 @@ const Height = () => {
               </HeightItem>
             )}
           />
-        </HeightContainer>
-        {/* continue 버튼 */}
-        <ContinueButton onPress={() => router.push('/project_select')}>
-          <ContinueText>Continue</ContinueText>
+        </HeightScrollContainer>
+
+        {/* Continue Button */}
+        <ContinueButton onPress={() => {router.push('/project_select')}}>
+          <ContinueButtonText>Continue</ContinueButtonText>
         </ContinueButton>
+
       </FrameContainer>
     </BaseContainer>
   );
@@ -56,83 +62,74 @@ const Height = () => {
 
 export default Height;
 
-// 스타일 컴포넌트들
-
-const HeightContainer = styled.View`
-  background-color: ${COLORS.soft_blue};
-  justify-content: center;
-  align-items: center;
-  height: 371px;
-  width: 115px;
-  border-radius: 10px;
-`;
-
+// Styled Components
 const BaseContainer = styled.View`
-  background-color: ${COLORS.white};
   flex: 1;
-  height: 844px;
-  overflow: hidden;
+  background-color: ${COLORS.white};
   width: 100%;
+  height: 100%;
 `;
 
 const FrameContainer = styled.View`
-  height: 680px;
-  gap: 38px;
+  flex: 1;
   align-items: center;
+  padding-top: ${height * 0.08}px;
+  gap: ${height * 0.03}px;
 `;
 
 const QuestionContainer = styled.View`
-  height: 167px;
-  padding-vertical: 50px;
-  gap: 35px;
-  z-index: 0;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  padding-bottom: ${height * 0.02}px;
+`;
+
+const QuestionText = styled.Text`
+  color: ${COLORS.dark_indigo};
+  font-size: ${height * 0.04}px;
+  font-weight: 700;
 `;
 
 const HeightText = styled.Text`
   color: ${COLORS.dark_indigo};
   font-weight: 700;
-  text-transform: capitalize;
-  font-size: 25px;
-  text-align: left;
+  font-size: ${height * 0.05}px;
 `;
 
-const QuestionText = styled.Text`
-  font-size: 64px;
-  color: ${COLORS.dark_indigo};
-  font-weight: 700;
-  text-align: center;
+const HeightScrollContainer = styled.View`
+  background-color: ${COLORS.soft_blue};
+  align-items: center;
+  justify-content: center;
+  width: ${width * 0.3}px;
+  height: ${height * 0.4}px;
+  border-radius: 10px;
 `;
 
 const HeightItem = styled.View`
-  height: 50px;
   justify-content: center;
   align-items: center;
+  height: 50px;
 `;
 
 const StyledHeightText = styled.Text`
-  font-size: ${(props) => (props.isSelected ? '35px' : '25px')};
+  font-size: ${(props) => (props.isSelected ? `${height * 0.04}px` : `${height * 0.03}px`)};
   opacity: ${(props) => (props.isSelected ? '1' : '0.5')};
   color: ${COLORS.dark_indigo};
   font-weight: 700;
 `;
 
 const ContinueButton = styled(TouchableOpacity)`
-  width: 179px;
-  padding: 10px 36px;
+  width: ${width * 0.5}px;
+  height: ${height * 0.08}px;
   border-radius: 100px;
   background-color: ${COLORS.dark_indigo};
-  border-width: 1px;
-  border-color: ${COLORS.white};
   justify-content: center;
   align-items: center;
+  margin-top: ${height * 0.03}px;
 `;
 
-const ContinueText = styled.Text`
-  font-size: 18px;
+const ContinueButtonText = styled.Text`
   color: ${COLORS.white};
+  font-size: ${height * 0.025}px;
   font-weight: 700;
-  text-transform: capitalize;
   text-align: center;
 `;
