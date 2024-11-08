@@ -13,5 +13,10 @@ const COLORS = {
   dark_gray: "#717171",
   medium_gray: "#8d8d8d",
   light_gray: "#e5e7eb",
+  tomato: "#ff6347",
+  sky_blue: "#87ceeb",
+  lime_green: "#32cd32",
+  slate_gray: "#6b7280",
 };
+
 export { COLORS };

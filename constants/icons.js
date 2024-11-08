@@ -9,8 +9,16 @@ import favorite from "../assets/icons/favorite.svg";
 import helpM from "../assets/icons/helpM.svg";
 import noti from "../assets/icons/noti.svg"; 
 import reset from "../assets/icons/reset.svg";
-import arrow_back from "../assets/icons/arrow_back.svg"
-import arrow_right from "../assets/icons/arrow_right.svg"
+import arrow_back from "../assets/icons/arrow_back.svg";
+import arrow_right from "../assets/icons/arrow_right.svg";
+import pen from "../assets/icons/pen.svg";
+import profile from "../assets/icons/profile.svg";
+import notifcation from '../assets/icons/Notification.svg';
+import circle from '../assets/icons/circle.svg';
+import walking_line from "../assets/icons/walking_line.svg";
+import walking_people from "../assets/icons/walking_people.svg";
+import walking_connect from "../assets/icons/walking_connect.svg";
+import walking_arrow_back from "../assets/icons/walking_arrow_back.svg";
 
 export default {
   male,
@@ -25,5 +33,13 @@ export default {
   noti,
   reset,
   arrow_back,
-  arrow_right
+  arrow_right,
+  pen,
+  profile,
+  walking_arrow_back,
+  walking_connect,
+  walking_line,
+  walking_people,
+  notifcation,
+  circle,
 };

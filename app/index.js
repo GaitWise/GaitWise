@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Text, View } from "react-native";
+import { Text, View } from "react-native"; // 수정: react-native에서 가져오도록 변경
 import { useRouter } from "expo-router";
 
 const Splash = () => {
@@ -7,8 +7,7 @@ const Splash = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      // router.push("/survey"); FIXME 완료 시 수정
-      router.push("/setting");
+      router.replace("/profile"); 
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -22,4 +21,3 @@ const Splash = () => {
 };
 
 export default Splash;
-0;

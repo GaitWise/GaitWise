@@ -8,6 +8,11 @@
       "expo-router"
     ],
     "name": "GaitWise",
-    "slug": "GaitWise"
+    "slug": "GaitWise",
+    "android": {
+      "permissions": [
+        "INTERNET"
+      ]
+    }
   }
 }
