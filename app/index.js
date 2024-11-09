@@ -1,6 +1,10 @@
-import React, { useEffect } from "react";
-import { Text, View } from "react-native"; // 수정: react-native에서 가져오도록 변경
+import { Video } from "expo-av";
+import { View } from "react-native"; 
+import { icons } from '@/constants';
 import { useRouter } from "expo-router";
+import React, { useEffect } from "react";
+
+const SPLASH_DURATION = 3000; 
 
 const Splash = () => {
   const router = useRouter();
@@ -8,16 +12,42 @@ const Splash = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       router.replace("/profile"); 
-    }, 3000);
+    }, SPLASH_DURATION);
 
     return () => clearTimeout(timer);
   }, []);
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Splash</Text>
+    <View style={styles.container}>
+      <Video
+        source={require("../assets/video/splash.mp4")}
+        style={styles.video}
+        resizeMode="contain"
+        isLooping
+        shouldPlay
+      />
+      <View style={styles.logoContainer}>
+        <icons.logo />
+      </View>
     </View>
   );
+};
+
+const styles = {
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  video: {
+    width: 300,
+    height: 300,
+    transform: [{ scaleX: -1 }],
+  },
+  logoContainer: {
+    position: 'absolute',
+    bottom: 20,
+  },
 };
 
 export default Splash;
