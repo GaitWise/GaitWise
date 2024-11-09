@@ -19,6 +19,8 @@ import walking_line from "../assets/icons/walking_line.svg";
 import walking_people from "../assets/icons/walking_people.svg";
 import walking_connect from "../assets/icons/walking_connect.svg";
 import walking_arrow_back from "../assets/icons/walking_arrow_back.svg";
+import logo from "../assets/icons/logo.svg"
+
 
 export default {
   male,
@@ -42,4 +44,5 @@ export default {
   walking_people,
   notifcation,
   circle,
+  logo
 };
