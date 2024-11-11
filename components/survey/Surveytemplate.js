@@ -1,184 +1,186 @@
-import * as React from 'react';
-import { Pressable, TextInput } from 'react-native';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { Image, Pressable, TextInput,Keyboard, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import styled from 'styled-components/native';
-import { COLORS, icons } from '../../constants';
+import { COLORS, IMAGES, icons } from '@/constants';
 
-const Surveytemplate = ({ currentPageData, onNextPage, onContinue }) => {
-  const [selectedOption, setSelectedOption] = useState(null);
+const { width, height } = Dimensions.get('window');
+
+const SurveyTemplate = ({ currentPageData, onContinue }) => {
   const [inputValue, setInputValue] = useState('');
+  const [selectedOption, setSelectedOption] = useState(null);
 
   const handleContinue = () => {
     if (selectedOption !== null || inputValue.trim() !== '') {
-      onContinue(); // 부모 컴포넌트의 onContinue 호출
-      setSelectedOption(null);
+      onContinue();
       setInputValue('');
+      setSelectedOption(null);
     }
   };
 
-  const optionsContainerHeight =
-    currentPageData.options && currentPageData.options.length > 0
-      ? Math.max(150, currentPageData.options.length * 90)
-      : 392;
+  const optionsContainerHeight = currentPageData.options?.length
+    ? Math.max(150, currentPageData.options.length * 70)
+    : height * 0.4;
 
-  // Continue 버튼 색상 결정
   const isContinueEnabled = selectedOption !== null || inputValue.trim() !== '';
   const continueButtonColor = isContinueEnabled
     ? COLORS.dark_indigo
-    : COLORS.continue_gray; // 선택되지 않았을 때 회색
+    : COLORS.continue_gray;
 
   return (
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     <BaseFrameContainer>
       <TitleContainer>
         <TitleText>{currentPageData.title}</TitleText>
       </TitleContainer>
-      <ProfileImage source={currentPageData.profile_img} resizeMode="cover" />
+ 
+        <ProfileImage source={IMAGES.profile} />
+    
       <OptionsContainer height={optionsContainerHeight}>
-        {currentPageData.options && currentPageData.options.length > 0 ? (
+        {currentPageData.options?.length ? (
           currentPageData.options.map((option) => (
             <OptionButton
               key={option.value}
               isSelected={selectedOption === option.value}
               onPress={() => setSelectedOption(option.value)}
             >
-              <CheckIcon
-                resizeMode="cover"
-                source={
-                  selectedOption === option.value ? icons.checked : icons.check
-                }
-              />
+              <IconWithMargin>
+                {selectedOption === option.value ? (
+                  <icons.checked />
+                ) : (
+                  <icons.check />
+                )}
+              </IconWithMargin>
               <OptionText>{option.label}</OptionText>
             </OptionButton>
           ))
         ) : (
           <InputContainer>
-            <Input
-              placeholder="Type your answer here..."
+            <StyledInput
+              placeholder="ex : good"
+              placeholderTextColor={COLORS.pastel_lavender}
               value={inputValue}
               onChangeText={setInputValue}
-              multiline={true} // 여러 줄 입력 허용
-              numberOfLines={4} // 기본적으로 4줄을 표시하도록 설정
+              multiline
+              numberOfLines={4}
             />
           </InputContainer>
         )}
       </OptionsContainer>
-      <ContinueButton
-        onPress={handleContinue}
-        style={{ backgroundColor: continueButtonColor }}
-      >
+      <ContinueButton onPress={handleContinue} disabled={!isContinueEnabled} color={continueButtonColor}>
         <ContinueText>Continue</ContinueText>
       </ContinueButton>
     </BaseFrameContainer>
+  </TouchableWithoutFeedback>
   );
 };
 
-export default Surveytemplate;
+export default SurveyTemplate;
 
 // styled-components
 const BaseFrameContainer = styled.View`
   flex: 1;
-  overflow: hidden;
   width: 100%;
   background-color: ${COLORS.white};
   align-items: center;
+  padding-top: 20px;
+`;
+
+
+const ProfileImage = styled(Image)`
+  border-radius: ${width * 0.3}px;
+  width: ${width * 0.33}px;
+  height: ${width * 0.33}px;
 `;
 
 const TitleContainer = styled.View`
   align-items: center;
-  margin: 30px auto;
+  margin: 20px auto;
 `;
 
 const TitleText = styled.Text`
-  font-size: 25px;
+  font-size: ${width * 0.065}px;
   color: ${COLORS.dark_indigo};
   font-family: 'Poppins-Bold';
   font-weight: 700;
-  text-transform: capitalize;
-  margin-left: 5px;
   text-align: center;
-`;
-
-const ProfileImage = styled.Image`
-  width: 120px;
-  height: 120px;
-  border-radius: 50px;
-  margin: 10px auto;
+  padding: 0 10px;
 `;
 
 const OptionsContainer = styled.View`
   background-color: ${COLORS.soft_blue};
   height: ${({ height }) => height}px;
   justify-content: space-around;
-  padding: 30px 0;
-  align-self: stretch;
+  padding: 20px 0;
+  width: 90%;
   align-items: center;
-  margin-top: 30px;
-  margin-bottom: 20px;
+  margin: 20px 0;
+  border-radius: 10px;
 `;
 
 const OptionButton = styled(Pressable)`
   border-radius: 50px;
-  height: 54px;
-  padding: 10px 12px;
-  width: 323px;
+  height: 50px;
+  width: 90%;
   background-color: ${COLORS.white};
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  opacity: ${({ isSelected }) => (isSelected ? 1 : 0.7)};
-  margin-bottom: 25px;
+  justify-content: flex-start;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  elevation: 3;
+  border: ${({ isSelected }) => (isSelected ? `2px solid ${COLORS.dark_indigo}` : '2px solid transparent')};
 `;
 
-const CheckIcon = styled.Image`
-  width: 34px;
-  height: 34px;
-  margin-right: 20px;
+const IconWithMargin = styled.View`
+  margin-right: 30px;
+`;
+
+const ProfileIconContainer = styled.View`
+  width: ${width * 0.3}px; 
+  height: ${width * 0.3}px; 
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: center;
 `;
 
 const OptionText = styled.Text`
   font-family: 'LeagueSpartan-Regular';
   color: #232323;
-  width: 197px;
-  height: 27px;
-  line-height: 14px;
-  text-align: left;
-  margin-top: 10px;
-  font-size: 20px;
+  font-size: ${width * 0.045}px;
   font-weight: 700;
 `;
 
 const ContinueButton = styled(Pressable)`
   border-radius: 100px;
-  border: 1px solid ${COLORS.white};
-  width: 179px;
-  padding: 15px 36px;
+  width: 150px;
+  padding: 12px;
   position: absolute;
-  left: 50%;
-  margin-left: -89.5px;
-  bottom: 35px;
+  bottom: 20px;
   justify-content: center;
   align-items: center;
-  flex: 1;
+  background-color: ${({ color }) => color};
 `;
 
 const ContinueText = styled.Text`
   color: #fff;
   font-family: 'Poppins-Bold';
   font-weight: 700;
-  text-align: center;
+  font-size: ${width * 0.04}px;
 `;
 
 const InputContainer = styled.View`
-  width: 80%;
+  width: 90%;
   margin-bottom: 20px;
 `;
 
-const Input = styled(TextInput)`
-  font-size: 20px;
+const StyledInput = styled(TextInput)`
+  font-size: ${width * 0.045}px;
   border-radius: 15px;
   background-color: #f1f2f6;
-  border-color: #27187e;
-  height: 248px;
-  padding: 20px;
-  align-self: stretch;
+  height: ${height * 0.25}px;
+  padding: 15px;
+  border: 1px solid ${COLORS.dark_indigo};
+  color: #000;
+  text-align-vertical: top;
 `;

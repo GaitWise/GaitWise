@@ -23,18 +23,9 @@ export default () => {
         }}
       />
       <Tabs.Screen
-        name="calendar"
+        name="project_select"
         options={{
-          title: "Calendar",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="calendar" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="board"
-        options={{
-          title: "Board",
+          title: "project_select",
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="clipboard" size={size} color={color} />
           ),

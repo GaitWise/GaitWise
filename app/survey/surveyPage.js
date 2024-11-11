@@ -1,4 +1,3 @@
-// app/survey/grade.js
 import * as React from 'react';
 import { useState } from 'react';
 import styled from 'styled-components/native';
@@ -35,11 +34,32 @@ export const SurveyPage = () => {
 
 export default SurveyPage;
 
-// styled-components
-const BaseFrameContainer = styled.View`
-  flex: 1;
-  background-color: ${COLORS.white};
-`;
+const pagesdata = {
+  title: "Test_Custom",
+  description: "This Survey is TestSurvey",
+  selection: [
+    {
+      content: "What Is Your Grade?",
+      option: ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Other'],
+      type: "Multiple",
+      max: 3,
+      min: 1
+    },
+    {
+      content: "How Would You Describe \n Your Current State Of Health?",
+      option: ['Excellent', 'Good', 'Fair', 'Poor'],
+      type: "Single",
+      max: 1,
+      min: 1
+    }
+  ],
+  text_response: [
+    { content: "What Is Your Goal?"},
+    { content: "How Are You Feeling Today?"},
+    { content: "What Is Your Dream?"},
+  ],
+};
+
 
 const pagesData = [
   {

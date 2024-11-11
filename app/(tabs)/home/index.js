@@ -30,7 +30,7 @@ const iconData = [
     text: 'Survey',
     IconComponent: icons.male,
     backgroundColor: COLORS.sky_blue,
-    route: '/comingSoon',
+    route: '/survey/selection',
   },
   {
     text: 'Project',
