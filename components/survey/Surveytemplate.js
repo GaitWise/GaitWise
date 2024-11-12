@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Image, Pressable, TextInput,Keyboard, Dimensions, TouchableWithoutFeedback } from 'react-native';
+import {
+  Image,
+  Pressable,
+  TextInput,
+  Keyboard,
+  Dimensions,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import styled from 'styled-components/native';
 import { COLORS, IMAGES, icons } from '@/constants';
 
@@ -28,49 +35,53 @@ const SurveyTemplate = ({ currentPageData, onContinue }) => {
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-    <BaseFrameContainer>
-      <TitleContainer>
-        <TitleText>{currentPageData.title}</TitleText>
-      </TitleContainer>
- 
+      <BaseFrameContainer>
+        <TitleContainer>
+          <TitleText>{currentPageData.title}</TitleText>
+        </TitleContainer>
+
         <ProfileImage source={IMAGES.profile} />
-    
-      <OptionsContainer height={optionsContainerHeight}>
-        {currentPageData.options?.length ? (
-          currentPageData.options.map((option) => (
-            <OptionButton
-              key={option.value}
-              isSelected={selectedOption === option.value}
-              onPress={() => setSelectedOption(option.value)}
-            >
-              <IconWithMargin>
-                {selectedOption === option.value ? (
-                  <icons.checked />
-                ) : (
-                  <icons.check />
-                )}
-              </IconWithMargin>
-              <OptionText>{option.label}</OptionText>
-            </OptionButton>
-          ))
-        ) : (
-          <InputContainer>
-            <StyledInput
-              placeholder="ex : good"
-              placeholderTextColor={COLORS.pastel_lavender}
-              value={inputValue}
-              onChangeText={setInputValue}
-              multiline
-              numberOfLines={4}
-            />
-          </InputContainer>
-        )}
-      </OptionsContainer>
-      <ContinueButton onPress={handleContinue} disabled={!isContinueEnabled} color={continueButtonColor}>
-        <ContinueText>Continue</ContinueText>
-      </ContinueButton>
-    </BaseFrameContainer>
-  </TouchableWithoutFeedback>
+
+        <OptionsContainer height={optionsContainerHeight}>
+          {currentPageData.options?.length ? (
+            currentPageData.options.map((option) => (
+              <OptionButton
+                key={option.value}
+                isSelected={selectedOption === option.value}
+                onPress={() => setSelectedOption(option.value)}
+              >
+                <IconWithMargin>
+                  {selectedOption === option.value ? (
+                    <icons.checked />
+                  ) : (
+                    <icons.check />
+                  )}
+                </IconWithMargin>
+                <OptionText>{option.label}</OptionText>
+              </OptionButton>
+            ))
+          ) : (
+            <InputContainer>
+              <StyledInput
+                placeholder="ex : good"
+                placeholderTextColor={COLORS.pastel_lavender}
+                value={inputValue}
+                onChangeText={setInputValue}
+                multiline
+                numberOfLines={4}
+              />
+            </InputContainer>
+          )}
+        </OptionsContainer>
+        <ContinueButton
+          onPress={handleContinue}
+          disabled={!isContinueEnabled}
+          color={continueButtonColor}
+        >
+          <ContinueText>Continue</ContinueText>
+        </ContinueButton>
+      </BaseFrameContainer>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -85,7 +96,6 @@ const BaseFrameContainer = styled.View`
   padding-top: 20px;
 `;
 
-
 const ProfileImage = styled(Image)`
   border-radius: ${width * 0.3}px;
   width: ${width * 0.33}px;
@@ -98,12 +108,11 @@ const TitleContainer = styled.View`
 `;
 
 const TitleText = styled.Text`
-  font-size: ${width * 0.065}px;
+  font-size: ${width * 0.06}px;
   color: ${COLORS.dark_indigo};
   font-family: 'Poppins-Bold';
   font-weight: 700;
   text-align: center;
-  padding: 0 10px;
 `;
 
 const OptionsContainer = styled.View`
@@ -111,10 +120,11 @@ const OptionsContainer = styled.View`
   height: ${({ height }) => height}px;
   justify-content: space-around;
   padding: 20px 0;
-  width: 90%;
+  width: 100%;
   align-items: center;
-  margin: 20px 0;
+  margin: 20px;
   border-radius: 10px;
+  gap: 15px;
 `;
 
 const OptionButton = styled(Pressable)`
@@ -129,7 +139,8 @@ const OptionButton = styled(Pressable)`
   margin-bottom: 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   elevation: 3;
-  border: ${({ isSelected }) => (isSelected ? `2px solid ${COLORS.dark_indigo}` : '2px solid transparent')};
+  border: ${({ isSelected }) =>
+    isSelected ? `2px solid ${COLORS.dark_indigo}` : '2px solid transparent'};
 `;
 
 const IconWithMargin = styled.View`
@@ -137,8 +148,8 @@ const IconWithMargin = styled.View`
 `;
 
 const ProfileIconContainer = styled.View`
-  width: ${width * 0.3}px; 
-  height: ${width * 0.3}px; 
+  width: ${width * 0.3}px;
+  height: ${width * 0.3}px;
   margin-bottom: 20px;
   align-items: center;
   justify-content: center;
@@ -156,7 +167,7 @@ const ContinueButton = styled(Pressable)`
   width: 150px;
   padding: 12px;
   position: absolute;
-  bottom: 20px;
+  bottom: 35px;
   justify-content: center;
   align-items: center;
   background-color: ${({ color }) => color};
