@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { router } from 'expo-router';
-import { COLORS } from '@/constants';
+import { COLORS, icons } from '@/constants';
 import styled from 'styled-components/native';
-import { ScrollView, Modal, TextInput, Button, StatusBar, Dimensions } from 'react-native';
+import { ScrollView, Modal, TextInput, Button, Dimensions } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -35,7 +35,7 @@ const ProjectSelect = () => {
       <StatusBarContainer>
         <MainText>Join Your Project</MainText>
         <AddButton onPress={() => setModalVisible(true)}>
-          <PlusText>+</PlusText>
+          <icons.add />
         </AddButton>
       </StatusBarContainer>
 
@@ -49,7 +49,7 @@ const ProjectSelect = () => {
           <ModalContent>
             <XButtonWrapper>
               <XButton onPress={() => setModalVisible(false)}>
-                <XText>x</XText>
+                <icons.close />
               </XButton>
             </XButtonWrapper>
 
@@ -67,7 +67,11 @@ const ProjectSelect = () => {
               }}
             />
 
-            <Button title="확인" onPress={addProject} color={COLORS.deep_slate_blue} />
+            <Button
+              title="확인"
+              onPress={addProject}
+              color={COLORS.deep_slate_blue}
+            />
           </ModalContent>
         </ModalContainer>
       </Modal>
@@ -100,14 +104,13 @@ const ProjectSelect = () => {
 
 export default ProjectSelect;
 
-
 const XButtonWrapper = styled.View`
   width: 100%;
   align-items: flex-end;
 `;
 
 const XButton = styled.TouchableOpacity`
-  width: ${width * 0.08}px; 
+  width: ${width * 0.08}px;
   height: ${height * 0.04}px;
   justify-content: center;
   align-items: center;
@@ -135,16 +138,6 @@ const MainText = styled.Text`
 
 const AddButton = styled.Pressable`
   padding: ${height * 0.01}px;
-`;
-
-const XText = styled.Text`
-  font-size: ${height * 0.035}px; 
-  color: ${COLORS.dark_indigo};
-`;
-
-const PlusText = styled.Text`
-  font-size: ${height * 0.04}px;
-  color: ${COLORS.deep_slate_blue};
 `;
 
 const Content = styled.View`
@@ -205,7 +198,7 @@ const ModalContainer = styled.View`
 
 const ModalContent = styled.View`
   width: ${width * 0.85}px;
-  padding: ${height * 0.04}px ${width * 0.06}px; 
+  padding: ${height * 0.04}px ${width * 0.06}px;
   background-color: ${COLORS.white};
   border-radius: 10px;
   align-items: center;
