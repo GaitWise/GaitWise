@@ -9,12 +9,7 @@ const { width, height } = Dimensions.get('window');
 const ProjectSelect = () => {
   const [codeInput, setCodeInput] = React.useState('');
   const [modalVisible, setModalVisible] = React.useState(false);
-  const [stepsData, setStepsData] = React.useState([
-    { projectName: '프로젝트A', organization: '조직X' },
-    { projectName: '프로젝트B', organization: '조직Y' },
-    { projectName: '프로젝트C', organization: '조직Z' },
-    { projectName: '프로젝트A', organization: '조직X' },
-  ]);
+  const [stepsData, setStepsData] = React.useState([]);
 
   const addProject = () => {
     if (codeInput.trim() !== '') {
@@ -57,13 +52,15 @@ const ProjectSelect = () => {
 
             <TextInput
               placeholder="참여 코드를 입력하세요"
+              placeholderTextColor={COLORS.slate_gray}
               value={codeInput}
               onChangeText={setCodeInput}
               style={{
-                borderBottomWidth: 1,
+                borderBottomWidth: 2,
                 borderColor: COLORS.slate_gray,
                 marginBottom: 16,
                 width: '100%',
+                height: height * 0.04,
               }}
             />
 
@@ -78,24 +75,28 @@ const ProjectSelect = () => {
 
       <Content>
         <ScrollViewContainer>
-          <ScrollView
-            contentContainerStyle={{ paddingBottom: 16 }}
-            horizontal={false}
-            showsHorizontalScrollIndicator={false}
-          >
-            {stepsData.map((item, index) => (
-              <CardShadowBox key={index}>
-                <CardContent>
-                  <TextRow onPress={() => navigateToHome(item.projectName)}>
-                    <TextWrapper>
-                      <CardTitle>{item.projectName}</CardTitle>
-                      <CardSubtitle>{item.organization}</CardSubtitle>
-                    </TextWrapper>
-                  </TextRow>
-                </CardContent>
-              </CardShadowBox>
-            ))}
-          </ScrollView>
+          {stepsData.length === 0 ? (
+            <NoProjectsText>프로젝트를 추가해주세요</NoProjectsText>
+          ) : (
+            <ScrollView
+              contentContainerStyle={{ paddingBottom: 16 }}
+              horizontal={false}
+              showsHorizontalScrollIndicator={false}
+            >
+              {stepsData.map((item, index) => (
+                <CardShadowBox key={index}>
+                  <CardContent>
+                    <TextRow onPress={() => navigateToHome(item.projectName)}>
+                      <TextWrapper>
+                        <CardTitle>{item.projectName}</CardTitle>
+                        <CardSubtitle>{item.organization}</CardSubtitle>
+                      </TextWrapper>
+                    </TextRow>
+                  </CardContent>
+                </CardShadowBox>
+              ))}
+            </ScrollView>
+          )}
         </ScrollViewContainer>
       </Content>
     </HomePageWrapper>
@@ -103,6 +104,14 @@ const ProjectSelect = () => {
 };
 
 export default ProjectSelect;
+
+const NoProjectsText = styled.Text`
+  font-size: ${height * 0.025}px;
+  color: ${COLORS.slate_gray};
+  text-align: center;
+  margin-top: ${height * 0.1}px;
+  font-weight: bold;
+`;
 
 const XButtonWrapper = styled.View`
   width: 100%;
@@ -207,6 +216,6 @@ const ModalContent = styled.View`
 const ModalTitle = styled.Text`
   font-size: ${height * 0.025}px;
   font-weight: bold;
-  margin-bottom: ${height * 0.02}px;
+  margin-bottom: ${height * 0.04}px;
   color: ${COLORS.dark_indigo};
 `;
