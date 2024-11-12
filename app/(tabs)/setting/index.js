@@ -1,20 +1,21 @@
-import * as React from "react";
-import styled from "styled-components/native";
-import { icons, COLORS } from "@/constants";
-import { router } from "expo-router";
-import { View, Button } from "react-native";
-import * as ImagePicker from "expo-image-picker";
+import * as React from 'react';
+import styled from 'styled-components/native';
+import { icons, COLORS } from '@/constants';
+import { router } from 'expo-router';
+import { View, Button } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 
 // 페이지 이동
-const edit_survey = "";
-const doctors = "";
-const notification = "";
-const contact = "setting/contact";
-const user_reset = "";
+const edit_survey = 'survey/surveyPage';
+const doctors = '';
+const notification = '';
+const contact = 'setting/contact';
+const user_reset = '';
 
 const data = {
-  name: "Han JiSoo",
-  phone: "010-1234-5678",
+  firstName: 'Han',
+  lastName: 'Jisoo',
+  phone: '010-1234-5678',
 };
 
 const Setting = () => {
@@ -49,7 +50,7 @@ const Setting = () => {
         <EditPic source={image ? { uri: image } : icons.profile} />
         <Button title="Change Profile Picture" onPress={pickImage} />
         <InfoContainer>
-          <UserName>{data.name}</UserName>
+          <UserName>{`${data.firstName} ${data.lastName}`}</UserName>
           <UserPhone>{data.phone}</UserPhone>
         </InfoContainer>
       </EditPicInfo>
@@ -58,48 +59,48 @@ const Setting = () => {
         {/* Edit Survey */}
         <PressableItemContainer onPress={() => router.push(edit_survey)}>
           <PressableItem>
-            <StyledImage source={icons.edit} />
+            <icons.edit />
             <MenuText>Edit Survey (설문 조사)</MenuText>
           </PressableItem>
-          <ArrowIcon source={icons.arrow_right} />
+          <icons.arrow_right />
         </PressableItemContainer>
         <Separator />
         {/* Favorite Doctors */}
         <PressableItemContainer onPress={() => router.push(doctors)}>
           <PressableItem>
-            <StyledImage source={icons.noti} />
+            <icons.favorite />
             <MenuText>Favorite Doctors</MenuText>
           </PressableItem>
-          <ArrowIcon source={icons.arrow_right} />
+          <icons.arrow_right />
         </PressableItemContainer>
         <Separator />
         {/* Notification */}
         <PressableItemContainer onPress={() => router.push(notification)}>
           <PressableItem>
-            <StyledImage source={icons.noti} />
+            <icons.noti />
             <MenuText>Notifications</MenuText>
           </PressableItem>
-          <ArrowIcon source={icons.arrow_right} />
+          <icons.arrow_right />
         </PressableItemContainer>
         <Separator />
         {/* Contact */}
         <PressableItemContainer onPress={() => router.push(contact)}>
           <PressableItem>
-            <StyledImage source={icons.helpM} />
+            <icons.helpM />
             <MenuText>Help and Support</MenuText>
           </PressableItem>
           <View>
-            <ArrowIcon source={icons.arrow_right} />
+            <icons.arrow_right />
           </View>
         </PressableItemContainer>
         <Separator />
         {/* User Reset */}
         <PressableItemContainer onPress={() => router.push(user_reset)}>
           <PressableItem>
-            <StyledImage source={icons.reset} />
-            <MenuText>User Reset</MenuText>
+            <icons.reset />
+            <MenuText>Delete Account</MenuText>
           </PressableItem>
-          <ArrowIcon source={icons.arrow_right} />
+          <icons.arrow_right />
         </PressableItemContainer>
       </MenuContainer>
     </ProfileContainer>
@@ -137,7 +138,7 @@ const Title = styled.Text`
   font-size: 25px;
   font-weight: 600;
   color: ${COLORS.dark_indigo};
-  font-family: "Inter-SemiBold";
+  font-family: 'Inter-SemiBold';
 `;
 
 const EditPicInfo = styled.View`
@@ -164,13 +165,13 @@ const UserName = styled.Text`
   font-size: 16px;
   font-weight: 700;
   color: ${COLORS.dark_indigo};
-  font-family: "Inter-Bold";
+  font-family: 'Inter-Bold';
 `;
 
 const UserPhone = styled.Text`
   font-size: 14px;
   color: ${COLORS.dark_indigo};
-  font-family: "Inter-Regular";
+  font-family: 'Inter-Regular';
   text-align: center;
 `;
 
@@ -208,7 +209,7 @@ const PressableItem = styled.View`
 const MenuText = styled.Text`
   font-size: 18px;
   color: ${COLORS.dark_gray};
-  font-family: "Inter-Regular";
+  font-family: 'Inter-Regular';
 `;
 
 const ArrowIcon = styled.Image`
