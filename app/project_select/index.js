@@ -2,7 +2,14 @@ import * as React from 'react';
 import { router } from 'expo-router';
 import { COLORS } from '@/constants';
 import styled from 'styled-components/native';
-import { ScrollView, Modal, TextInput, Button, StatusBar, Dimensions } from 'react-native';
+import {
+  ScrollView,
+  Modal,
+  TextInput,
+  Button,
+  StatusBar,
+  Dimensions,
+} from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -25,8 +32,11 @@ const ProjectSelect = () => {
     }
   };
 
-  const navigateToHome = (projectName) => {
-    router.push('home');
+  const navigateToHome = (projectName, organization, projectId) => {
+    router.push({
+      pathname: 'home',
+      params: { projectName, organization, projectId },
+    });
     console.log(`${projectName} 프로젝트로 이동합니다.`);
   };
 
@@ -67,7 +77,11 @@ const ProjectSelect = () => {
               }}
             />
 
-            <Button title="확인" onPress={addProject} color={COLORS.deep_slate_blue} />
+            <Button
+              title="확인"
+              onPress={addProject}
+              color={COLORS.deep_slate_blue}
+            />
           </ModalContent>
         </ModalContainer>
       </Modal>
@@ -82,7 +96,15 @@ const ProjectSelect = () => {
             {stepsData.map((item, index) => (
               <CardShadowBox key={index}>
                 <CardContent>
-                  <TextRow onPress={() => navigateToHome(item.projectName)}>
+                  <TextRow
+                    onPress={() =>
+                      navigateToHome(
+                        item.projectName,
+                        item.organization,
+                        '프로젝트ID',
+                      )
+                    }
+                  >
                     <TextWrapper>
                       <CardTitle>{item.projectName}</CardTitle>
                       <CardSubtitle>{item.organization}</CardSubtitle>
@@ -100,14 +122,13 @@ const ProjectSelect = () => {
 
 export default ProjectSelect;
 
-
 const XButtonWrapper = styled.View`
   width: 100%;
   align-items: flex-end;
 `;
 
 const XButton = styled.TouchableOpacity`
-  width: ${width * 0.08}px; 
+  width: ${width * 0.08}px;
   height: ${height * 0.04}px;
   justify-content: center;
   align-items: center;
@@ -138,7 +159,7 @@ const AddButton = styled.Pressable`
 `;
 
 const XText = styled.Text`
-  font-size: ${height * 0.035}px; 
+  font-size: ${height * 0.035}px;
   color: ${COLORS.dark_indigo};
 `;
 
@@ -205,7 +226,7 @@ const ModalContainer = styled.View`
 
 const ModalContent = styled.View`
   width: ${width * 0.85}px;
-  padding: ${height * 0.04}px ${width * 0.06}px; 
+  padding: ${height * 0.04}px ${width * 0.06}px;
   background-color: ${COLORS.white};
   border-radius: 10px;
   align-items: center;

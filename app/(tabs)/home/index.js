@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Banner } from '@/components';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { icons, COLORS } from '@/constants';
 import styled from 'styled-components/native';
-import { ScrollView, Pressable } from 'react-native';
+import { ScrollView, Pressable, Text, Alert } from 'react-native';
 
 const stepsData = [
   { date: '2024년 10월 22일', steps: '2000걸음/5min' },
@@ -67,21 +67,55 @@ const iconData = [
     IconComponent: icons.male,
     backgroundColor: COLORS.sky_blue,
     route: '/comingSoon',
-  }
+  },
 ];
 
 const HomePage = () => {
+  const { projectName, organization, projectId } = useLocalSearchParams();
+  const [isSurveyCompleted] = React.useState(false); // 설문 완료 상태 변수
   const router = useRouter();
 
-   return (
+  // 버튼 클릭 시 필수 설문 완료 여부 확인
+  const completeSurvey = () => {
+    setIsSurveyCompleted(true); // 설문 완료 상태를 true로 설정
+    Alert.alert('설문 완료', '설문이 완료되었습니다!', [
+      {
+        text: 'OK',
+        onPress: () => console.log('Survey completed'), // 필요 시 추가 액션
+      },
+    ]);
+  };
+
+  const handlePress = (route) => {
+    if (!isSurveyCompleted) {
+      Alert.alert(
+        '필수 설문 미완료',
+        '필수 설문을 완료해주세요. 설정 페이지의 Edit Survey 버튼을 클릭하세요.',
+        [
+          {
+            text: 'OK',
+            onPress: () => router.push('survey/surveyPage'),
+          },
+        ],
+      );
+      return;
+    }
+    router.push(route);
+  };
+
+  return (
     <HomePageWrapper>
       <Content>
-        <TopSection />
+        <TopSection>
+          <RowWrapper>
+            <PText>{`프로젝트: ${projectName || '없음'}`}</PText>
+            <OText>{`조직: ${organization || '없음'}`}</OText>
+          </RowWrapper>
+          <IText>{`ID: ${projectId || '없음'}`}</IText>
+        </TopSection>
 
-        {/* banner */}
         <Banner />
-        
-        {/* 기능 */}
+
         <MiddleContainer>
           <TitleRow>
             <TitleText>{`기능`}</TitleText>
@@ -89,9 +123,14 @@ const HomePage = () => {
           </TitleRow>
           <CategoriesContainer>
             <GridContainer>
-            {iconData.map((item, index) => (
-                <StyledPressable key={index} onPress={() => router.push(item.route)}>
-                  <ImageContainer style={{ backgroundColor: item.backgroundColor }}>
+              {iconData.map((item, index) => (
+                <StyledPressable
+                  key={index}
+                  onPress={() => handlePress(item.route)}
+                >
+                  <ImageContainer
+                    style={{ backgroundColor: item.backgroundColor }}
+                  >
                     <item.IconComponent width={35} height={35} />
                   </ImageContainer>
                   <StyledText>{item.text}</StyledText>
@@ -101,6 +140,7 @@ const HomePage = () => {
           </CategoriesContainer>
         </MiddleContainer>
 
+        {/* 최근 측정 결과 */}
         <ScrollViewContainer>
           <TitleRow>
             <TitleText>{`최근 측정 결과 `}</TitleText>
@@ -115,7 +155,7 @@ const HomePage = () => {
               <CardShadowBox key={index}>
                 <CardContent>
                   <TextRow>
-                      <CardTitle>{item.date}</CardTitle>
+                    <CardTitle>{item.date}</CardTitle>
                     <StepWrapper>
                       <StyledImage source={icons.steps} />
                       <StepsText>{item.steps}</StepsText>
@@ -143,12 +183,42 @@ const Content = styled.View`
   flex: 1;
   width: 100%;
   background-color: ${COLORS.white};
-  gap: 16px;
+  gap: 5px;
 `;
 
 const TopSection = styled.View`
+  width: 100%;
+  flex-direction: column;
   align-items: center;
-  gap: 14px;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 8px;
+`;
+
+const RowWrapper = styled.View`
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+`;
+
+const PText = styled.Text`
+  font-size: 17px;
+  color: ${COLORS.dark_indigo};
+  text-align: center;
+  font-weight: bold;
+`;
+const OText = styled.Text`
+  font-size: 17px;
+  color: ${COLORS.dark_indigo};
+  text-align: center;
+  font-weight: bold;
+`;
+const IText = styled.Text`
+  font-size: 14px;
+  color: ${COLORS.slate_gray};
+  text-align: center;
 `;
 
 const MiddleContainer = styled.View`
@@ -199,7 +269,7 @@ const TextRow = styled.View`
 `;
 
 const CardTitle = styled.Text`
-  font-size: 14px; 
+  font-size: 14px;
   line-height: 21px;
   color: ${COLORS.dark_indigo};
   text-align: center;
@@ -217,7 +287,7 @@ const StyledImage = styled.Image`
 `;
 
 const StepsText = styled.Text`
-  font-size: 12px; 
+  font-size: 12px;
   line-height: 18px;
   color: ${COLORS.slate_gray};
 `;
@@ -236,7 +306,7 @@ const TitleText = styled.Text`
 `;
 
 const SeeAllText = styled.Text`
-  font-size: 14px; 
+  font-size: 14px;
   line-height: 21px;
   color: ${COLORS.slate_gray};
   font-weight: 500;
