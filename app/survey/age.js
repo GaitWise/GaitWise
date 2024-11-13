@@ -18,6 +18,10 @@ const Age = () => {
     setSelectedAge(ageArray[newIndex]);
   };
 
+  const isFormValid = () => {
+    return selectedAge;
+  };
+
   return (
     <BaseContainer>
       <FrameContainer>
@@ -31,7 +35,7 @@ const Age = () => {
           <AgeText>{selectedAge}</AgeText>
 
           <ArrowIconContainer>
-            <icons.arrow_up/>
+            <icons.arrow_up />
           </ArrowIconContainer>
 
           <AgeContainer>
@@ -57,7 +61,16 @@ const Age = () => {
           </AgeContainer>
 
           <ButtonContainer>
-            <ContinueButton onPress={() => router.push('/survey/weight')}>
+            <ContinueButton
+              onPress={() => {
+                if (isFormValid()) {
+                  router.push('/survey/weight');
+                }
+              }}
+              disabled={!isFormValid()}
+              isFormValid={isFormValid()}
+              activeOpacity={0.7}
+            >
               <ContinueText>Continue</ContinueText>
             </ContinueButton>
           </ButtonContainer>
@@ -83,7 +96,8 @@ const FrameContainer = styled.View`
 `;
 
 const TitleContainer = styled.View`
-  margin-bottom: ${height * 0.05}px; /* 상단 텍스트와 나머지 요소 사이 간격 조정 */
+  margin-bottom: ${height *
+  0.05}px; /* 상단 텍스트와 나머지 요소 사이 간격 조정 */
 `;
 
 const ContentContainer = styled.View`
@@ -148,11 +162,12 @@ const ButtonContainer = styled.View`
 `;
 
 const ContinueButton = styled(TouchableOpacity)`
-  width: ${width * 0.6}px;  
+  width: ${width * 0.6}px;
   height: ${height * 0.08}px;
-  padding: ${height * 0.015}px;  
-  border-radius: ${width * 0.5}px; 
-  background-color: ${COLORS.dark_indigo};
+  padding: ${height * 0.015}px;
+  border-radius: ${width * 0.5}px;
+  background-color: ${({ isFormValid }) =>
+    isFormValid ? COLORS.dark_indigo : COLORS.continue_gray};
   justify-content: center;
   align-items: center;
 `;

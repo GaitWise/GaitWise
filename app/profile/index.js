@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   TextInput,
   Dimensions,
-  ScrollView,
   Button,
 } from 'react-native';
 
