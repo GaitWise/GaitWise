@@ -8,14 +8,22 @@ const { width, height } = Dimensions.get('window');
 
 const ProjectSelect = () => {
   const [codeInput, setCodeInput] = React.useState('');
+  const [pName, setpName] = React.useState('');
   const [modalVisible, setModalVisible] = React.useState(false);
   const [stepsData, setStepsData] = React.useState([]);
 
   const addProject = () => {
-    if (codeInput.trim() !== '') {
-      const newProject = { projectName: codeInput, organization: '조직Z' };
+    // 참여 코드와 프로젝트 이름이 입력되었는지 확인
+    if (codeInput.trim() !== '' && pName.trim() !== '') {
+      // 새로운 프로젝트 객체에 프로젝트 이름과 조직을 할당
+      const newProject = { projectName: pName, organization: '조직Z' };
+
+      // 기존 프로젝트 데이터에 새 프로젝트 추가
       setStepsData((prevStepsData) => [...prevStepsData, newProject]);
+
+      // 입력 필드 초기화
       setCodeInput('');
+      setpName(''); // 추가된 부분: 프로젝트 이름 입력 초기화
       setModalVisible(false);
     }
   };
@@ -48,13 +56,26 @@ const ProjectSelect = () => {
               </XButton>
             </XButtonWrapper>
 
-            <ModalTitle>참여 코드 입력</ModalTitle>
+            <ModalTitle>참여 코드 & 프로젝트 명 입력</ModalTitle>
 
             <TextInput
               placeholder="참여 코드를 입력하세요"
               placeholderTextColor={COLORS.slate_gray}
               value={codeInput}
               onChangeText={setCodeInput}
+              style={{
+                borderBottomWidth: 2,
+                borderColor: COLORS.slate_gray,
+                marginBottom: 16,
+                width: '100%',
+                height: height * 0.04,
+              }}
+            />
+            <TextInput
+              placeholder="프로젝트 이름을 입력하세요"
+              placeholderTextColor={COLORS.slate_gray}
+              value={pName}
+              onChangeText={setpName}
               style={{
                 borderBottomWidth: 2,
                 borderColor: COLORS.slate_gray,
