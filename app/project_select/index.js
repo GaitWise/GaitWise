@@ -59,7 +59,7 @@ const ProjectSelect = () => {
             <ModalTitle>참여 코드 & 프로젝트 명 입력</ModalTitle>
 
             <TextInput
-              placeholder="참여 코드를 입력하세요"
+              placeholder="참여 코드를 입력하세요."
               placeholderTextColor={COLORS.slate_gray}
               value={codeInput}
               onChangeText={setCodeInput}
@@ -72,7 +72,7 @@ const ProjectSelect = () => {
               }}
             />
             <TextInput
-              placeholder="프로젝트 이름을 입력하세요"
+              placeholder="프로젝트 이름을 입력하세요."
               placeholderTextColor={COLORS.slate_gray}
               value={pName}
               onChangeText={setpName}
@@ -97,7 +97,7 @@ const ProjectSelect = () => {
       <Content>
         <ScrollViewContainer>
           {stepsData.length === 0 ? (
-            <NoProjectsText>프로젝트를 추가해주세요</NoProjectsText>
+            <NoProjectsText>프로젝트를 추가해주세요.</NoProjectsText>
           ) : (
             <ScrollView
               contentContainerStyle={{ paddingBottom: 16 }}
