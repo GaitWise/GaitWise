@@ -71,8 +71,7 @@ const iconData = [
 ];
 
 const HomePage = () => {
-  // const { projectName, organization, projectId } = useLocalSearchParams();
-  const [isSurveyCompleted] = React.useState(false); // 설문 완료 상태 변수
+  const [isSurveyCompleted, setIsSurveyCompleted] = React.useState(false); // 설문 완료 상태 변수 추가
   const router = useRouter();
 
   // 버튼 클릭 시 필수 설문 완료 여부 확인
@@ -277,7 +276,6 @@ const SeeAllText = styled.Text`
   font-weight: 500;
 `;
 
-// Styled Components for Iconbox
 const StyledPressable = styled(Pressable)`
   gap: 4px;
   align-items: center;

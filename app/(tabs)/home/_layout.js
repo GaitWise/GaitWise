@@ -1,23 +1,26 @@
-// /app/(tabs)/home/_layout.js
-
-import * as React from 'react';
-import { useLocalSearchParams, Stack } from 'expo-router';
-import { COLORS } from '@/constants';
+import { Stack, useLocalSearchParams } from 'expo-router';
+import React from 'react';
 import styled from 'styled-components/native';
-import { View } from 'react-native';
+import { COLORS } from '../../../constants';
 
 export default function HomeLayout() {
-  const { projectName, organization, projectId } = useLocalSearchParams();
+  const {
+    projectName = '없음',
+    organization = '없음',
+    projectId = '없음',
+  } = useLocalSearchParams();
+
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <>
       <Section>
         <RowWrapper>
-          <CommonText>{`프로젝트: ${projectName || '없음'}`}</CommonText>
-          <CommonText>{`조직: ${organization || '없음'}`}</CommonText>
+          <CommonText>{`프로젝트: ${projectName}`}</CommonText>
+          <CommonText>{`조직: ${organization}`}</CommonText>
         </RowWrapper>
-        <CommonText>{`ID: ${projectId || '없음'}`}</CommonText>
+        <CommonText>{`ID: ${projectId}`}</CommonText>
       </Section>
-    </Stack>
+      <Stack screenOptions={{ headerShown: false }} />
+    </>
   );
 }
 
@@ -28,6 +31,7 @@ const Section = styled.View`
   justify-content: center;
   gap: 15px;
   margin-top: 8px;
+  background-color: ${COLORS.white};
 `;
 
 const RowWrapper = styled.View`
