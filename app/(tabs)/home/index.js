@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Banner } from '@/components';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { icons, COLORS } from '@/constants';
 import styled from 'styled-components/native';
 import { ScrollView, Pressable, Text, Alert } from 'react-native';
@@ -71,7 +71,7 @@ const iconData = [
 ];
 
 const HomePage = () => {
-  const { projectName, organization, projectId } = useLocalSearchParams();
+  // const { projectName, organization, projectId } = useLocalSearchParams();
   const [isSurveyCompleted] = React.useState(false); // 설문 완료 상태 변수
   const router = useRouter();
 
@@ -106,13 +106,13 @@ const HomePage = () => {
   return (
     <HomePageWrapper>
       <Content>
-        <TopSection>
+        {/* <TopSection>
           <RowWrapper>
             <PText>{`프로젝트: ${projectName || '없음'}`}</PText>
             <OText>{`조직: ${organization || '없음'}`}</OText>
           </RowWrapper>
           <IText>{`ID: ${projectId || '없음'}`}</IText>
-        </TopSection>
+        </TopSection> */}
 
         <Banner />
 
@@ -184,41 +184,6 @@ const Content = styled.View`
   width: 100%;
   background-color: ${COLORS.white};
   gap: 5px;
-`;
-
-const TopSection = styled.View`
-  width: 100%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 8px;
-`;
-
-const RowWrapper = styled.View`
-  width: 100%;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-`;
-
-const PText = styled.Text`
-  font-size: 17px;
-  color: ${COLORS.dark_indigo};
-  text-align: center;
-  font-weight: bold;
-`;
-const OText = styled.Text`
-  font-size: 17px;
-  color: ${COLORS.dark_indigo};
-  text-align: center;
-  font-weight: bold;
-`;
-const IText = styled.Text`
-  font-size: 14px;
-  color: ${COLORS.slate_gray};
-  text-align: center;
 `;
 
 const MiddleContainer = styled.View`
