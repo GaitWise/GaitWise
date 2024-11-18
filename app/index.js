@@ -11,7 +11,7 @@ const Splash = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.replace("/home"); 
+      router.replace("/profile"); 
     }, SPLASH_DURATION);
 
     return () => clearTimeout(timer);

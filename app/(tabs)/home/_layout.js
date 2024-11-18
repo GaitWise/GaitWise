@@ -5,17 +5,17 @@ import { COLORS } from '../../../constants';
 
 export default function HomeLayout() {
   const {
-    projectName = '없음',
-    organization = '없음',
-    projectId = '없음',
+    projectName = 'None',
+    organization = 'None',
+    projectId = 'None',
   } = useLocalSearchParams();
 
   return (
     <>
       <Section>
         <RowWrapper>
-          <CommonText>{`프로젝트: ${projectName}`}</CommonText>
-          <CommonText>{`조직: ${organization}`}</CommonText>
+          <CommonText>{`Project: ${projectName}`}</CommonText>
+          <CommonText>{`Group: ${organization}`}</CommonText>
         </RowWrapper>
         <CommonText>{`ID: ${projectId}`}</CommonText>
       </Section>
