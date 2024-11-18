@@ -12,11 +12,13 @@ const ProjectSelect = () => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [stepsData, setStepsData] = React.useState([]);
 
+  const group = '';
+
   const addProject = () => {
     // 참여 코드와 프로젝트 이름이 입력되었는지 확인
     if (codeInput.trim() !== '' && pName.trim() !== '') {
       // 새로운 프로젝트 객체에 프로젝트 이름과 조직을 할당
-      const newProject = { projectName: pName, organization: '조직Z' };
+      const newProject = { projectName: pName, organization: group };
 
       // 기존 프로젝트 데이터에 새 프로젝트 추가
       setStepsData((prevStepsData) => [...prevStepsData, newProject]);
@@ -56,10 +58,12 @@ const ProjectSelect = () => {
               </XButton>
             </XButtonWrapper>
 
-            <ModalTitle>참여 코드 & 프로젝트 명 입력</ModalTitle>
+            <ModalTitle>
+              Enter your participation code and project name
+            </ModalTitle>
 
             <TextInput
-              placeholder="참여 코드를 입력하세요."
+              placeholder="Engagement Code."
               placeholderTextColor={COLORS.slate_gray}
               value={codeInput}
               onChangeText={setCodeInput}
@@ -72,7 +76,7 @@ const ProjectSelect = () => {
               }}
             />
             <TextInput
-              placeholder="프로젝트 이름을 입력하세요."
+              placeholder="Project Name."
               placeholderTextColor={COLORS.slate_gray}
               value={pName}
               onChangeText={setpName}
@@ -86,7 +90,7 @@ const ProjectSelect = () => {
             />
 
             <Button
-              title="확인"
+              title="Confirm"
               onPress={addProject}
               color={COLORS.deep_slate_blue}
             />
@@ -97,7 +101,7 @@ const ProjectSelect = () => {
       <Content>
         <ScrollViewContainer>
           {stepsData.length === 0 ? (
-            <NoProjectsText>프로젝트를 추가해주세요.</NoProjectsText>
+            <NoProjectsText>Please add the project.</NoProjectsText>
           ) : (
             <ScrollView
               contentContainerStyle={{ paddingBottom: 16 }}
