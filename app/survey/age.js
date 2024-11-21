@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useState, useRef } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // 추가
 import { COLORS, icons } from '@/constants';
 import styled from 'styled-components/native';
 import { TouchableOpacity, FlatList, Dimensions } from 'react-native';
@@ -20,6 +21,16 @@ const Age = () => {
 
   const isFormValid = () => {
     return selectedAge;
+  };
+
+  const handleContinue = async () => {
+    try {
+      // 📌 AsyncStorage에 선택한 나이를 저장
+      await AsyncStorage.setItem('selectedAge', JSON.stringify(selectedAge));
+      router.push('/survey/weight'); // 다음 페이지로 이동
+    } catch (error) {
+      console.error('Failed to save age:', error);
+    }
   };
 
   return (
@@ -62,11 +73,7 @@ const Age = () => {
 
           <ButtonContainer>
             <ContinueButton
-              onPress={() => {
-                if (isFormValid()) {
-                  router.push('/survey/weight');
-                }
-              }}
+              onPress={handleContinue} // 변경된 함수 호출
               disabled={!isFormValid()}
               isFormValid={isFormValid()}
               activeOpacity={0.7}
@@ -81,6 +88,8 @@ const Age = () => {
 };
 
 export default Age;
+
+// 기존 Styled Components 코드는 동일
 
 const BaseContainer = styled.View`
   flex: 1;

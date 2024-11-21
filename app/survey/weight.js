@@ -3,7 +3,7 @@ import { useState, useRef } from 'react';
 import { COLORS, icons } from '@/constants';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // 📌 Icon 라이브러리 추가
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   TouchableOpacity,
   FlatList,
@@ -12,21 +12,26 @@ import {
 } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
+const ITEM_WEIGHT = width * 0.18;
 
 const Weight = () => {
   const flatListRef = useRef(null);
-  const [selectedUnit, setSelectedUnit] = useState('KG');
+  const [selectedKG, setSelectedKG] = useState('KG');
+  const [selectedLB, setSelectedLB] = useState('LB');
   const [selectedWeight, setSelectedWeight] = useState(0);
   const weightArray = Array.from({ length: 201 }, (_, index) => index);
 
+  const selectedUnit = selectedKG === 'KG' ? 'kg' : 'lb'; // 현재 선택된 단위
+
   const handleScrollEnd = (event) => {
     const offsetX = event.nativeEvent.contentOffset.x;
-    const newIndex = Math.round(offsetX / (width * 0.18));
+    const newIndex = Math.round(offsetX / ITEM_WEIGHT);
     setSelectedWeight(weightArray[newIndex]);
   };
 
   const toggleUnit = (unit) => {
-    setSelectedUnit(unit);
+    setSelectedKG(unit);
+    setSelectedLB(unit);
   };
 
   const isFormValid = () => {
@@ -34,7 +39,7 @@ const Weight = () => {
   };
 
   // 📌 입력받은 몸무게 값을 정확히 selectedWeight에 반영하는 함수
-  const handleWeightInput = () => {
+  const handleWeightInput = async () => {
     Alert.prompt(
       'Enter Your Weight',
       'Please enter your weight',
@@ -46,15 +51,18 @@ const Weight = () => {
         {
           text: 'OK',
           onPress: (input) => {
-            const newWeight = parseInt(input, 10); // 입력값을 정수로 변환하여 저장
+            const newWeight = parseInt(input); // 입력값을 정수로 변환하여 저장
             if (!isNaN(newWeight) && newWeight >= 0 && newWeight <= 200) {
               setSelectedWeight(newWeight);
 
               // 📌 스크롤 위치를 newWeight와 일치하게 조정
-              flatListRef.current.scrollToOffset({
-                offset: newWeight * (width * 0.18),
-                animated: true,
-              });
+              const targetIndex = weightArray.indexOf(newWeight);
+              if (targetIndex !== -2) {
+                flatListRef.current.scrollToIndex({
+                  index: targetIndex,
+                  animated: true,
+                });
+              }
             }
           },
         },
@@ -62,6 +70,20 @@ const Weight = () => {
       'plain-text',
       selectedWeight.toString(),
     );
+  };
+
+  const handleContinue = async () => {
+    try {
+      const weightData = {
+        value: selectedWeight,
+        type: selectedUnit, // 선택된 단위 추가
+      };
+
+      await AsyncStorage.setItem('selectedWeight', JSON.stringify(weightData));
+      router.push('/survey/height');
+    } catch (error) {
+      console.error('Failed to save weight:', error);
+    }
   };
 
   return (
@@ -73,11 +95,11 @@ const Weight = () => {
       {/* KG, LB 바꾸는 곳 */}
       <KgContainer>
         <TouchableOpacity onPress={() => toggleUnit('KG')}>
-          <UnitText isSelected={selectedUnit === 'KG'}>KG</UnitText>
+          <UnitText isSelected={selectedKG === 'KG'}>KG</UnitText>
         </TouchableOpacity>
         <Divider />
         <TouchableOpacity onPress={() => toggleUnit('LB')}>
-          <UnitText isSelected={selectedUnit === 'LB'}>LB</UnitText>
+          <UnitText isSelected={selectedLB === 'LB'}>LB</UnitText>
         </TouchableOpacity>
       </KgContainer>
 
@@ -94,6 +116,20 @@ const Weight = () => {
           decelerationRate="normal"
           scrollEnabled={true}
           contentContainerStyle={{ paddingHorizontal: width * 0.4 }}
+          getItemLayout={(data, index) => ({
+            length: ITEM_WEIGHT,
+            offset: ITEM_WEIGHT * index,
+            index,
+          })}
+          onScrollToIndexFailed={(info) => {
+            const wait = new Promise((resolve) => setTimeout(resolve, 500));
+            wait.then(() => {
+              flatListRef.current?.scrollToIndex({
+                index: info.index,
+                animated: true,
+              });
+            });
+          }}
           renderItem={({ item }) => (
             <WeightItem>
               <StyledWeightText isSelected={item === selectedWeight}>
@@ -118,11 +154,7 @@ const Weight = () => {
 
       {/* continue 버튼 */}
       <ContinueButton
-        onPress={() => {
-          if (isFormValid()) {
-            router.push('/survey/height');
-          }
-        }}
+        onPress={handleContinue}
         disabled={!isFormValid()}
         isFormValid={isFormValid()}
         activeOpacity={0.7}

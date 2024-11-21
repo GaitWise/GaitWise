@@ -11,6 +11,7 @@ import {
   Dimensions,
   Button,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -91,6 +92,17 @@ const Profile = () => {
     },
   ];
 
+  const handleContinue = async () => {
+    // 📌 cpasswd 제외
+    const { Cpasswd, ...dataToSave } = inputs; // Cpasswd만 제외하고 나머지 데이터를 저장
+    try {
+      await AsyncStorage.setItem('input', JSON.stringify(dataToSave)); // cpasswd가 저장되지 않음
+      router.push('../survey/gender'); // 다음 페이지로 이동
+    } catch (error) {
+      console.error('Failed to save profile data:', error);
+    }
+  };
+
   return (
     <KeyboardAwareScrollView
       resetScrollToCoords={{ x: 0, y: 0 }}
@@ -121,11 +133,7 @@ const Profile = () => {
         </Form>
 
         <StartButton
-          onPress={() => {
-            if (isFormValid()) {
-              router.push('../survey/gender');
-            }
-          }}
+          onPress={handleContinue}
           disabled={!isFormValid()}
           isFormValid={isFormValid()}
           activeOpacity={0.7}

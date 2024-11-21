@@ -1,18 +1,32 @@
 {
   "expo": {
+    "sdkVersion": "52.0.0",
     "scheme": "acme",
     "web": {
       "bundler": "metro"
     },
     "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "newArchEnabled": true
+          },
+          "android": {
+            "enableProguardInReleaseBuilds": true,
+            "newArchEnabled": true
+          }
+        }
+      ],
       "expo-router"
     ],
     "name": "GaitWise",
     "slug": "GaitWise",
     "android": {
-      "permissions": [
-        "INTERNET"
-      ]
+      "permissions": ["INTERNET"]
+    },
+    "ios": {
+      "supportsTablet": true
     }
   }
 }

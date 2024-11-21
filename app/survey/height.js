@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import styled from 'styled-components/native';
 import { TouchableOpacity, FlatList, Dimensions, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 const ITEM_HEIGHT = height * 0.0579; // 📌 스크롤 아이템의 높이를 상수로 지정
@@ -55,6 +56,32 @@ const Height = () => {
       'plain-text',
       selectedHeight.toString(),
     );
+  };
+  const handleContinue = async () => {
+    try {
+      // 📌 AsyncStorage에서 모든 데이터 읽어오기
+      const age = await AsyncStorage.getItem('selectedAge');
+      const weight = await AsyncStorage.getItem('selectedWeight');
+      const gender = await AsyncStorage.getItem('genderData');
+      const profile = await AsyncStorage.getItem('input');
+      // 필요한 데이터 더 추가
+
+      const allData = {
+        profile: JSON.parse(profile),
+        gender: JSON.parse(gender),
+        age: JSON.parse(age),
+        weight: JSON.parse(weight),
+        height: selectedHeight, // 현재 페이지 데이터
+      };
+
+      // 📌 한꺼번에 저장
+      await AsyncStorage.setItem('finalData', JSON.stringify(allData));
+
+      console.log('All data saved:', allData);
+      router.push('/project_select');
+    } catch (error) {
+      console.error('Failed to save data:', error);
+    }
   };
 
   return (
@@ -108,7 +135,7 @@ const Height = () => {
         <ContinueButton
           onPress={() => {
             if (isFormValid()) {
-              router.push('/project_select');
+              handleContinue(); // 📌 함수 호출로 수정
             }
           }}
           disabled={!isFormValid()}
