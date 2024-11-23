@@ -1,22 +1,23 @@
-import * as React from "react";
-import styled from "styled-components/native";
-import { useState } from "react";
-import { Pressable, TouchableWithoutFeedback, Keyboard } from "react-native";
-import { COLORS } from "@/constants";
+import * as React from 'react';
+import styled from 'styled-components/native';
+import { useState } from 'react';
+import { Pressable, Keyboard } from 'react-native';
+import { COLORS } from '@/constants';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const Contact = () => {
   const [inputs, setInputs] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    message: "",
+    firstName: '',
+    lastName: '',
+    email: '',
+    message: '',
   });
 
   const handleChange = (name, value) => {
     setInputs({ ...inputs, [name]: value });
   };
 
-  const isFormComplete = Object.values(inputs).every((value) => value !== "");
+  const isFormComplete = Object.values(inputs).every((value) => value !== '');
 
   const handleContinue = () => {
     if (isFormComplete) {
@@ -25,24 +26,27 @@ const Contact = () => {
   };
 
   const fields = [
-    { label: "First Name", name: "firstName", placeholder: "First Name" },
-    { label: "Last Name", name: "lastName", placeholder: "Last Name" },
+    { label: 'First Name', name: 'firstName', placeholder: 'First Name' },
+    { label: 'Last Name', name: 'lastName', placeholder: 'Last Name' },
     {
-      label: "Email",
-      name: "email",
-      placeholder: "Email",
-      keyboardType: "email-address",
+      label: 'Email',
+      name: 'email',
+      placeholder: 'Email',
+      keyboardType: 'email-address',
     },
     {
-      label: "Write your message",
-      name: "message",
-      placeholder: "Write your message..",
+      label: 'Write your message',
+      name: 'message',
+      placeholder: 'Write your message..',
       multiline: true,
     },
   ];
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    <KeyboardAwareScrollView
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      scrollEnabled={true}
+    >
       <ProfileContainer>
         <MainFrame>
           <ContactSection>
@@ -53,7 +57,7 @@ const Contact = () => {
             <Description>
               <ContactDescription>
                 Any question or remarks?
-                {"\n"}
+                {'\n'}
                 Just write us a message!
               </ContactDescription>
             </Description>
@@ -82,7 +86,7 @@ const Contact = () => {
           </ContactSection>
         </MainFrame>
       </ProfileContainer>
-    </TouchableWithoutFeedback>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -192,7 +196,7 @@ const SendButton = styled(Pressable)`
   height: 38px;
   justify-content: center;
   align-items: center;
-  margin-top: 45px;
+  margin: 45px;
 `;
 
 const SendButtonText = styled.Text`
