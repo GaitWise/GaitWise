@@ -1,26 +1,31 @@
 import * as React from 'react';
 import { router } from 'expo-router';
-import { COLORS } from '@/constants';
+import { COLORS, icons } from '@/constants';
 import styled from 'styled-components/native';
-import { ScrollView, Modal, TextInput, Button, StatusBar, Dimensions } from 'react-native';
+import { ScrollView, Modal, TextInput, Button, Dimensions } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
 const ProjectSelect = () => {
   const [codeInput, setCodeInput] = React.useState('');
+  const [pName, setpName] = React.useState('');
   const [modalVisible, setModalVisible] = React.useState(false);
-  const [stepsData, setStepsData] = React.useState([
-    { projectName: '프로젝트A', organization: '조직X' },
-    { projectName: '프로젝트B', organization: '조직Y' },
-    { projectName: '프로젝트C', organization: '조직Z' },
-    { projectName: '프로젝트A', organization: '조직X' },
-  ]);
+  const [stepsData, setStepsData] = React.useState([]);
+
+  const group = '';
 
   const addProject = () => {
-    if (codeInput.trim() !== '') {
-      const newProject = { projectName: codeInput, organization: '조직Z' };
+    // 참여 코드와 프로젝트 이름이 입력되었는지 확인
+    if (codeInput.trim() !== '' && pName.trim() !== '') {
+      // 새로운 프로젝트 객체에 프로젝트 이름과 조직을 할당
+      const newProject = { projectName: pName, organization: group };
+
+      // 기존 프로젝트 데이터에 새 프로젝트 추가
       setStepsData((prevStepsData) => [...prevStepsData, newProject]);
+
+      // 입력 필드 초기화
       setCodeInput('');
+      setpName(''); // 추가된 부분: 프로젝트 이름 입력 초기화
       setModalVisible(false);
     }
   };
@@ -35,7 +40,7 @@ const ProjectSelect = () => {
       <StatusBarContainer>
         <MainText>Join Your Project</MainText>
         <AddButton onPress={() => setModalVisible(true)}>
-          <PlusText>+</PlusText>
+          <icons.add />
         </AddButton>
       </StatusBarContainer>
 
@@ -49,49 +54,74 @@ const ProjectSelect = () => {
           <ModalContent>
             <XButtonWrapper>
               <XButton onPress={() => setModalVisible(false)}>
-                <XText>x</XText>
+                <icons.close />
               </XButton>
             </XButtonWrapper>
 
-            <ModalTitle>참여 코드 입력</ModalTitle>
+            <ModalTitle>
+              Enter your participation code and project name
+            </ModalTitle>
 
             <TextInput
-              placeholder="참여 코드를 입력하세요"
+              placeholder="Engagement Code."
+              placeholderTextColor={COLORS.slate_gray}
               value={codeInput}
               onChangeText={setCodeInput}
               style={{
-                borderBottomWidth: 1,
+                borderBottomWidth: 2,
                 borderColor: COLORS.slate_gray,
                 marginBottom: 16,
                 width: '100%',
+                height: height * 0.04,
+              }}
+            />
+            <TextInput
+              placeholder="Project Name."
+              placeholderTextColor={COLORS.slate_gray}
+              value={pName}
+              onChangeText={setpName}
+              style={{
+                borderBottomWidth: 2,
+                borderColor: COLORS.slate_gray,
+                marginBottom: 16,
+                width: '100%',
+                height: height * 0.04,
               }}
             />
 
-            <Button title="확인" onPress={addProject} color={COLORS.deep_slate_blue} />
+            <Button
+              title="Confirm"
+              onPress={addProject}
+              color={COLORS.deep_slate_blue}
+            />
           </ModalContent>
         </ModalContainer>
       </Modal>
 
       <Content>
         <ScrollViewContainer>
-          <ScrollView
-            contentContainerStyle={{ paddingBottom: 16 }}
-            horizontal={false}
-            showsHorizontalScrollIndicator={false}
-          >
-            {stepsData.map((item, index) => (
-              <CardShadowBox key={index}>
-                <CardContent>
-                  <TextRow onPress={() => navigateToHome(item.projectName)}>
-                    <TextWrapper>
-                      <CardTitle>{item.projectName}</CardTitle>
-                      <CardSubtitle>{item.organization}</CardSubtitle>
-                    </TextWrapper>
-                  </TextRow>
-                </CardContent>
-              </CardShadowBox>
-            ))}
-          </ScrollView>
+          {stepsData.length === 0 ? (
+            <NoProjectsText>Please add the project.</NoProjectsText>
+          ) : (
+            <ScrollView
+              contentContainerStyle={{ paddingBottom: 16 }}
+              horizontal={false}
+              showsHorizontalScrollIndicator={false}
+            >
+              {stepsData.map((item, index) => (
+                <CardShadowBox key={index}>
+                  <CardContent>
+                    <TextRow onPress={() => navigateToHome(item.projectName)}>
+                      <TextWrapper>
+                        <CardTitle>{item.projectName}</CardTitle>
+                        <CardSubtitle>{item.organization}</CardSubtitle>
+                      </TextWrapper>
+                    </TextRow>
+                  </CardContent>
+                </CardShadowBox>
+              ))}
+            </ScrollView>
+          )}
         </ScrollViewContainer>
       </Content>
     </HomePageWrapper>
@@ -100,6 +130,13 @@ const ProjectSelect = () => {
 
 export default ProjectSelect;
 
+const NoProjectsText = styled.Text`
+  font-size: ${height * 0.025}px;
+  color: ${COLORS.slate_gray};
+  text-align: center;
+  margin-top: ${height * 0.1}px;
+  font-weight: bold;
+`;
 
 const XButtonWrapper = styled.View`
   width: 100%;
@@ -107,7 +144,7 @@ const XButtonWrapper = styled.View`
 `;
 
 const XButton = styled.TouchableOpacity`
-  width: ${width * 0.08}px; 
+  width: ${width * 0.08}px;
   height: ${height * 0.04}px;
   justify-content: center;
   align-items: center;
@@ -135,16 +172,6 @@ const MainText = styled.Text`
 
 const AddButton = styled.Pressable`
   padding: ${height * 0.01}px;
-`;
-
-const XText = styled.Text`
-  font-size: ${height * 0.035}px; 
-  color: ${COLORS.dark_indigo};
-`;
-
-const PlusText = styled.Text`
-  font-size: ${height * 0.04}px;
-  color: ${COLORS.deep_slate_blue};
 `;
 
 const Content = styled.View`
@@ -205,7 +232,7 @@ const ModalContainer = styled.View`
 
 const ModalContent = styled.View`
   width: ${width * 0.85}px;
-  padding: ${height * 0.04}px ${width * 0.06}px; 
+  padding: ${height * 0.04}px ${width * 0.06}px;
   background-color: ${COLORS.white};
   border-radius: 10px;
   align-items: center;
@@ -214,6 +241,6 @@ const ModalContent = styled.View`
 const ModalTitle = styled.Text`
   font-size: ${height * 0.025}px;
   font-weight: bold;
-  margin-bottom: ${height * 0.02}px;
+  margin-bottom: ${height * 0.04}px;
   color: ${COLORS.dark_indigo};
 `;

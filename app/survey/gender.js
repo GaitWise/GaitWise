@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { COLORS, icons } from '@/constants';
 import styled from 'styled-components/native';
 import { Dimensions, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -20,17 +21,36 @@ const Gender = () => {
     setSelectedMale(false);
   };
 
+  const handleContinue = async () => {
+    try {
+      const gender = selectedMale ? 'Male' : selectedFemale ? 'Female' : null;
+
+      if (!gender) {
+        console.error('No gender selected');
+        return;
+      }
+
+      console.log('Gender to save:', gender); // 디버깅용 로그
+
+      // AsyncStorage에 저장
+      await AsyncStorage.setItem('genderData', JSON.stringify(gender));
+
+      // 다음 페이지로 이동
+      router.push('/survey/age');
+    } catch (error) {
+      console.error('Failed to save gender:', error);
+    }
+  };
+
   return (
     <GenderContainer>
-
       <GenderContent>
         <TitleText>What’s Your Gender?</TitleText>
         <GenderSelection>
-
           {/* 남 버튼 */}
           <GenderButton onPress={handleMaleSelect}>
             <MaleIconContainer selected={selectedMale}>
-              <icons.male/> 
+              <icons.male />
             </MaleIconContainer>
             <GenderLabel>Male</GenderLabel>
           </GenderButton>
@@ -38,7 +58,7 @@ const Gender = () => {
           {/* 여 버튼 */}
           <GenderButton onPress={handleFemaleSelect}>
             <FemaleIconContainer selected={selectedFemale}>
-              <icons.female/>
+              <icons.female />
             </FemaleIconContainer>
             <GenderLabel>Female</GenderLabel>
           </GenderButton>
@@ -49,10 +69,10 @@ const Gender = () => {
           disabled={selectedMale && selectedFemale}
           selected={selectedMale || selectedFemale}
           bothSelected={selectedMale && selectedFemale}
-          onPress={() => router.push('/survey/age')}>
+          onPress={handleContinue}
+        >
           <ContinueText>Continue</ContinueText>
         </ContinueButton>
-
       </GenderContent>
     </GenderContainer>
   );
@@ -75,14 +95,14 @@ const GenderContent = styled.View`
 `;
 
 const TitleText = styled.Text`
-  font-size: ${width * 0.08}px; 
+  font-size: ${width * 0.08}px;
   color: ${COLORS.dark_indigo};
   font-weight: bold;
   text-align: center;
 `;
 
 const GenderSelection = styled.View`
-  gap: ${height * 0.03}px;  
+  gap: ${height * 0.03}px;
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -93,37 +113,37 @@ const GenderButton = styled(TouchableOpacity)`
 `;
 
 const MaleIconContainer = styled.View`
-  width: ${width * 0.38}px;  
-  height: ${width * 0.38}px; 
+  width: ${width * 0.38}px;
+  height: ${width * 0.38}px;
   justify-content: center;
   align-items: center;
   background-color: ${(props) =>
     props.selected ? COLORS.soft_blue : COLORS.continue_gray};
-  border-radius: ${width * 0.2}px;  
+  border-radius: ${width * 0.2}px;
 `;
 
 const FemaleIconContainer = styled.View`
-  width: ${width * 0.38}px;  
-  height: ${width * 0.38}px; 
+  width: ${width * 0.38}px;
+  height: ${width * 0.38}px;
   justify-content: center;
   align-items: center;
   background-color: ${(props) =>
     props.selected ? COLORS.bright_pink : COLORS.continue_gray};
-  border-radius: ${width * 0.2}px; 
+  border-radius: ${width * 0.2}px;
 `;
 
 const GenderLabel = styled.Text`
-  font-size: ${width * 0.05}px;  
+  font-size: ${width * 0.05}px;
   font-weight: 700;
   color: ${COLORS.black};
-  margin-top: ${height * 0.01}px;  
+  margin-top: ${height * 0.01}px;
 `;
 
 const ContinueButton = styled(TouchableOpacity)`
-  width: ${width * 0.6}px;  
+  width: ${width * 0.6}px;
   height: ${height * 0.08}px;
-  padding: ${height * 0.015}px;  
-  border-radius: ${width * 0.5}px; 
+  padding: ${height * 0.015}px;
+  border-radius: ${width * 0.5}px;
   background-color: ${(props) =>
     props.selected && !props.bothSelected
       ? COLORS.dark_indigo
@@ -133,7 +153,7 @@ const ContinueButton = styled(TouchableOpacity)`
 `;
 
 const ContinueText = styled.Text`
-  font-size: ${width * 0.05}px; 
+  font-size: ${width * 0.05}px;
   color: ${COLORS.white};
-  font-weight: bold; 
+  font-weight: bold;
 `;
