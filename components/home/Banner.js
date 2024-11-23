@@ -69,7 +69,7 @@ export default function Banner() {
         .toString()
         .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     } else {
-      displayText = '준비중';
+      displayText = 'Preparing';
     }
 
     const isDisabled = !item.url;

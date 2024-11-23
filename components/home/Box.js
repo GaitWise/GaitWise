@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 import { Pressable } from 'react-native';
 
 const Iconbox = ({
-  text = '기능면',
+  text = 'Functional side',
   innerSvgComponent: InnerSvgComponent,
   backgroundColor = '#93c19e',
 }) => (

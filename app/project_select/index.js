@@ -2,7 +2,18 @@ import * as React from 'react';
 import { router } from 'expo-router';
 import { COLORS, icons } from '@/constants';
 import styled from 'styled-components/native';
+<<<<<<< HEAD
+import {
+  ScrollView,
+  Modal,
+  TextInput,
+  Button,
+  StatusBar,
+  Dimensions,
+} from 'react-native';
+=======
 import { ScrollView, Modal, TextInput, Button, Dimensions } from 'react-native';
+>>>>>>> develop
 
 const { width, height } = Dimensions.get('window');
 
@@ -30,8 +41,11 @@ const ProjectSelect = () => {
     }
   };
 
-  const navigateToHome = (projectName) => {
-    router.push('home');
+  const navigateToHome = (projectName, organization, projectId) => {
+    router.push({
+      pathname: 'home',
+      params: { projectName, organization, projectId },
+    });
     console.log(`${projectName} 프로젝트로 이동합니다.`);
   };
 
@@ -90,7 +104,11 @@ const ProjectSelect = () => {
             />
 
             <Button
+<<<<<<< HEAD
+              title="확인"
+=======
               title="Confirm"
+>>>>>>> develop
               onPress={addProject}
               color={COLORS.deep_slate_blue}
             />
@@ -100,6 +118,34 @@ const ProjectSelect = () => {
 
       <Content>
         <ScrollViewContainer>
+<<<<<<< HEAD
+          <ScrollView
+            contentContainerStyle={{ paddingBottom: 16 }}
+            horizontal={false}
+            showsHorizontalScrollIndicator={false}
+          >
+            {stepsData.map((item, index) => (
+              <CardShadowBox key={index}>
+                <CardContent>
+                  <TextRow
+                    onPress={() =>
+                      navigateToHome(
+                        item.projectName,
+                        item.organization,
+                        '프로젝트ID',
+                      )
+                    }
+                  >
+                    <TextWrapper>
+                      <CardTitle>{item.projectName}</CardTitle>
+                      <CardSubtitle>{item.organization}</CardSubtitle>
+                    </TextWrapper>
+                  </TextRow>
+                </CardContent>
+              </CardShadowBox>
+            ))}
+          </ScrollView>
+=======
           {stepsData.length === 0 ? (
             <NoProjectsText>Please add the project.</NoProjectsText>
           ) : (
@@ -122,6 +168,7 @@ const ProjectSelect = () => {
               ))}
             </ScrollView>
           )}
+>>>>>>> develop
         </ScrollViewContainer>
       </Content>
     </HomePageWrapper>
@@ -130,6 +177,8 @@ const ProjectSelect = () => {
 
 export default ProjectSelect;
 
+<<<<<<< HEAD
+=======
 const NoProjectsText = styled.Text`
   font-size: ${height * 0.025}px;
   color: ${COLORS.slate_gray};
@@ -138,6 +187,7 @@ const NoProjectsText = styled.Text`
   font-weight: bold;
 `;
 
+>>>>>>> develop
 const XButtonWrapper = styled.View`
   width: 100%;
   align-items: flex-end;
@@ -174,6 +224,19 @@ const AddButton = styled.Pressable`
   padding: ${height * 0.01}px;
 `;
 
+<<<<<<< HEAD
+const XText = styled.Text`
+  font-size: ${height * 0.035}px;
+  color: ${COLORS.dark_indigo};
+`;
+
+const PlusText = styled.Text`
+  font-size: ${height * 0.04}px;
+  color: ${COLORS.deep_slate_blue};
+`;
+
+=======
+>>>>>>> develop
 const Content = styled.View`
   margin: ${height * 0.02}px ${width * 0.05}px;
   flex: 1;
