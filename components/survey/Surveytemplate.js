@@ -79,6 +79,7 @@ const BaseFrameContainer = styled.View`
   flex: 1;
   overflow: hidden;
   width: 100%;
+  height: 100%;
   background-color: ${COLORS.white};
   align-items: center;
 `;

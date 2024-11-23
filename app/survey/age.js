@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useState, useRef } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // 추가
 import { COLORS, icons } from '@/constants';
 import styled from 'styled-components/native';
 import { TouchableOpacity, FlatList, Dimensions } from 'react-native';
@@ -18,6 +19,20 @@ const Age = () => {
     setSelectedAge(ageArray[newIndex]);
   };
 
+  const isFormValid = () => {
+    return selectedAge;
+  };
+
+  const handleContinue = async () => {
+    try {
+      // 📌 AsyncStorage에 선택한 나이를 저장
+      await AsyncStorage.setItem('selectedAge', JSON.stringify(selectedAge));
+      router.push('/survey/weight'); // 다음 페이지로 이동
+    } catch (error) {
+      console.error('Failed to save age:', error);
+    }
+  };
+
   return (
     <BaseContainer>
       <FrameContainer>
@@ -31,7 +46,7 @@ const Age = () => {
           <AgeText>{selectedAge}</AgeText>
 
           <ArrowIconContainer>
-            <icons.arrow_up/>
+            <icons.arrow_up />
           </ArrowIconContainer>
 
           <AgeContainer>
@@ -57,7 +72,12 @@ const Age = () => {
           </AgeContainer>
 
           <ButtonContainer>
-            <ContinueButton onPress={() => router.push('/survey/weight')}>
+            <ContinueButton
+              onPress={handleContinue} // 변경된 함수 호출
+              disabled={!isFormValid()}
+              isFormValid={isFormValid()}
+              activeOpacity={0.7}
+            >
               <ContinueText>Continue</ContinueText>
             </ContinueButton>
           </ButtonContainer>
@@ -68,6 +88,8 @@ const Age = () => {
 };
 
 export default Age;
+
+// 기존 Styled Components 코드는 동일
 
 const BaseContainer = styled.View`
   flex: 1;
@@ -83,7 +105,8 @@ const FrameContainer = styled.View`
 `;
 
 const TitleContainer = styled.View`
-  margin-bottom: ${height * 0.05}px; /* 상단 텍스트와 나머지 요소 사이 간격 조정 */
+  margin-bottom: ${height *
+  0.05}px; /* 상단 텍스트와 나머지 요소 사이 간격 조정 */
 `;
 
 const ContentContainer = styled.View`
@@ -148,11 +171,12 @@ const ButtonContainer = styled.View`
 `;
 
 const ContinueButton = styled(TouchableOpacity)`
-  width: ${width * 0.6}px;  
+  width: ${width * 0.6}px;
   height: ${height * 0.08}px;
-  padding: ${height * 0.015}px;  
-  border-radius: ${width * 0.5}px; 
-  background-color: ${COLORS.dark_indigo};
+  padding: ${height * 0.015}px;
+  border-radius: ${width * 0.5}px;
+  background-color: ${({ isFormValid }) =>
+    isFormValid ? COLORS.dark_indigo : COLORS.continue_gray};
   justify-content: center;
   align-items: center;
 `;
