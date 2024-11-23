@@ -91,6 +91,7 @@ export default SurveyTemplate;
 const BaseFrameContainer = styled.View`
   flex: 1;
   width: 100%;
+  height: 100%;
   background-color: ${COLORS.white};
   align-items: center;
   padding-top: 20px;

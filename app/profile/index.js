@@ -2,7 +2,16 @@ import { useState } from 'react';
 import { router } from 'expo-router';
 import { COLORS, IMAGES } from '@/constants';
 import styled from 'styled-components/native';
-import { Image, TouchableOpacity, TextInput, Dimensions, ScrollView } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {
+  Image,
+  TouchableOpacity,
+  TextInput,
+  Dimensions,
+  Button,
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -15,6 +24,7 @@ const Profile = () => {
     passwd: '',
     Cpasswd: '',
   });
+  const [image, setImage] = useState(IMAGES.profile); // 초기 프로필 이미지
   const { firstName, lastName, job, email, passwd, Cpasswd } = inputs;
 
   const handleInputChange = (name, value) => {
@@ -25,93 +35,113 @@ const Profile = () => {
   };
 
   const isFormValid = () => {
-    return firstName && lastName && job && email && passwd && Cpasswd && passwd === Cpasswd;
+    return (
+      firstName &&
+      lastName &&
+      job &&
+      email &&
+      passwd &&
+      Cpasswd &&
+      passwd === Cpasswd
+    );
+  };
+
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Permission to access gallery is required!');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage({ uri: result.assets[0].uri });
+    }
+  };
+
+  const fields = [
+    {
+      name: 'firstName',
+      label: 'First Name',
+      placeholder: 'Enter Your First Name',
+    },
+    {
+      name: 'lastName',
+      label: 'Last Name',
+      placeholder: 'Enter Your Last Name',
+    },
+    { name: 'job', label: 'Job', placeholder: 'Enter Your Job' },
+    { name: 'email', label: 'Email', placeholder: 'Enter Your Email' },
+    {
+      name: 'passwd',
+      label: 'Password',
+      placeholder: 'Enter Your Password',
+      secureTextEntry: true,
+    },
+    {
+      name: 'Cpasswd',
+      label: 'Please Enter It Again',
+      placeholder: 'Please Enter It Again',
+      secureTextEntry: true,
+    },
+  ];
+
+  const handleContinue = async () => {
+    // 📌 cpasswd 제외
+    const { Cpasswd, ...dataToSave } = inputs; // Cpasswd만 제외하고 나머지 데이터를 저장
+    try {
+      await AsyncStorage.setItem('input', JSON.stringify(dataToSave)); // cpasswd가 저장되지 않음
+      router.push('../survey/gender'); // 다음 페이지로 이동
+    } catch (error) {
+      console.error('Failed to save profile data:', error);
+    }
   };
 
   return (
-    <Container>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <KeyboardAwareScrollView
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      scrollEnabled={true}
+    >
+      <Container>
         <Header>
           <HeaderText>Fill Your Profile</HeaderText>
         </Header>
         <ProfileFrame>
-          <ProfileImage source={IMAGES.profile} />
+          <ProfileImage source={image} />
+          <Button title="Choose Your Profile Image" onPress={pickImage} />
         </ProfileFrame>
-        {/* 프로필 내용 입력*/}
+
         <Form>
-          <InputField>
-            <Label>First Name</Label>
-            <Input
-              name="firstName"
-              value={firstName}
-              onChangeText={(text) => handleInputChange('firstName', text)}
-              placeholder="Enter Your First Name"
-            />
-          </InputField>
-          <InputField>
-            <Label>Last Name</Label>
-            <Input
-              name="lastName"
-              value={lastName}
-              onChangeText={(text) => handleInputChange('lastName', text)}
-              placeholder="Enter Your Last Name"
-            />
-          </InputField>
-          <InputField>
-            <Label>Job</Label>
-            <Input
-              name="job"
-              value={job}
-              onChangeText={(text) => handleInputChange('job', text)}
-              placeholder="Enter Your Job"
-            />
-          </InputField>
-          
-          <InputField>
-            <Label>Email</Label>
-            <Input
-              name="email"
-              value={email}
-              onChangeText={(text) => handleInputChange('email', text)}
-              placeholder="Enter Your Email"
-            />
-          </InputField>
-          <InputField>
-            <Label>Password</Label>
-            <Input
-              name="passwd"
-              value={passwd}
-              onChangeText={(text) => handleInputChange('passwd', text)}
-              placeholder="Enter Your Password"
-              secureTextEntry
-            />
-          </InputField>
-          <InputField>
-            <Label>Please Enter It Again</Label>
-            <Input
-              name="Cpasswd"
-              value={Cpasswd}
-              onChangeText={(text) => handleInputChange('Cpasswd', text)}
-              placeholder="Please Enter It Again"
-              secureTextEntry
-            />
-          </InputField>
+          {fields.map((field) => (
+            <InputField key={field.name}>
+              <Label>{field.label}</Label>
+              <Input
+                value={inputs[field.name]}
+                onChangeText={(text) => handleInputChange(field.name, text)}
+                placeholder={field.placeholder}
+                placeholderTextColor={COLORS.light_gray}
+                secureTextEntry={field.secureTextEntry}
+              />
+            </InputField>
+          ))}
         </Form>
-        {/* Start 버튼 */}
+
         <StartButton
-          onPress={() => {
-            if (isFormValid()) {
-              router.push('../survey/gender');
-            }
-          }}
+          onPress={handleContinue}
           disabled={!isFormValid()}
           isFormValid={isFormValid()}
           activeOpacity={0.7}
         >
           <ButtonText>Start</ButtonText>
         </StartButton>
-      </ScrollView>
-    </Container>
+      </Container>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -130,7 +160,6 @@ const Header = styled.View`
   align-items: center;
   justify-content: center;
   width: 100%;
-  margin: ${height * 0.01}px;
 `;
 
 const HeaderText = styled.Text`
@@ -141,9 +170,10 @@ const HeaderText = styled.Text`
 
 const ProfileFrame = styled.View`
   background-color: ${COLORS.pastel_lavender};
-  padding: ${height * 0.02}px;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  padding: 10px;
 `;
 
 const ProfileImage = styled(Image)`

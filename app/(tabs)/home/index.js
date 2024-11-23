@@ -3,20 +3,20 @@ import { Banner } from '@/components';
 import { useRouter } from 'expo-router';
 import { icons, COLORS } from '@/constants';
 import styled from 'styled-components/native';
-import { ScrollView, Pressable } from 'react-native';
+import { ScrollView, Pressable, Alert } from 'react-native';
 
 const stepsData = [
-  { date: '2024년 10월 22일', steps: '2000걸음/5min' },
-  { date: '2024년 10월 15일', steps: '3000걸음/5min' },
-  { date: '2024년 10월 2일', steps: '3100걸음/5min' },
-  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
-  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
-  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
-  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
-  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
-  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
-  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
-  { date: '2024년 9월 20일', steps: '2800걸음/5min' },
+  { date: '2024Y 10M 22D', steps: '2000Steps/5min' },
+  { date: '2024Y 10M 15D', steps: '3000Steps/5min' },
+  { date: '2024Y 10M 2D', steps: '3100Steps/5min' },
+  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
+  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
+  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
+  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
+  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
+  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
+  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
+  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
 ];
 
 const iconData = [
@@ -39,59 +39,86 @@ const iconData = [
     route: '/project_select',
   },
   {
-    text: '준비중',
+    text: 'Preparing',
     IconComponent: icons.male,
     backgroundColor: COLORS.sky_blue,
     route: '/comingSoon',
   },
   {
-    text: '준비중',
+    text: 'Preparing',
     IconComponent: icons.male,
     backgroundColor: COLORS.sky_blue,
     route: '/comingSoon',
   },
   {
-    text: '준비중',
+    text: 'Preparing',
     IconComponent: icons.male,
     backgroundColor: COLORS.sky_blue,
     route: '/comingSoon',
   },
   {
-    text: '준비중',
+    text: 'Preparing',
     IconComponent: icons.male,
     backgroundColor: COLORS.sky_blue,
     route: '/comingSoon',
   },
   {
-    text: '준비중',
+    text: 'Preparing',
     IconComponent: icons.male,
     backgroundColor: COLORS.sky_blue,
     route: '/comingSoon',
-  }
+  },
 ];
 
 const HomePage = () => {
+  const [isSurveyCompleted, setIsSurveyCompleted] = React.useState(true); // 설문 완료 상태 변수 추가
   const router = useRouter();
 
-   return (
+  const handlePress = (route) => {
+    if (!isSurveyCompleted) {
+      Alert.alert(
+        'Required survey not completed',
+        'Please complete the required survey.',
+        [
+          {
+            text: 'OK',
+            onPress: () => router.push('survey/surveyPage'),
+          },
+        ],
+      );
+      return;
+    }
+    router.push(route);
+  };
+
+  return (
     <HomePageWrapper>
       <Content>
-        <TopSection />
+        {/* <TopSection>
+          <RowWrapper>
+            <PText>{`프로젝트: ${projectName || '없음'}`}</PText>
+            <OText>{`조직: ${organization || '없음'}`}</OText>
+          </RowWrapper>
+          <IText>{`ID: ${projectId || '없음'}`}</IText>
+        </TopSection> */}
 
-        {/* banner */}
         <Banner />
-        
-        {/* 기능 */}
+
         <MiddleContainer>
           <TitleRow>
-            <TitleText>{`기능`}</TitleText>
+            <TitleText>{`Features`}</TitleText>
             <SeeAllText>See All</SeeAllText>
           </TitleRow>
           <CategoriesContainer>
             <GridContainer>
-            {iconData.map((item, index) => (
-                <StyledPressable key={index} onPress={() => router.push(item.route)}>
-                  <ImageContainer style={{ backgroundColor: item.backgroundColor }}>
+              {iconData.map((item, index) => (
+                <StyledPressable
+                  key={index}
+                  onPress={() => handlePress(item.route)}
+                >
+                  <ImageContainer
+                    style={{ backgroundColor: item.backgroundColor }}
+                  >
                     <item.IconComponent width={35} height={35} />
                   </ImageContainer>
                   <StyledText>{item.text}</StyledText>
@@ -101,9 +128,10 @@ const HomePage = () => {
           </CategoriesContainer>
         </MiddleContainer>
 
+        {/* 최근 측정 결과 */}
         <ScrollViewContainer>
           <TitleRow>
-            <TitleText>{`최근 측정 결과 `}</TitleText>
+            <TitleText>{`Recent measurement results`}</TitleText>
             <SeeAllText>See All</SeeAllText>
           </TitleRow>
           <ScrollView
@@ -115,7 +143,7 @@ const HomePage = () => {
               <CardShadowBox key={index}>
                 <CardContent>
                   <TextRow>
-                      <CardTitle>{item.date}</CardTitle>
+                    <CardTitle>{item.date}</CardTitle>
                     <StepWrapper>
                       <StyledImage source={icons.steps} />
                       <StepsText>{item.steps}</StepsText>
@@ -143,12 +171,7 @@ const Content = styled.View`
   flex: 1;
   width: 100%;
   background-color: ${COLORS.white};
-  gap: 16px;
-`;
-
-const TopSection = styled.View`
-  align-items: center;
-  gap: 14px;
+  gap: 5px;
 `;
 
 const MiddleContainer = styled.View`
@@ -199,7 +222,7 @@ const TextRow = styled.View`
 `;
 
 const CardTitle = styled.Text`
-  font-size: 14px; 
+  font-size: 14px;
   line-height: 21px;
   color: ${COLORS.dark_indigo};
   text-align: center;
@@ -217,7 +240,7 @@ const StyledImage = styled.Image`
 `;
 
 const StepsText = styled.Text`
-  font-size: 12px; 
+  font-size: 12px;
   line-height: 18px;
   color: ${COLORS.slate_gray};
 `;
@@ -236,13 +259,12 @@ const TitleText = styled.Text`
 `;
 
 const SeeAllText = styled.Text`
-  font-size: 14px; 
+  font-size: 14px;
   line-height: 21px;
   color: ${COLORS.slate_gray};
   font-weight: 500;
 `;
 
-// Styled Components for Iconbox
 const StyledPressable = styled(Pressable)`
   gap: 4px;
   align-items: center;
