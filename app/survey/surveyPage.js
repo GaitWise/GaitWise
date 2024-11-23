@@ -1,4 +1,3 @@
-// app/survey/grade.js
 import * as React from 'react';
 import { useState } from 'react';
 import styled from 'styled-components/native';
@@ -35,11 +34,8 @@ export const SurveyPage = () => {
 
 export default SurveyPage;
 
-// styled-components
-const BaseFrameContainer = styled.View`
-  flex: 1;
-  background-color: ${COLORS.white};
-`;
+
+
 
 const pagesData = [
   {
