@@ -94,14 +94,7 @@ const HomePage = () => {
   return (
     <HomePageWrapper>
       <Content>
-        {/* <TopSection>
-          <RowWrapper>
-            <PText>{`프로젝트: ${projectName || '없음'}`}</PText>
-            <OText>{`조직: ${organization || '없음'}`}</OText>
-          </RowWrapper>
-          <IText>{`ID: ${projectId || '없음'}`}</IText>
-        </TopSection> */}
-
+     
         <Banner />
 
         <MiddleContainer>

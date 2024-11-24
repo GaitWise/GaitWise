@@ -34,6 +34,7 @@ export default () => {
         name="project_select"
         options={{
           title: "project_select",
+          tabBarStyle: { display: 'none' }, 
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="clipboard" size={size} color={color} />
           ),

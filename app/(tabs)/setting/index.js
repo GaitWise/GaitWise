@@ -1,16 +1,14 @@
 import * as React from 'react';
-import styled from 'styled-components/native';
-import { icons, COLORS } from '@/constants';
 import { router } from 'expo-router';
-import { View, Button, Modal } from 'react-native';
+import { icons, COLORS } from '@/constants';
+import { Button, Modal } from 'react-native';
+import styled from 'styled-components/native';
 import * as ImagePicker from 'expo-image-picker';
 
 // 페이지 이동
-const requierdsurvey = 'survey/gender';
-const templetesurvey = 'survey/surveyPage';
-const doctors = '';
-const notification = '';
 const contact = 'setting/contact';
+const requierdsurvey = 'survey/gender';
+const templetesurvey = 'survey/selection';
 
 const Setting = () => {
   const [image, setImage] = React.useState(null);
@@ -96,6 +94,7 @@ const Setting = () => {
           </PressableItem>
           <icons.arrow_right />
         </PressableItemContainer>
+        <Separator />
         {/* Survey 수정 modal */}
         <Modal
           visible={editSurveyModalVisible}
@@ -129,25 +128,7 @@ const Setting = () => {
           </ModalContainer>
         </Modal>
 
-        <Separator />
-        {/* Favorite Doctors */}
-        <PressableItemContainer onPress={() => router.push(doctors)}>
-          <PressableItem>
-            <icons.favorite />
-            <MenuText>Favorite Doctors</MenuText>
-          </PressableItem>
-          <icons.arrow_right />
-        </PressableItemContainer>
-        <Separator />
-        {/* Notification */}
-        <PressableItemContainer onPress={() => router.push(notification)}>
-          <PressableItem>
-            <icons.noti />
-            <MenuText>Notifications</MenuText>
-          </PressableItem>
-          <icons.arrow_right />
-        </PressableItemContainer>
-        <Separator />
+      
         {/* Contact */}
         <PressableItemContainer onPress={() => router.push(contact)}>
           <PressableItem>

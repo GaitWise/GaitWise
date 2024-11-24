@@ -1,7 +1,7 @@
-import { Stack, useLocalSearchParams } from 'expo-router';
 import React from 'react';
-import styled from 'styled-components/native';
 import { COLORS } from '../../../constants';
+import styled from 'styled-components/native';
+import { Stack, useLocalSearchParams } from 'expo-router';
 
 export default function HomeLayout() {
   const {
@@ -14,10 +14,9 @@ export default function HomeLayout() {
     <>
       <Section>
         <RowWrapper>
-          <CommonText>{`Project: ${projectName}`}</CommonText>
+          <CommonText>{`Project: ${projectName} (${projectId})`}</CommonText>
           <CommonText>{`Group: ${organization}`}</CommonText>
         </RowWrapper>
-        <CommonText>{`ID: ${projectId}`}</CommonText>
       </Section>
       <Stack screenOptions={{ headerShown: false }} />
     </>
@@ -30,7 +29,6 @@ const Section = styled.View`
   align-items: center;
   justify-content: center;
   gap: 15px;
-  margin-top: 8px;
   background-color: ${COLORS.white};
 `;
 
