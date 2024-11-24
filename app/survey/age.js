@@ -89,8 +89,6 @@ const Age = () => {
 
 export default Age;
 
-// 기존 Styled Components 코드는 동일
-
 const BaseContainer = styled.View`
   flex: 1;
   background-color: ${COLORS.white};

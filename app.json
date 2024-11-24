@@ -5,9 +5,6 @@
     "web": {
       "bundler": "metro"
     },
-<<<<<<< HEAD
-    "plugins": ["expo-router"],
-=======
     "plugins": [
       [
         "expo-build-properties",
@@ -21,20 +18,18 @@
           }
         }
       ],
-      "expo-router"
+      "expo-router",
+      "expo-font"
     ],
->>>>>>> develop
     "name": "GaitWise",
     "slug": "GaitWise",
     "android": {
-      "permissions": ["INTERNET"]
+      "permissions": [
+        "INTERNET"
+      ]
     },
-<<<<<<< HEAD
-    "newArchEnabled": true
-=======
     "ios": {
       "supportsTablet": true
     }
->>>>>>> develop
   }
 }
