@@ -94,9 +94,7 @@ const HomePage = () => {
   return (
     <HomePageWrapper>
       <Content>
-     
         <Banner />
-
         <MiddleContainer>
           <TitleRow>
             <TitleText>{`Features`}</TitleText>

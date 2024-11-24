@@ -1,39 +1,80 @@
 import * as React from 'react';
-import { router } from 'expo-router';
 import { COLORS, icons } from '@/constants';
 import styled from 'styled-components/native';
+import { router, useLocalSearchParams } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, Modal, TextInput, Button, Dimensions } from 'react-native';
+import { Participation_project, Inquiry_project } from '../../../services/project/projectinquiry'; 
 
 const { width, height } = Dimensions.get('window');
 
 const ProjectSelect = () => {
-  const [codeInput, setCodeInput] = React.useState('');
   const [pName, setpName] = React.useState('');
-  const [modalVisible, setModalVisible] = React.useState(false);
+  const [userid, setUserId] = React.useState(null); // 초기 상태는 null
+  const [codeInput, setCodeInput] = React.useState('');
   const [stepsData, setStepsData] = React.useState([]);
+  const [modalVisible, setModalVisible] = React.useState(false);
 
-  const group = '';
+  React.useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        // AsyncStorage에서 user_id를 가져옴
+        const userData = await AsyncStorage.getItem('finalData');
+        if (userData) {
+          const parsedData = JSON.parse(userData);
+          const userIdFromStorage = parsedData.user; // user_id 가져오기
+          setUserId(parsedData.user)
+          console.log('Fetched user_id:', userIdFromStorage);
+  
+          // 프로젝트 목록 가져오기
+          console.log('Fetching projects for user_id:', userIdFromStorage);
+          const response = await Inquiry_project(userIdFromStorage);
+          console.log('Projects response:', response);
+          if (response.projects) {
+            const formattedProjects = response.projects.map((project) => ({
+              project_name: project.name,
+              project_description: project.description, 
+            }));
+            setStepsData(formattedProjects); 
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching projects or user_id:', error);
+      }
+    };
+  
+    fetchProjects(); // 컴포넌트가 마운트될 때 한 번만 실행
+  }, []);
 
-  const addProject = () => {
-    // 참여 코드와 프로젝트 이름이 입력되었는지 확인
+  // 프로젝트 추가하기
+  const addProject = async () => {
     if (codeInput.trim() !== '' && pName.trim() !== '') {
-      // 새로운 프로젝트 객체에 프로젝트 이름과 조직을 할당
-      const newProject = { projectName: pName, organization: group };
+      try {
+        const newProject = await Participation_project(userid, pName, codeInput);
+        console.log('New project added:', newProject);
 
-      // 기존 프로젝트 데이터에 새 프로젝트 추가
-      setStepsData((prevStepsData) => [...prevStepsData, newProject]);
+        setStepsData((prevStepsData) => [
+          ...prevStepsData,
+          {
+            project_name: newProject.project.name,
+            project_description: newProject.project.description,
+          },
+        ]);
+        console.log("stepsData add : ", stepsData)
 
-      // 입력 필드 초기화
-      setCodeInput('');
-      setpName(''); // 추가된 부분: 프로젝트 이름 입력 초기화
-      setModalVisible(false);
+        setpName('');
+        setCodeInput('');
+        setModalVisible(false);
+      } catch (error) {
+        console.error('Error adding project:', error);
+      }
     }
   };
 
-  const navigateToHome = (projectName, organization, projectId) => {
+  const navigateToHome = (projectName) => {
     router.push({
       pathname: 'home',
-      params: { projectName, organization, projectId },
+      params: { projectName },
     });
     console.log(`${projectName} 프로젝트로 이동합니다.`);
   };
@@ -114,10 +155,10 @@ const ProjectSelect = () => {
               {stepsData.map((item, index) => (
                 <CardShadowBox key={index}>
                   <CardContent>
-                    <TextRow onPress={() => navigateToHome(item.projectName)}>
+                    <TextRow onPress={() => navigateToHome(item.project_name)}>
                       <TextWrapper>
-                        <CardTitle>{item.projectName}</CardTitle>
-                        <CardSubtitle>{item.organization}</CardSubtitle>
+                        <CardTitle>{item.project_name}</CardTitle>
+                        <CardSubtitle>{item.project_description}</CardSubtitle>
                       </TextWrapper>
                     </TextRow>
                   </CardContent>

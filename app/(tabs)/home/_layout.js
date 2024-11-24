@@ -4,18 +4,13 @@ import styled from 'styled-components/native';
 import { Stack, useLocalSearchParams } from 'expo-router';
 
 export default function HomeLayout() {
-  const {
-    projectName = 'None',
-    organization = 'None',
-    projectId = 'None',
-  } = useLocalSearchParams();
+  const { projectName = 'None'} = useLocalSearchParams();
 
   return (
     <>
       <Section>
         <RowWrapper>
-          <CommonText>{`Project: ${projectName} (${projectId})`}</CommonText>
-          <CommonText>{`Group: ${organization}`}</CommonText>
+          <CommonText>{`Project: ${projectName}`}</CommonText>
         </RowWrapper>
       </Section>
       <Stack screenOptions={{ headerShown: false }} />
