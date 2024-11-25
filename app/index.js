@@ -1,17 +1,18 @@
-import { Video } from "expo-av";
-import { View } from "react-native"; 
+import { Video } from 'expo-av';
+import { View } from 'react-native';
 import { icons } from '@/constants';
-import { useRouter } from "expo-router";
-import React, { useEffect } from "react";
+import { useRouter } from 'expo-router';
+import React, { useEffect } from 'react';
+import { COLORS } from '../constants';
 
-const SPLASH_DURATION = 3000; 
+const SPLASH_DURATION = 3000;
 
 const Splash = () => {
   const router = useRouter();
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.replace("/profile"); 
+      router.replace('/profile');
     }, SPLASH_DURATION);
 
     return () => clearTimeout(timer);
@@ -20,7 +21,7 @@ const Splash = () => {
   return (
     <View style={styles.container}>
       <Video
-        source={require("../assets/video/splash.mp4")}
+        source={require('../assets/video/splash.mp4')}
         style={styles.video}
         resizeMode="contain"
         isLooping
@@ -36,8 +37,9 @@ const Splash = () => {
 const styles = {
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
   },
   video: {
     width: 300,
