@@ -3,27 +3,8 @@ import { useState, useRef } from 'react';
 import { COLORS, icons } from '@/constants';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // 📌 Icon 라이브러리 추가
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  TouchableOpacity,
-  FlatList,
-  Alert, // 📌 Alert 추가
-  Dimensions,
-} from 'react-native';
-import {
-  WeightText,
-  StyledWeightText,
-  WeightItem,
-  WeightContainer,
-  BaseFrameContainer,
-  QContainer,
-  QText,
-  KgContainer,
-  UnitText,
-  Divider,
-  ResultContainer,
-  ContinueButton,
-  ContinueButtonText,
-} from '../../components/survey/styles/weight.styles';
+import { TouchableOpacity, FlatList, Alert, Dimensions } from 'react-native';
+import styled from 'styled-components/native';
 
 const { width, height } = Dimensions.get('window');
 const ITEM_WEIGHT = width * 0.18;
@@ -102,7 +83,7 @@ const Weight = () => {
 
   return (
     <BaseFrameContainer>
-    {/* Title */}
+      {/* Title */}
       <QContainer>
         <QText>What Is Your Weight?</QText>
       </QContainer>
@@ -181,3 +162,102 @@ const Weight = () => {
 };
 
 export default Weight;
+
+// Styled Components
+const WeightText = styled.Text`
+  font-size: ${width * 0.1}px;
+  color: ${COLORS.dark_indigo};
+  font-weight: 700;
+  text-align: center;
+`;
+
+const StyledWeightText = styled.Text`
+  font-size: ${(props) => (props.isSelected ? width * 0.08 : width * 0.05)}px;
+  opacity: ${(props) => (props.isSelected ? '1' : '0.5')};
+  color: ${COLORS.dark_indigo};
+  font-weight: 700;
+`;
+
+const WeightItem = styled.View`
+  width: ${width * 0.18}px;
+  justify-content: center;
+  align-items: center;
+`;
+
+const WeightContainer = styled.View`
+  background-color: ${COLORS.soft_blue};
+  flex-direction: row;
+  width: 100%;
+  height: ${height * 0.18}px;
+  align-items: center;
+  margin-top: 20px;
+`;
+
+const BaseFrameContainer = styled.View`
+  background-color: ${COLORS.white};
+  flex: 1;
+  align-items: center;
+  gap: ${height * 0.02}px;
+`;
+
+const QContainer = styled.View`
+  height: ${height * 0.18}px;
+  justify-content: center;
+  align-items: center;
+`;
+
+const QText = styled.Text`
+  color: ${COLORS.dark_indigo};
+  font-size: ${width * 0.08}px;
+  font-weight: 700;
+`;
+
+const KgContainer = styled.View`
+  justify-content: space-between;
+  background-color: ${COLORS.soft_blue};
+  flex-direction: row;
+  align-items: center;
+  border-radius: ${width * 0.035}px;
+  width: ${width * 0.85}px;
+  padding-vertical: ${height * 0.01}px;
+`;
+
+const UnitText = styled.Text`
+  width: ${width * 0.35}px;
+  font-weight: 700;
+  font-size: ${width * 0.05}px;
+  text-align: center;
+  color: ${(props) =>
+    props.isSelected ? COLORS.dark_indigo : COLORS.light_mist_grey};
+`;
+
+const Divider = styled.View`
+  width: ${width * 0.01}px;
+  background-color: ${COLORS.light_mist_grey};
+  height: ${height * 0.05}px;
+`;
+
+const ResultContainer = styled.View`
+  align-items: flex-end;
+  justify-content: center;
+  flex-direction: row;
+`;
+
+const ContinueButton = styled(TouchableOpacity)`
+  width: ${width * 0.6}px;
+  height: ${height * 0.08}px;
+  padding: ${height * 0.015}px;
+  border-radius: ${width * 0.5}px;
+  background-color: ${({ isFormValid }) =>
+    isFormValid ? COLORS.dark_indigo : COLORS.continue_gray};
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+`;
+
+const ContinueButtonText = styled.Text`
+  font-size: ${width * 0.045}px;
+  color: ${COLORS.white};
+  text-align: center;
+  font-weight: 700;
+`;
