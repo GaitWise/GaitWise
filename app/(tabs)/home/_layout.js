@@ -1,16 +1,42 @@
-import React from 'react';
 import { COLORS } from '../../../constants';
 import styled from 'styled-components/native';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import React, { useState } from 'react';
+import { Stack, useFocusEffect } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeLayout() {
-  const { projectName = 'None'} = useLocalSearchParams();
+  const [currentProject, setCurrentProject] = useState(null);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchCurrentProject = async () => {
+        try {
+          const storedData = await AsyncStorage.getItem('currentProject');
+          if (storedData) {
+            const parsedData = JSON.parse(storedData);
+            console.log('Parsed current project:', parsedData);
+            setCurrentProject(parsedData); // 상태에 저장
+          } else {
+            setCurrentProject({ project_name: 'No project selected' }); // 기본값 설정
+          }
+        } catch (error) {
+          console.error('Error fetching current project:', error);
+        }
+      };
+
+      fetchCurrentProject(); // 화면에 진입하거나 포커스될 때마다 실행
+    }, [])
+  );
 
   return (
     <>
       <Section>
         <RowWrapper>
-          <CommonText>{`Project: ${projectName}`}</CommonText>
+          <CommonText>
+            {currentProject
+              ? `Project: ${currentProject.project_name}`
+              : 'Loading project...'}
+          </CommonText>
         </RowWrapper>
       </Section>
       <Stack screenOptions={{ headerShown: false }} />

@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { icons, COLORS } from '@/constants';
 import styled from 'styled-components/native';
 import { ScrollView, Pressable, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const stepsData = [
   { date: '2024Y 10M 22D', steps: '2000Steps/5min' },
@@ -74,22 +75,56 @@ const HomePage = () => {
   const [isSurveyCompleted, setIsSurveyCompleted] = React.useState(true); // 설문 완료 상태 변수 추가
   const router = useRouter();
 
-  const handlePress = (route) => {
-    if (!isSurveyCompleted) {
-      Alert.alert(
-        'Required survey not completed',
-        'Please complete the required survey.',
-        [
-          {
-            text: 'OK',
-            onPress: () => router.push('survey/surveyPage'),
-          },
-        ],
-      );
-      return;
+  const handlePress = async (route) => {
+    try {
+      const storedData = await AsyncStorage.getItem('currentProject');
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        console.log('Parsed current project:', parsedData);
+  
+        // 설문 페이지로 이동할 때만 project_id를 전달
+        if (route === '/survey/selection') {
+          if (!parsedData.project_id) {
+            Alert.alert('Error', 'No project selected. Please select a project first.');
+            return;
+          }
+  
+          if (!isSurveyCompleted) {
+            Alert.alert(
+              'Required survey not completed',
+              'Please complete the required survey.',
+              [
+                {
+                  text: 'OK',
+                  onPress: () =>
+                    router.push({
+                      pathname: route,
+                      params: { projectId: parsedData.project_id }, // projectId 전달
+                    }),
+                },
+              ]
+            );
+            return;
+          }
+  
+          // 설문 페이지로 라우팅
+          router.push({
+            pathname: route,
+            params: { projectId: parsedData.project_id },
+          });
+        } else {
+          // 다른 라우트로 이동 (project_id 필요 없음)
+          router.push(route);
+        }
+      } else {
+        Alert.alert('Error', 'No project selected. Please select a project first.');
+      }
+    } catch (error) {
+      console.error('Error fetching current project:', error);
+      Alert.alert('Error', 'Failed to fetch current project.');
     }
-    router.push(route);
   };
+  
 
   return (
     <HomePageWrapper>

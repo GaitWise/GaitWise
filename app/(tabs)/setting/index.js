@@ -71,10 +71,12 @@ const Setting = () => {
 
   return (
     <ProfileContainer>
+      
       {/* 프로필 텍스트 */}
       <TitleContainer>
         <Title>Profile</Title>
       </TitleContainer>
+
       {/* 프로필 사진 */}
       <EditPicInfo>
         <EditPic source={image ? { uri: image } : icons.profile} />
@@ -84,6 +86,7 @@ const Setting = () => {
           <UserPhone>{data.phone}</UserPhone>
         </InfoContainer>
       </EditPicInfo>
+
       {/* 메뉴 */}
       <MenuContainer>
         {/* Edit Survey */}

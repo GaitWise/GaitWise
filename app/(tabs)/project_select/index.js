@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { COLORS, icons } from '@/constants';
 import styled from 'styled-components/native';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, Modal, TextInput, Button, Dimensions } from 'react-native';
 import { Participation_project, Inquiry_project } from '../../../services/project/projectinquiry'; 
@@ -10,7 +10,7 @@ const { width, height } = Dimensions.get('window');
 
 const ProjectSelect = () => {
   const [pName, setpName] = React.useState('');
-  const [userid, setUserId] = React.useState(null); // 초기 상태는 null
+  const [userid, setUserId] = React.useState(null); 
   const [codeInput, setCodeInput] = React.useState('');
   const [stepsData, setStepsData] = React.useState([]);
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -32,10 +32,12 @@ const ProjectSelect = () => {
           console.log('Projects response:', response);
           if (response.projects) {
             const formattedProjects = response.projects.map((project) => ({
+              project_id: project.id,
               project_name: project.name,
               project_description: project.description, 
             }));
             setStepsData(formattedProjects); 
+            console.log("stepsData: id", stepsData)
           }
         }
       } catch (error) {
@@ -46,6 +48,10 @@ const ProjectSelect = () => {
     fetchProjects(); // 컴포넌트가 마운트될 때 한 번만 실행
   }, []);
 
+  React.useEffect(() => {
+    console.log('stepsData changed:', stepsData);
+  }, [stepsData]);
+
   // 프로젝트 추가하기
   const addProject = async () => {
     if (codeInput.trim() !== '' && pName.trim() !== '') {
@@ -55,7 +61,8 @@ const ProjectSelect = () => {
 
         setStepsData((prevStepsData) => [
           ...prevStepsData,
-          {
+          { 
+            project_id: newProject.project.id,
             project_name: newProject.project.name,
             project_description: newProject.project.description,
           },
@@ -71,7 +78,21 @@ const ProjectSelect = () => {
     }
   };
 
-  const navigateToHome = (projectName) => {
+  const navigateToHome = async(projectName, project_id) => {
+    if (!project_id) {
+      console.error("Error: project_id is undefined");
+      return;
+    }
+    
+    const selectedProject = {
+      project_id: project_id,
+      project_name: projectName,
+    };
+    
+
+    await AsyncStorage.setItem('currentProject', JSON.stringify(selectedProject));
+    console.log("selectedProject: ", selectedProject)
+
     router.push({
       pathname: 'home',
       params: { projectName },
@@ -155,7 +176,7 @@ const ProjectSelect = () => {
               {stepsData.map((item, index) => (
                 <CardShadowBox key={index}>
                   <CardContent>
-                    <TextRow onPress={() => navigateToHome(item.project_name)}>
+                    <TextRow onPress={() => navigateToHome(item.project_name, item.project_id)}>
                       <TextWrapper>
                         <CardTitle>{item.project_name}</CardTitle>
                         <CardSubtitle>{item.project_description}</CardSubtitle>
