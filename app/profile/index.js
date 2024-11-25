@@ -1,19 +1,23 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
 import { COLORS, IMAGES } from '@/constants';
-import styled from 'styled-components/native';
 import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import {
-  Image,
-  TouchableOpacity,
-  TextInput,
-  Dimensions,
-  Button,
-} from 'react-native';
+import { Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const { width, height } = Dimensions.get('window');
+import {
+  Container,
+  Header,
+  HeaderText,
+  ProfileFrame,
+  ProfileImage,
+  Form,
+  InputField,
+  Label,
+  Input,
+  StartButton,
+  ButtonText,
+} from '@/components/profile/styles/profile.styles';
 
 const Profile = () => {
   const [inputs, setInputs] = useState({
@@ -146,85 +150,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
-// styled-components
-const Container = styled.View`
-  flex: 1;
-  width: 100%;
-  background-color: ${COLORS.white};
-  overflow: hidden;
-`;
-
-const Header = styled.View`
-  height: ${height * 0.1}px;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-`;
-
-const HeaderText = styled.Text`
-  font-size: ${width * 0.06}px;
-  color: ${COLORS.dark_indigo};
-  font-weight: bold;
-`;
-
-const ProfileFrame = styled.View`
-  background-color: ${COLORS.pastel_lavender};
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-`;
-
-const ProfileImage = styled(Image)`
-  border-radius: ${width * 0.3}px;
-  width: ${width * 0.33}px;
-  height: ${width * 0.33}px;
-`;
-
-const Form = styled.View`
-  padding: ${height * 0.02}px ${width * 0.03}px;
-  flex-direction: center;
-  align-items: center;
-  width: 100%;
-`;
-
-const InputField = styled.View`
-  width: ${width * 0.8}px;
-  gap: ${height * 0.005}px;
-`;
-
-const Label = styled.Text`
-  font-size: ${width * 0.045}px;
-  color: ${COLORS.black};
-  font-weight: bold;
-`;
-
-const Input = styled(TextInput)`
-  padding: ${height * 0.015}px;
-  border: 1px solid ${COLORS.dark_indigo};
-  border-radius: ${width * 0.04}px;
-  background-color: ${COLORS.white};
-  color: ${COLORS.soft_blue};
-  font-weight: 500;
-  font-size: ${width * 0.045}px;
-`;
-
-const StartButton = styled(TouchableOpacity)`
-  border-radius: ${width * 0.25}px;
-  background-color: ${({ isFormValid }) =>
-    isFormValid ? COLORS.dark_indigo : COLORS.continue_gray};
-  width: ${width * 0.5}px;
-  padding: ${height * 0.015}px;
-  justify-content: center;
-  align-items: center;
-  align-self: center;
-  margin: ${height * 0.02}px;
-`;
-
-const ButtonText = styled.Text`
-  color: ${COLORS.white};
-  font-size: ${width * 0.045}px;
-  font-weight: bold;
-  text-align: center;
-`;

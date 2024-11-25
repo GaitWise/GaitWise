@@ -1,12 +1,24 @@
 import { COLORS } from '@/constants';
 import { router } from 'expo-router';
 import { useState, useRef } from 'react';
-import styled from 'styled-components/native';
 import { TouchableOpacity, FlatList, Dimensions, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  BaseContainer,
+  FrameContainer,
+  QuestionContainer,
+  QuestionText,
+  HeightTextContainer,
+  HeightText,
+  HeightScrollContainer,
+  HeightItem,
+  StyledHeightText,
+  ContinueButton,
+  ContinueButtonText,
+} from '@/components/survey/styles/height.styles';
 
-const { width, height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 const ITEM_HEIGHT = height * 0.0579; // 📌 스크롤 아이템의 높이를 상수로 지정
 
 const Height = () => {
@@ -14,6 +26,7 @@ const Height = () => {
   const [selectedHeight, setSelectedHeight] = useState(0);
   const heightArray = Array.from({ length: 251 }, (_, index) => index);
 
+  // 스크롤 조정
   const handleScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y;
     const newIndex = Math.round(offsetY / ITEM_HEIGHT);
@@ -135,7 +148,7 @@ const Height = () => {
         <ContinueButton
           onPress={() => {
             if (isFormValid()) {
-              handleContinue(); // 📌 함수 호출로 수정
+              handleContinue();
             }
           }}
           disabled={!isFormValid()}
@@ -150,83 +163,3 @@ const Height = () => {
 };
 
 export default Height;
-
-// Styled Components
-const BaseContainer = styled.View`
-  flex: 1;
-  background-color: ${COLORS.white};
-  width: 100%;
-  height: 100%;
-`;
-
-const FrameContainer = styled.View`
-  flex: 1;
-  align-items: center;
-  padding-top: ${height * 0.08}px;
-  gap: ${height * 0.03}px;
-`;
-
-const QuestionContainer = styled.View`
-  align-items: center;
-  justify-content: center;
-  padding-bottom: ${height * 0.02}px;
-`;
-
-const QuestionText = styled.Text`
-  color: ${COLORS.dark_indigo};
-  font-size: ${height * 0.04}px;
-  font-weight: 700;
-`;
-
-const HeightTextContainer = styled.View`
-  flex-direction: row;
-  align-items: center;
-`;
-
-const HeightText = styled.Text`
-  color: ${COLORS.dark_indigo};
-  font-weight: 700;
-  font-size: ${height * 0.05}px;
-  margin-right: 5px;
-`;
-
-const HeightScrollContainer = styled.View`
-  background-color: ${COLORS.soft_blue};
-  align-items: center;
-  justify-content: center;
-  width: ${width * 0.3}px;
-  height: ${height * 0.4}px;
-  border-radius: 10px;
-`;
-
-const HeightItem = styled.View`
-  justify-content: center;
-  align-items: center;
-  height: ${ITEM_HEIGHT}px;
-`;
-
-const StyledHeightText = styled.Text`
-  font-size: ${(props) =>
-    props.isSelected ? `${height * 0.04}px` : `${height * 0.03}px`};
-  opacity: ${(props) => (props.isSelected ? '1' : '0.5')};
-  color: ${COLORS.dark_indigo};
-  font-weight: 700;
-`;
-
-const ContinueButton = styled(TouchableOpacity)`
-  width: ${width * 0.5}px;
-  height: ${height * 0.08}px;
-  border-radius: 100px;
-  background-color: ${({ isFormValid }) =>
-    isFormValid ? COLORS.dark_indigo : COLORS.continue_gray};
-  justify-content: center;
-  align-items: center;
-  margin-top: ${height * 0.03}px;
-`;
-
-const ContinueButtonText = styled.Text`
-  color: ${COLORS.white};
-  font-size: ${height * 0.025}px;
-  font-weight: 700;
-  text-align: center;
-`;
