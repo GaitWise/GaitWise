@@ -1,9 +1,31 @@
 import * as React from 'react';
-import styled from 'styled-components/native';
 import { icons, COLORS } from '@/constants';
 import { router } from 'expo-router';
-import { View, Button, Modal } from 'react-native';
+import { Button, Modal } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import {
+  TitleWrapper,
+  ButtonWrapper,
+  ModalContent,
+  ProfileContainer,
+  TitleContainer,
+  Title,
+  EditPicInfo,
+  EditPic,
+  InfoContainer,
+  UserName,
+  UserPhone,
+  MenuContainer,
+  Separator,
+  PressableItem,
+  PressableItemContainer,
+  MenuText,
+  ModalContainer,
+  ModalTitle,
+  XButtonWrapper,
+  XButton,
+  AButton,
+} from '@/components/settings/styles/setting.styles';
 
 // 페이지 이동
 const requierdsurvey = 'survey/gender';
@@ -211,146 +233,3 @@ const Setting = () => {
 };
 
 export default Setting;
-
-// Styled-components
-
-const TitleWrapper = styled.View`
-  margin-horizontal: 20px;
-  align-items: center;
-`;
-
-const ButtonWrapper = styled.View`
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  padding: 30px;
-  gap: 30px;
-`;
-
-const ModalContent = styled.View`
-  background-color: ${COLORS.white};
-  width: 350px;
-  height: 200px;
-  border-radius: 20px;
-`;
-const ProfileContainer = styled.View`
-  flex: 1;
-  height: 100%;
-  width: 100%;
-  background-color: ${COLORS.white};
-  align-items: center;
-  justify-content: flex-start;
-`;
-
-const TitleContainer = styled.View`
-  align-self: stretch;
-  height: 30px;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-`;
-
-const Title = styled.Text`
-  font-size: 25px;
-  font-weight: 600;
-  color: ${COLORS.dark_indigo};
-  font-family: 'Inter-SemiBold';
-`;
-
-const EditPicInfo = styled.View`
-  padding: 16px;
-  justify-content: center;
-  align-items: center;
-  margin: 10px;
-`;
-
-const EditPic = styled.Image`
-  width: 150px;
-  height: 150px;
-  border-radius: 90px;
-  background-color: ${COLORS.light_gray};
-`;
-
-const InfoContainer = styled.View`
-  align-items: center;
-  gap: 4px;
-  margin-top: 20px;
-`;
-
-const UserName = styled.Text`
-  font-size: 16px;
-  font-weight: 700;
-  color: ${COLORS.dark_indigo};
-  font-family: 'Inter-Bold';
-`;
-
-const UserPhone = styled.Text`
-  font-size: 14px;
-  color: ${COLORS.dark_indigo};
-  font-family: 'Inter-Regular';
-  text-align: center;
-`;
-
-const MenuContainer = styled.View`
-  padding: 0 24px;
-  width: 100%;
-`;
-
-const Separator = styled.View`
-  height: 1px;
-  border-top-width: 1px;
-  border-color: ${COLORS.light_gray};
-  margin: 8px 0;
-`;
-
-const PressableItemContainer = styled.Pressable`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  margin: 5px;
-`;
-
-const PressableItem = styled.View`
-  flex-direction: row;
-  align-items: center;
-  gap: 16px;
-`;
-
-const MenuText = styled.Text`
-  font-size: 18px;
-  color: ${COLORS.dark_gray};
-  font-family: 'Inter-Regular';
-`;
-
-const ModalContainer = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-`;
-
-const ModalTitle = styled.Text`
-  font-size: 20px;
-  font-weight: bold;
-  color: ${COLORS.dark_indigo};
-`;
-
-const XButtonWrapper = styled.View`
-  width: 100%;
-  align-items: flex-end;
-`;
-
-const XButton = styled.Pressable`
-  width: 40px;
-  height: 40px;
-  justify-content: center;
-  align-items: center;
-  padding: 25px;
-`;
-
-const AButton = styled.Button`
-  width: 40px;
-  height: 40px;
-  justify-content: center;
-  align-items: center;
-`;
