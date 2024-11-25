@@ -21,3 +21,19 @@ export const Survey_inquiry = async (project_id) => {
     throw error;
   }
 };
+
+export const Survey_save = async (surveyData) => {
+  try {
+    const response = await api.post('/Survey/survey_save', {
+      project: surveyData.project,
+      essential_survey: surveyData.essential_survey,
+      custom_survey: surveyData.custom_survey,
+      participant: surveyData.participant,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error saving survey data:', error);
+    throw error;
+  }
+};
+

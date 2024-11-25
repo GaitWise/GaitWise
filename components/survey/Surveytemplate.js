@@ -1,26 +1,31 @@
 import React, { useState } from 'react';
-import {
-  Image,
-  Pressable,
-  TextInput,
-  Keyboard,
-  Dimensions,
-  TouchableWithoutFeedback,
-} from 'react-native';
 import styled from 'styled-components/native';
 import { COLORS, IMAGES, icons } from '@/constants';
+import { Image, Pressable, TextInput, Keyboard, Dimensions, TouchableWithoutFeedback} from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
-const SurveyTemplate = ({ currentPageData, onContinue }) => {
+const SurveyTemplate = ({ currentPageData, onContinue, onAnswer }) => {
   const [inputValue, setInputValue] = useState('');
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState([]);
+
+  const handleOptionSelect = (optionValue) => {
+    setSelectedOption((prevSelected) => {
+      if (prevSelected.includes(optionValue)) {
+        return prevSelected.filter((value) => value !== optionValue); // 선택 해제
+      } else {
+        return [...prevSelected, optionValue]; // 선택 추가
+      }
+    });
+  };
 
   const handleContinue = () => {
-    if (selectedOption !== null || inputValue.trim() !== '') {
+    const answer = selectedOption.length ? selectedOption : inputValue.trim();
+    if (answer.length) {
+      onAnswer(answer); // 답변 저장
       onContinue();
       setInputValue('');
-      setSelectedOption(null);
+      setSelectedOption([]);
     }
   };
 
@@ -28,7 +33,7 @@ const SurveyTemplate = ({ currentPageData, onContinue }) => {
     ? Math.max(150, currentPageData.options.length * 70)
     : height * 0.4;
 
-  const isContinueEnabled = selectedOption !== null || inputValue.trim() !== '';
+  const isContinueEnabled = selectedOption.length > 0 || inputValue.trim() !== '';
   const continueButtonColor = isContinueEnabled
     ? COLORS.dark_indigo
     : COLORS.continue_gray;
@@ -47,11 +52,11 @@ const SurveyTemplate = ({ currentPageData, onContinue }) => {
             currentPageData.options.map((option) => (
               <OptionButton
                 key={option.value}
-                isSelected={selectedOption === option.value}
-                onPress={() => setSelectedOption(option.value)}
+                isSelected={selectedOption.includes(option.value)}
+                onPress={() => handleOptionSelect(option.value)}
               >
                 <IconWithMargin>
-                  {selectedOption === option.value ? (
+                  {selectedOption.includes(option.value) ? (
                     <icons.checked />
                   ) : (
                     <icons.check />
@@ -84,6 +89,7 @@ const SurveyTemplate = ({ currentPageData, onContinue }) => {
     </TouchableWithoutFeedback>
   );
 };
+
 
 export default SurveyTemplate;
 

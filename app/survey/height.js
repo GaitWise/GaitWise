@@ -69,6 +69,7 @@ const Height = () => {
         lastName: JSON.parse(profile).lastName,
         gender: JSON.parse(gender),
         age: JSON.parse(age),
+        email: JSON.parse(profile).email,
         weight: JSON.parse(weight),
         height: selectedHeight,
         job: JSON.parse(profile).job,

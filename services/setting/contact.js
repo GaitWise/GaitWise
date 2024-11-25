@@ -9,11 +9,14 @@ const api = axios.create({
   },
 });
 
-export const Delete_User = async (user_id) => {
-  console.log("user_id:", user_id)
+export const contact_post = async (title, content, author, email) => {
+  console.log(title, content, author, email)
   try {
-    const response = await api.post('/User/deletedUser', {
-      user_id
+    const response = await api.post('/Post/savepost', {
+      title,
+      content,
+      author,
+      email
     });
     return response.data;
   } catch (error) {
