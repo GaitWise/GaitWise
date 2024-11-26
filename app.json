@@ -2,6 +2,7 @@
   "expo": {
     "sdkVersion": "52.0.0",
     "scheme": "acme",
+    "orientation": "portrait",
     "web": {
       "bundler": "metro"
     },

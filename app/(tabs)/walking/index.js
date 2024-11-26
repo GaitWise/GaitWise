@@ -1,25 +1,27 @@
 import 'react-native-get-random-values';
 import { icons, COLORS } from '../../../constants';
-import React, { useCallback, useState, useRef } from 'react';
+import { DeviceMotion } from 'expo-sensors';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { Sensors } from '../../../components/walking/Sensor';
+import * as ScreenOrientation from 'expo-screen-orientation'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { insertSensorData } from '../../../components/walking/SQLite';
 import { sendDatabaseFile } from '../../../components/walking/api/Senddata';
 import { useTimerAnimation } from '../../../components/walking/UseTimerAnimation';
 import { chunkData, generateHash} from '../../../components/walking/DataProcessing';
 import { sendChunk, compareHash, resendMissingChunks,} from '../../../components/walking/api/Senddata';
-import { ActivityIndicator, Modal, Animated } from 'react-native';
+import { ActivityIndicator, Modal, Animated, Alert } from 'react-native';
 import styled from 'styled-components/native';
 
 // TODO
-// 1. Save 버튼 누를시 초기화.
-
 const Walking = () => {
-  // 로딩 및 모달 상태 관리
   const formattedTimeRef = useRef('');
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false); 
+  const [isStartEnabled, setIsStartEnabled] = useState(false);
 
+  // 구독 객체 관리
+  const deviceMotionSubscriptionRef = useRef(null);
 
   // Sensor
   const { subscribeSensors, unsubscribeSensors, sensorLog } = Sensors(25);
@@ -28,10 +30,44 @@ const Walking = () => {
   const { seconds, setIsActive, setIsStop, formatTime, animation, Timerreset, isActive, isStop} = useTimerAnimation(2500);
 
 
+  // 디바이스 모션 감지 함수
+  const subscribeToDeviceMotion = () => {
+    DeviceMotion.setUpdateInterval(1000);
+
+    const subscription = DeviceMotion.addListener((data) => {
+      const { orientation } = data;
+      const { beta } = data.rotation;
+      console.log("orientation: ", orientation);
+      console.log("beta: ", beta);
+
+      const isFacingForward = beta > -0.3 && beta < 0.3;
+      const isTiltedRight = orientation === -90;
+
+      if (isFacingForward && isTiltedRight) {
+        setIsStartEnabled(true);
+        console.log('핸드폰이 올바른 방향으로 오른쪽으로 기울어져 있습니다.');
+      } else if (!isFacingForward) {
+        setIsStartEnabled(false);
+        console.log('핸드폰의 앞면을 앞으로 향하게 하세요.');
+      } else {
+        console.log('핸드폰을 오른쪽으로 기울여주세요.');
+      }
+    });
+
+    deviceMotionSubscriptionRef.current = subscription;
+  };
+
+  useEffect(() => {
+    subscribeToDeviceMotion();
+    return () => {
+      deviceMotionSubscriptionRef.current?.remove();
+    };
+  }, []);
+  
   // TODO 추후 UDP 통신 구현
   const handleSendDatabaseFile = useCallback(async () => {
-    setLoading(true); // 저장 버튼 클릭 시 로딩 시작
-    setModalVisible(true); // 모달 표시
+    setLoading(true); 
+    setModalVisible(true);
 
     try {
       const userData = await AsyncStorage.getItem('finalData');
@@ -47,9 +83,7 @@ const Walking = () => {
         console.log(`Chunk ${i} upload status:`, result);
       }
 
-      console.log(formattedTimeRef.current)
       const compareResult = await compareHash(dataHash, parsedUserData.user, formattedTimeRef.current);
-      console.log('compareResult: ', compareResult);
 
       if (compareResult.status === 'incomplete') {
         console.log('Resending missing chunks:', compareResult.missingChunks);
@@ -57,8 +91,8 @@ const Walking = () => {
       } else if (compareResult.status === 'match') {
         console.log('Data fully synchronized and verified');
 
-        const TableName = 'Jiseungmin';
-        await insertSensorData(sensorLog, TableName);
+        await insertSensorData(sensorLog, parsedUserData.user);
+        console.log("sensorLog: ", sensorLog)
         sensorLog.current = [];
       } else {
         console.error('Data mismatch detected');
@@ -76,6 +110,7 @@ const Walking = () => {
     setIsStop(false);
     setIsActive(true);
     subscribeSensors();
+    deviceMotionSubscriptionRef.current?.remove();
   };
 
   const handleStop = () => {
@@ -93,6 +128,7 @@ const Walking = () => {
     unsubscribeSensors();
     setIsActive(false);
     animation.setValue(0);
+    subscribeToDeviceMotion();
   };
 
   const handleResume = () => {
@@ -131,7 +167,7 @@ const Walking = () => {
       </IconContainer>
 
       {!isActive && (
-        <StartButton onPress={handleStart}>
+        <StartButton onPress={handleStart} disabled={!isStartEnabled} isEnable={isStartEnabled}>
           <SText>Start</SText>
         </StartButton>
       )}
@@ -227,7 +263,7 @@ const ButtonRow = styled.View`
 `;
 
 const StartButton = styled.TouchableOpacity`
-  background-color: ${COLORS.soft_blue};
+  background-color: ${({ isEnable }) => (isEnable ? `${COLORS.soft_blue}` : 'gray')};
   border-radius: 30px;
   padding: 15px 40px;
   width: 90%;

@@ -17,7 +17,8 @@ export const createTable = async(TableName) => {
         gyroZ REAL,
         rotX REAL,
         rotY REAL,
-        rotZ REAL
+        rotZ REAL,
+        stepCount INTEGER DEFAULT 0
         );`
     )
 }
@@ -38,12 +39,13 @@ export const insertSensorData = async(sensorLog, TableName, batchSize = 1000) =>
                 '${logEntry['timestamp']}', 
                 ${logEntry["accData"]['x']}, ${logEntry["accData"]['y']}, ${logEntry["accData"]['z']}, 
                 ${logEntry["gyroData"]['x']}, ${logEntry["gyroData"]['y']}, ${logEntry["gyroData"]['z']}, 
-                ${logEntry["rotationData"]['alpha']}, ${logEntry["rotationData"]['beta']}, ${logEntry["rotationData"]['gamma']}
+                ${logEntry["rotationData"]['alpha']}, ${logEntry["rotationData"]['beta']}, ${logEntry["rotationData"]['gamma']},
+                ${logEntry["stepCount"] || 0}
             )`).join(',');
     
             const insertQuery = `
                 INSERT INTO "${TableName}" 
-                (event_time, accX, accY, accZ, gyroX, gyroY, gyroZ, rotX, rotY, rotZ)
+                (event_time, accX, accY, accZ, gyroX, gyroY, gyroZ, rotX, rotY, rotZ, stepCount)
                 VALUES ${insertValues}
             `;
     

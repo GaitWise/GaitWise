@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Accelerometer, Gyroscope, DeviceMotion } from 'expo-sensors';
+import { Accelerometer, Gyroscope, DeviceMotion, Pedometer } from 'expo-sensors';
 
 export const Sensors = (updateInterval = 25) => {
     const sensorLogRef = useRef([]); 
     const accDataRef = useRef({ x: 0, y: 0, z: 0 });
     const gyroDataRef = useRef({ x: 0, y: 0, z: 0 });
     const rotationDataRef = useRef({ alpha: 0, beta: 0, gamma: 0 });
+    const stepCountRef = useRef(0)
 
     // Sensor Subscription
     const [accSubscription, setAccSubscription] = useState(null);
     const [gyroSubscription, setGyroSubscription] = useState(null);
     const [rotationSubscription, setRotationSubscription] = useState(null);
+    const [stepSubscription, setStepSubscription] = useState(null);
 
     const handleSensorData = () => {
         if (
@@ -22,7 +24,8 @@ export const Sensors = (updateInterval = 25) => {
                 timestamp: new Date().toISOString(),
                 accData: { ...accDataRef.current },
                 gyroData: { ...gyroDataRef.current },
-                rotationData: { ...rotationDataRef.current }
+                rotationData: { ...rotationDataRef.current },
+                stepCount: stepCountRef.current
             };
 
             // SensorLog Collect
@@ -54,6 +57,16 @@ export const Sensors = (updateInterval = 25) => {
                 handleSensorData(); // Sensor Data processing
             })
         );
+        
+        // Subscribe to Pedometer
+        if (Pedometer.isAvailableAsync()) {
+            setStepSubscription(
+                Pedometer.watchStepCount((result) => {
+                    stepCountRef.current = result.steps;
+                    handleSensorData(); // Update step count in sensor log
+                })
+            );
+        }
     };
 
     // Sensor Unsubscription
@@ -61,9 +74,11 @@ export const Sensors = (updateInterval = 25) => {
         accSubscription && accSubscription.remove();
         gyroSubscription && gyroSubscription.remove();
         rotationSubscription && rotationSubscription.remove();
+        stepSubscription && stepSubscription.remove();
         setAccSubscription(null);
         setGyroSubscription(null);
         setRotationSubscription(null);
+        setStepSubscription(null);
     };
 
     // Unsubscribe when unmounting a component
