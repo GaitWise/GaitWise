@@ -3,21 +3,10 @@ import { Banner } from '@/components';
 import { useRouter } from 'expo-router';
 import { icons, COLORS } from '@/constants';
 import styled from 'styled-components/native';
+import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView, Pressable, Alert } from 'react-native';
-
-const stepsData = [
-  { date: '2024Y 10M 22D', steps: '2000Steps/5min' },
-  { date: '2024Y 10M 15D', steps: '3000Steps/5min' },
-  { date: '2024Y 10M 2D', steps: '3100Steps/5min' },
-  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
-  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
-  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
-  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
-  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
-  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
-  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
-  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
-];
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Inquiry_stepHistory } from '../../../services/home/stephistory';
 
 const iconData = [
   {
@@ -71,32 +60,91 @@ const iconData = [
 ];
 
 const HomePage = () => {
-  const [isSurveyCompleted, setIsSurveyCompleted] = React.useState(true); // 설문 완료 상태 변수 추가
   const router = useRouter();
+  const [stepsData, setStepsData] = React.useState([]); 
+  const [isSurveyCompleted, setIsSurveyCompleted] = React.useState(true); 
 
-  const handlePress = (route) => {
-    if (!isSurveyCompleted) {
-      Alert.alert(
-        'Required survey not completed',
-        'Please complete the required survey.',
-        [
-          {
-            text: 'OK',
-            onPress: () => router.push('survey/surveyPage'),
-          },
-        ],
-      );
-      return;
+  // Fetch step history data
+  const fetchStepHistory = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('finalData');
+      if (userData) {
+        const parsedData = JSON.parse(userData);
+        const user_id = parsedData.user; 
+        const stepHistory = await Inquiry_stepHistory(user_id); 
+  
+        const formattedData = stepHistory.map((item) => ({
+          date: `${new Date(item.createdAt).getFullYear()}Y ${new Date(item.createdAt).getMonth() + 1}M ${new Date(item.createdAt).getDate()}D`,
+          steps: `${item.step_count}Steps/${item.walking_time}`,
+        }));
+  
+        setStepsData(formattedData); 
+      } else {
+        console.error('No user data found in AsyncStorage.');
+      }
+    } catch (error) {
+      console.error('Error fetching step history:', error);
     }
-    router.push(route);
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchStepHistory();
+    }, [])
+  );
+
+  const handlePress = async (route) => {
+    try {
+      const storedData = await AsyncStorage.getItem('currentProject');
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+  
+        // 설문 페이지로 이동할 때만 project_id를 전달
+        if (route === '/survey/selection') {
+          if (!parsedData.project_id) {
+            Alert.alert('Error', 'No project selected. Please select a project first.');
+            return;
+          }
+  
+          if (!isSurveyCompleted) {
+            Alert.alert(
+              'Required survey not completed',
+              'Please complete the required survey.',
+              [
+                {
+                  text: 'OK',
+                  onPress: () =>
+                    router.push({
+                      pathname: route,
+                      params: { projectId: parsedData.project_id }, // projectId 전달
+                    }),
+                },
+              ]
+            );
+            return;
+          }
+  
+          router.push({
+            pathname: route,
+            params: { projectId: parsedData.project_id },
+          });
+        } else {
+          router.push(route);
+        }
+      } else {
+        Alert.alert('Error', 'No project selected. Please select a project first.');
+      }
+    } catch (error) {
+      console.error('Error fetching current project:', error);
+      Alert.alert('Error', 'Failed to fetch current project.');
+    }
+  };
+  
 
   return (
     <HomePageWrapper>
       <Content>
-     
         <Banner />
-
         <MiddleContainer>
           <TitleRow>
             <TitleText>{`Features`}</TitleText>

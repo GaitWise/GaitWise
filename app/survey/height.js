@@ -2,12 +2,13 @@ import { COLORS } from '@/constants';
 import { router } from 'expo-router';
 import { useState, useRef } from 'react';
 import styled from 'styled-components/native';
-import { TouchableOpacity, FlatList, Dimensions, Alert } from 'react-native';
+import { saveUserData } from '../../services/user/usersave'; 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TouchableOpacity, FlatList, Dimensions, Alert } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
-const ITEM_HEIGHT = height * 0.0579; // 📌 스크롤 아이템의 높이를 상수로 지정
+const ITEM_HEIGHT = height * 0.0579; 
 
 const Height = () => {
   const flatListRef = useRef(null);
@@ -24,7 +25,6 @@ const Height = () => {
     return selectedHeight;
   };
 
-  // 📌 입력 창을 표시해 신장 값을 입력받고 selectedHeight와 스크롤 위치를 업데이트하는 함수
   const handleHeightInput = () => {
     Alert.prompt(
       'Enter Your Height',
@@ -41,7 +41,6 @@ const Height = () => {
             if (!isNaN(newHeight) && newHeight >= 0 && newHeight <= 250) {
               setSelectedHeight(newHeight);
 
-              // 정확한 위치로 스크롤하기 위해 데이터 배열 인덱스를 기반으로 오프셋 조정
               const targetIndex = heightArray.indexOf(newHeight);
               if (targetIndex !== -1) {
                 flatListRef.current.scrollToIndex({
@@ -64,21 +63,42 @@ const Height = () => {
       const weight = await AsyncStorage.getItem('selectedWeight');
       const gender = await AsyncStorage.getItem('genderData');
       const profile = await AsyncStorage.getItem('input');
-      // 필요한 데이터 더 추가
+
+      const userData = {
+        firstName: JSON.parse(profile).firstName,
+        lastName: JSON.parse(profile).lastName,
+        gender: JSON.parse(gender),
+        age: JSON.parse(age),
+        email: JSON.parse(profile).email,
+        weight: JSON.parse(weight),
+        height: selectedHeight,
+        job: JSON.parse(profile).job,
+        profile_image_url: " ",
+        password: JSON.parse(profile).passwd,
+      };
+      
+      const response = await saveUserData(userData);
+      console.log('Data saved successfully:', response); 
 
       const allData = {
+        user: response.user._id,
         profile: JSON.parse(profile),
         gender: JSON.parse(gender),
         age: JSON.parse(age),
         weight: JSON.parse(weight),
-        height: selectedHeight, // 현재 페이지 데이터
+        height: selectedHeight, 
       };
+
+      console.log("allData", allData)
 
       // 📌 한꺼번에 저장
       await AsyncStorage.setItem('finalData', JSON.stringify(allData));
 
-      console.log('All data saved:', allData);
-      router.push('/project_select');
+      router.push({
+        pathname: '/project_select',
+        params: { user_id: response.user._id },
+      });
+
     } catch (error) {
       console.error('Failed to save data:', error);
     }

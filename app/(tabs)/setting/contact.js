@@ -1,33 +1,73 @@
 import * as React from 'react';
 import styled from 'styled-components/native';
-import { useState } from 'react';
-import { Pressable, Keyboard } from 'react-native';
+import { useState, useEffect } from 'react';
+import { Pressable, Alert } from 'react-native';
 import { COLORS } from '@/constants';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { contact_post } from '../../../services/setting/contact';
 
 const Contact = () => {
   const [inputs, setInputs] = useState({
-    firstName: '',
-    lastName: '',
+    title: '',
     email: '',
     message: '',
   });
+
+  const [author, setAuthor] = useState(null); // user_id 저장
+
+  // AsyncStorage에서 user_id 가져오기
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const userData = await AsyncStorage.getItem('finalData');
+        if (userData) {
+          const parsedData = JSON.parse(userData);
+          const userIdFromStorage = parsedData.user; // user_id 가져오기
+          setAuthor(userIdFromStorage);
+          console.log('Fetched user_id:', userIdFromStorage);
+        }
+      } catch (error) {
+        console.error('Error fetching user_id:', error);
+      }
+    };
+
+    fetchUserId();
+  }, []);
 
   const handleChange = (name, value) => {
     setInputs({ ...inputs, [name]: value });
   };
 
-  const isFormComplete = Object.values(inputs).every((value) => value !== '');
+  const isFormComplete =
+    Object.values(inputs).every((value) => value !== '') && author !== null;
 
-  const handleContinue = () => {
-    if (isFormComplete) {
-      onSendButton();
+  const handleSend = async () => {
+    if (!isFormComplete) {
+      Alert.alert('Error', 'Please fill out all fields before submitting.');
+      return;
+    }
+
+    try {
+      const { title, email, message } = inputs;
+      const response = await contact_post(title, message, author, email);
+      Alert.alert('Success', 'Your message has been sent!');
+      console.log('Server response:', response);
+
+      // 폼 초기화
+      setInputs({
+        title: '',
+        email: '',
+        message: '',
+      });
+    } catch (error) {
+      Alert.alert('Error', 'Failed to send your message. Please try again.');
+      console.error('Error sending contact form:', error);
     }
   };
 
   const fields = [
-    { label: 'First Name', name: 'firstName', placeholder: 'First Name' },
-    { label: 'Last Name', name: 'lastName', placeholder: 'Last Name' },
+    { label: 'Title', name: 'title', placeholder: 'Title' },
     {
       label: 'Email',
       name: 'email',
@@ -35,18 +75,15 @@ const Contact = () => {
       keyboardType: 'email-address',
     },
     {
-      label: 'Write your message',
+      label: 'Message',
       name: 'message',
-      placeholder: 'Write your message..',
+      placeholder: 'Write your message...',
       multiline: true,
     },
   ];
 
   return (
-    <KeyboardAwareScrollView
-      resetScrollToCoords={{ x: 0, y: 0 }}
-      scrollEnabled={true}
-    >
+    <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }} scrollEnabled={true}>
       <ProfileContainer>
         <MainFrame>
           <ContactSection>
@@ -56,12 +93,10 @@ const Contact = () => {
             </TitleContainer>
             <Description>
               <ContactDescription>
-                Any question or remarks?
-                {'\n'}
-                Just write us a message!
+                Any questions or remarks?{'\n'}Just write us a message!
               </ContactDescription>
             </Description>
-            {/* 작성 부분 */}
+            {/* Form Fields */}
             <InputGroup>
               {fields.map((field, index) => (
                 <InputField
@@ -75,12 +110,8 @@ const Contact = () => {
                 />
               ))}
             </InputGroup>
-            {/* Send 버튼 */}
-            <SendButton
-              onPress={handleContinue}
-              disabled={!isFormComplete}
-              isDisabled={!isFormComplete}
-            >
+            {/* Send Button */}
+            <SendButton onPress={handleSend} disabled={!isFormComplete} isDisabled={!isFormComplete}>
               <SendButtonText>Send Message</SendButtonText>
             </SendButton>
           </ContactSection>
@@ -92,15 +123,9 @@ const Contact = () => {
 
 export default Contact;
 
-const InputField = ({
-  label,
-  value,
-  onChangeText,
-  placeholder,
-  keyboardType,
-  multiline,
-}) => (
-  <InputWrapper style={{ height: multiline ? 120 : 50 }}>
+// InputField 컴포넌트
+const InputField = ({ label, value, onChangeText, placeholder, keyboardType, multiline }) => (
+  <InputWrapper style={{ height: multiline ? 200 : 50 }}>
     <InputLabel>{label}</InputLabel>
     <StyledTextInput
       value={value}
@@ -113,6 +138,7 @@ const InputField = ({
   </InputWrapper>
 );
 
+// Styled components
 const Description = styled.View`
   margin: 10px;
 `;

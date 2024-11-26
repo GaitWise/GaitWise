@@ -1,9 +1,13 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
 import { icons, COLORS } from '@/constants';
-import { Button, Modal } from 'react-native';
+import { Button, Modal, Alert } from 'react-native';
 import styled from 'styled-components/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
+import { Inquiry_User } from '../../../services/setting/usernquiry';
+import {Delete_User} from '../../../services/setting/userdelete'
 
 // 페이지 이동
 const contact = 'setting/contact';
@@ -17,6 +21,11 @@ const Setting = () => {
     React.useState(false);
   const [deleteAccountModalVisible, setDeleteAccountModalVisible] =
     React.useState(false);
+  const [userInfo, setUserInfo] = useState({
+      firstName: '',
+      lastName: '',
+  });
+  const [currentProject, setCurrentProject] = useState(null);
 
   // 내 갤러리 이미지 고르기 기능
   const pickImage = async () => {
@@ -36,54 +45,89 @@ const Setting = () => {
     }
   };
 
-  // 계정 삭제
+  // AsyncStorage에서 user_id 및 currentProject 가져오기
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userData = await AsyncStorage.getItem('finalData');
+        const projectData = await AsyncStorage.getItem('currentProject');
+        if (userData) {
+          const parsedUserData = JSON.parse(userData);
+          const userIdFromStorage = parsedUserData.user; // user_id 가져오기
+          console.log('Fetched user_id:', userIdFromStorage);
+
+          // 서버에서 사용자 정보 요청
+          const response = await Inquiry_User(userIdFromStorage);
+          console.log('User info response:', response);
+
+          if (response && response.user && response.user.firstname && response.user.lastname) {
+            setUserInfo({
+              firstName: response.user.firstname,
+              lastName: response.user.lastname,
+            });
+          } else {
+            console.error('Invalid user data received.');
+          }
+        }
+
+        // currentProject 데이터 가져오기
+        if (projectData) {
+          const parsedProjectData = JSON.parse(projectData);
+          console.log('Parsed current project:', parsedProjectData.project_id);
+          setCurrentProject(parsedProjectData.project_id);
+          console.log('Parsed current project:', currentProject);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+
   const deleteAccount = async () => {
     try {
-      // 서버와 연동된 계정 삭제 API 호출 (예시)
-      const response = await fetch('https://your-api.com/delete-account', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: 'user123', // 실제 사용자 ID
-        }),
-      });
-
-      if (response.ok) {
-        console.log('계정 삭제 완료');
-        // 로그아웃 또는 초기 화면으로 이동
-        router.push('/profile');
-      } else {
-        console.error('계정 삭제 실패');
+      const userData = await AsyncStorage.getItem('finalData');
+      if (!userData) {
+        console.error('User ID not found in AsyncStorage.');
+        Alert.alert('Error', 'User ID is required to delete the account.');
+        return;
       }
-    } catch (error) {
-      console.error('서버 오류:', error);
-    }
-  };
+  
+      const parsedUserData = JSON.parse(userData);
+      const userId = parsedUserData.user;
+      console.log("userId: ", userId)
 
-  // user data
-  const data = {
-    firstName: 'Han',
-    lastName: 'Jisoo',
-    phone: '010-1234-5678',
+      // API 호출을 통해 사용자 상태를 'deleted'로 변경
+      const response = await Delete_User(userId);
+      console.log("response: ", response)
+  
+      Alert.alert('Success', 'Your account has been deleted successfully.');
+      router.push('/profile'); // 성공 시 프로필 화면으로 이동
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+    }
   };
 
   return (
     <ProfileContainer>
+      
       {/* 프로필 텍스트 */}
       <TitleContainer>
         <Title>Profile</Title>
       </TitleContainer>
+
       {/* 프로필 사진 */}
       <EditPicInfo>
         <EditPic source={image ? { uri: image } : icons.profile} />
         <Button title="Change Profile Picture" onPress={pickImage} />
         <InfoContainer>
-          <UserName>{`${data.firstName} ${data.lastName}`}</UserName>
-          <UserPhone>{data.phone}</UserPhone>
+          <UserName>{`${userInfo.firstName} ${userInfo.lastName}`}</UserName>
         </InfoContainer>
       </EditPicInfo>
+
       {/* 메뉴 */}
       <MenuContainer>
         {/* Edit Survey */}
@@ -119,8 +163,17 @@ const Setting = () => {
                   color={COLORS.deep_slate_blue}
                 />
                 <AButton
-                  title="templete Survey"
-                  onPress={() => router.push(templetesurvey)}
+                  title="Template Survey"
+                  onPress={() => {
+                    if (currentProject) {
+                      router.push({
+                        pathname: 'survey/selection',
+                        params: { projectId: currentProject }, 
+                      });
+                    } else {
+                      console.error('No current project found.');
+                    }
+                  }}
                   color={COLORS.deep_slate_blue}
                 />
               </ButtonWrapper>
