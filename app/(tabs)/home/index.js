@@ -3,22 +3,10 @@ import { Banner } from '@/components';
 import { useRouter } from 'expo-router';
 import { icons, COLORS } from '@/constants';
 import styled from 'styled-components/native';
+import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView, Pressable, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const stepsData = [
-  { date: '2024Y 10M 22D', steps: '2000Steps/5min' },
-  { date: '2024Y 10M 15D', steps: '3000Steps/5min' },
-  { date: '2024Y 10M 2D', steps: '3100Steps/5min' },
-  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
-  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
-  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
-  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
-  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
-  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
-  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
-  { date: '2024Y 9M 20D', steps: '2800Steps/5min' },
-];
+import { Inquiry_stepHistory } from '../../../services/home/stephistory';
 
 const iconData = [
   {
@@ -72,15 +60,44 @@ const iconData = [
 ];
 
 const HomePage = () => {
-  const [isSurveyCompleted, setIsSurveyCompleted] = React.useState(true); // 설문 완료 상태 변수 추가
   const router = useRouter();
+  const [stepsData, setStepsData] = React.useState([]); 
+  const [isSurveyCompleted, setIsSurveyCompleted] = React.useState(true); 
+
+  // Fetch step history data
+  const fetchStepHistory = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('finalData');
+      if (userData) {
+        const parsedData = JSON.parse(userData);
+        const user_id = parsedData.user; 
+        const stepHistory = await Inquiry_stepHistory(user_id); 
+  
+        const formattedData = stepHistory.map((item) => ({
+          date: `${new Date(item.createdAt).getFullYear()}Y ${new Date(item.createdAt).getMonth() + 1}M ${new Date(item.createdAt).getDate()}D`,
+          steps: `${item.step_count}Steps/${item.walking_time}`,
+        }));
+  
+        setStepsData(formattedData); 
+      } else {
+        console.error('No user data found in AsyncStorage.');
+      }
+    } catch (error) {
+      console.error('Error fetching step history:', error);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchStepHistory();
+    }, [])
+  );
 
   const handlePress = async (route) => {
     try {
       const storedData = await AsyncStorage.getItem('currentProject');
       if (storedData) {
         const parsedData = JSON.parse(storedData);
-        console.log('Parsed current project:', parsedData);
   
         // 설문 페이지로 이동할 때만 project_id를 전달
         if (route === '/survey/selection') {
@@ -107,13 +124,11 @@ const HomePage = () => {
             return;
           }
   
-          // 설문 페이지로 라우팅
           router.push({
             pathname: route,
             params: { projectId: parsedData.project_id },
           });
         } else {
-          // 다른 라우트로 이동 (project_id 필요 없음)
           router.push(route);
         }
       } else {

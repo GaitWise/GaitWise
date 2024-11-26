@@ -9,14 +9,25 @@ const SurveyTemplate = ({ currentPageData, onContinue, onAnswer }) => {
   const [inputValue, setInputValue] = useState('');
   const [selectedOption, setSelectedOption] = useState([]);
 
+  console.log(currentPageData.type)
+  console.log(currentPageData.max)
+
   const handleOptionSelect = (optionValue) => {
-    setSelectedOption((prevSelected) => {
-      if (prevSelected.includes(optionValue)) {
-        return prevSelected.filter((value) => value !== optionValue); // 선택 해제
-      } else {
-        return [...prevSelected, optionValue]; // 선택 추가
-      }
-    });
+    if (currentPageData.type === 'Single') {
+      setSelectedOption([optionValue]);
+    } else if (currentPageData.type === 'Multiple') {
+      setSelectedOption((prevSelected) => {
+        if (prevSelected.includes(optionValue)) {
+          return prevSelected.filter((value) => value !== optionValue);
+        } else if (currentPageData.max && prevSelected.length < currentPageData.max) {
+          return [...prevSelected, optionValue];
+        } else if (!currentPageData.max) {
+          return [...prevSelected, optionValue];
+        } else {
+          return prevSelected;
+        }
+      });
+    }
   };
 
   const handleContinue = () => {

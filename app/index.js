@@ -13,17 +13,17 @@ const Splash = () => {
   useEffect(() => {
     const checkDataAndNavigate = async () => {
       try {
-        const storedData = await AsyncStorage.getItem('userData'); // `userData`는 저장된 키
+        const storedData = await AsyncStorage.getItem('userData'); 
         setTimeout(() => {
           if (storedData) {
-            router.replace('/project_select'); // 데이터가 있으면 `project_select`로 이동
+            router.replace('/project_select'); 
           } else {
-            router.replace('/profile'); // 데이터가 없으면 `profile`로 이동
+            router.replace('/profile'); 
           }
         }, SPLASH_DURATION);
       } catch (error) {
         console.error('Failed to check AsyncStorage:', error);
-        router.replace('/profile'); // 에러 발생 시 기본적으로 `profile`로 이동
+        router.replace('/profile');
       }
     };
 

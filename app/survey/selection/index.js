@@ -62,6 +62,9 @@ const SelectionPage = () => {
 
   // 현재 페이지 데이터 가져오기
   const currentPageData = surveyData?.selection[currentIndex] || null;
+  console.log("currentPageData: ", currentPageData)
+
+  
 
   // 답변 저장 함수
   const handleAnswer = (answer) => {
@@ -114,6 +117,8 @@ const SelectionPage = () => {
         currentPageData={{
           title: currentPageData?.content,
           options: currentPageData?.options,
+          type: currentPageData?.type,
+          max: currentPageData?.max
         }}
         onContinue={handleNextPage}
         onAnswer={handleAnswer}

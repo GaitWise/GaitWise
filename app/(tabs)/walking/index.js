@@ -1,19 +1,13 @@
 import 'react-native-get-random-values';
 import { icons, COLORS } from '../../../constants';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import { Sensors } from '../../../components/walking/Sensor';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { insertSensorData } from '../../../components/walking/SQLite';
 import { sendDatabaseFile } from '../../../components/walking/api/Senddata';
 import { useTimerAnimation } from '../../../components/walking/UseTimerAnimation';
-import {
-  chunkData,
-  generateHash,
-} from '../../../components/walking/DataProcessing';
-import {
-  sendChunk,
-  compareHash,
-  resendMissingChunks,
-} from '../../../components/walking/api/Senddata';
+import { chunkData, generateHash} from '../../../components/walking/DataProcessing';
+import { sendChunk, compareHash, resendMissingChunks,} from '../../../components/walking/api/Senddata';
 import { ActivityIndicator, Modal, Animated } from 'react-native';
 import styled from 'styled-components/native';
 
@@ -22,22 +16,17 @@ import styled from 'styled-components/native';
 
 const Walking = () => {
   // 로딩 및 모달 상태 관리
+  const formattedTimeRef = useRef('');
   const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false); // 다이얼로그 표시 여부 관리
+  const [modalVisible, setModalVisible] = useState(false); 
+
 
   // Sensor
   const { subscribeSensors, unsubscribeSensors, sensorLog } = Sensors(25);
+  
   // Timer Animation
-  const {
-    seconds,
-    setIsActive,
-    setIsStop,
-    formatTime,
-    animation,
-    Timerreset,
-    isActive,
-    isStop,
-  } = useTimerAnimation(2500);
+  const { seconds, setIsActive, setIsStop, formatTime, animation, Timerreset, isActive, isStop} = useTimerAnimation(2500);
+
 
   // TODO 추후 UDP 통신 구현
   const handleSendDatabaseFile = useCallback(async () => {
@@ -45,16 +34,21 @@ const Walking = () => {
     setModalVisible(true); // 모달 표시
 
     try {
+      const userData = await AsyncStorage.getItem('finalData');
+      const parsedUserData = JSON.parse(userData);
+      console.log('Fetched user_id:', parsedUserData.user);
+
       const chunkSize = 100000;
       const dataHash = generateHash(sensorLog.current);
       const chunks = chunkData(sensorLog.current, chunkSize);
 
       for (let i = 0; i < chunks.length; i++) {
-        const result = await sendChunk(chunks[i], i, chunks.length, '123456');
+        const result = await sendChunk(chunks[i], i, chunks.length, parsedUserData.user);
         console.log(`Chunk ${i} upload status:`, result);
       }
 
-      const compareResult = await compareHash(dataHash, '123456');
+      console.log(formattedTimeRef.current)
+      const compareResult = await compareHash(dataHash, parsedUserData.user, formattedTimeRef.current);
       console.log('compareResult: ', compareResult);
 
       if (compareResult.status === 'incomplete') {
@@ -88,6 +82,8 @@ const Walking = () => {
     setIsStop(true);
     unsubscribeSensors();
     animation.stopAnimation();
+    formattedTimeRef.current = formatTime(); 
+    console.log('Formatted Time:', formattedTimeRef.current);
   };
 
   const handleReset = () => {
@@ -231,7 +227,7 @@ const ButtonRow = styled.View`
 `;
 
 const StartButton = styled.TouchableOpacity`
-  background-color: #4c2a86;
+  background-color: ${COLORS.soft_blue};
   border-radius: 30px;
   padding: 15px 40px;
   width: 90%;
@@ -304,7 +300,7 @@ const ResumeButton = styled.TouchableOpacity`
 `;
 
 const SaveButton = styled.TouchableOpacity`
-  background-color: #4c2a86;
+  background-color: ${COLORS.soft_blue};
   padding: 15px 160px;
   border-radius: 30px;
   margin-top: 20px;

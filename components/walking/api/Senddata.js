@@ -1,6 +1,6 @@
 import { getDatabaseFile} from "../../../components/walking/SQLite";
 
-const API_BASE_URL = 'http://192.168.0.9:4000/sensor-data';
+const API_BASE_URL = 'http://192.168.25.38:4000/sensor-data';
 
 /* [Function] fetch 로직 중복 최적화 함수.*/
 async function fetchData(url, data, method = 'POST') {
@@ -23,8 +23,8 @@ export const sendChunk = async (chunk, index, totalChunks, clientId) => {
 };
 
 /* [Function] 서버 센서데이터 해시값과 클라이언트 센서데이터 해시값 비교 함수 */
-export const compareHash = async (clientHash, clientId) => {
-  return await fetchData('compare-hash', { clientHash, clientId });
+export const compareHash = async (clientHash, clientId, formatTime) => {
+  return await fetchData('compare-hash', { clientHash, clientId, formatTime });
 };
 
 /* [Function] 데이터를 조각별로 서버에 전송하고, 누락된 조각을 다시 전송하는 함수 */
@@ -32,7 +32,7 @@ export const resendMissingChunks = async (missingChunks, chunks) => {
     try {
       for (let i = 0; i < missingChunks.length; i++) {
         const chunkIndex = missingChunks[i]; // 누락된 조각의 인덱스
-        const response = await fetch('http://192.168.0.9:4000/sensor-data/upload-chunk', {
+        const response = await fetch('http://192.168.25.38:4000/sensor-data/upload-chunk', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ export const resendMissingChunks = async (missingChunks, chunks) => {
 export const sendDatabaseFile = async (TableName) => {
     try {
       const dbFile = await getDatabaseFile();
-      const response = await fetch('http://192.168.0.9:4000/upload', {
+      const response = await fetch('http://192.168.25.38:4000/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json'},
         body: JSON.stringify({
