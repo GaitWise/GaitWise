@@ -1,18 +1,17 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
+import { useState, useEffect } from 'react';
 import { icons, COLORS } from '@/constants';
-import { Button, Modal, Alert } from 'react-native';
 import styled from 'styled-components/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
-import { Inquiry_User } from '../../../services/setting/usernquiry';
+import { Button, Modal, Alert } from 'react-native';
 import {Delete_User} from '../../../services/setting/userdelete'
+import { Inquiry_User } from '../../../services/setting/usernquiry';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // 페이지 이동
 const contact = 'setting/contact';
 const requierdsurvey = 'survey/gender';
-const templetesurvey = 'survey/selection';
 
 const Setting = () => {
   const [image, setImage] = React.useState(null);

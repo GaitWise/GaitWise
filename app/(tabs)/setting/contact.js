@@ -1,11 +1,11 @@
 import * as React from 'react';
-import styled from 'styled-components/native';
-import { useState, useEffect } from 'react';
-import { Pressable, Alert } from 'react-native';
 import { COLORS } from '@/constants';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState, useEffect } from 'react';
+import styled from 'styled-components/native';
+import { Pressable, Alert } from 'react-native';
 import { contact_post } from '../../../services/setting/contact';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const Contact = () => {
   const [inputs, setInputs] = useState({
@@ -14,16 +14,15 @@ const Contact = () => {
     message: '',
   });
 
-  const [author, setAuthor] = useState(null); // user_id 저장
+  const [author, setAuthor] = useState(null); 
 
-  // AsyncStorage에서 user_id 가져오기
   useEffect(() => {
     const fetchUserId = async () => {
       try {
         const userData = await AsyncStorage.getItem('finalData');
         if (userData) {
           const parsedData = JSON.parse(userData);
-          const userIdFromStorage = parsedData.user; // user_id 가져오기
+          const userIdFromStorage = parsedData.user; 
           setAuthor(userIdFromStorage);
           console.log('Fetched user_id:', userIdFromStorage);
         }

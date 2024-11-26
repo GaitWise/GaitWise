@@ -22,7 +22,7 @@ const ProjectSelect = () => {
         const userData = await AsyncStorage.getItem('finalData');
         if (userData) {
           const parsedData = JSON.parse(userData);
-          const userIdFromStorage = parsedData.user; // user_id 가져오기
+          const userIdFromStorage = parsedData.user; 
           setUserId(parsedData.user)
           console.log('Fetched user_id:', userIdFromStorage);
   
@@ -45,7 +45,7 @@ const ProjectSelect = () => {
       }
     };
   
-    fetchProjects(); // 컴포넌트가 마운트될 때 한 번만 실행
+    fetchProjects();
   }, []);
 
   React.useEffect(() => {
