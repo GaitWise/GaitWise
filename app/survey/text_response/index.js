@@ -1,24 +1,25 @@
-import React, { useRef, useState } from 'react';
 import { View, Alert } from 'react-native';
+import React, { useRef, useState } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import { Survey_save } from "../../../services/survey/customsurvey"; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Surveytemplate from "../../../components/survey/Surveytemplate";
-import { Survey_save } from "../../../services/survey/customsurvey"; 
 
+/* [Screen] TextResponsePage */
 const TextResponsePage = () => {
   const router = useRouter();
   const { textResponse, answers, fullResponse } = useLocalSearchParams(); 
 
-  const textResponses = textResponse ? JSON.parse(textResponse) : []; 
-  const [currentIndex, setCurrentIndex] = useState(0); 
   const textAnswersRef = useRef([]); 
+  const [currentIndex, setCurrentIndex] = useState(0); 
+  const textResponses = textResponse ? JSON.parse(textResponse) : []; 
 
   const currentPageData = textResponses[currentIndex]; 
 
-  // Save all survey data to the backend
+/* [Function] 모든 설문 데이터를 백엔드에 저장 함수 */
  const survey_data_save = async () => {
   try {
-    // Retrieve current project data from AsyncStorage
+    // AsyncStorage에서 현재 프로젝트 데이터 가져오기
     const storedProjectData = await AsyncStorage.getItem('currentProject');
     if (!storedProjectData) {
       return;
@@ -26,31 +27,31 @@ const TextResponsePage = () => {
     const parsedProjectData = JSON.parse(storedProjectData);
     console.log('Parsed current project:', parsedProjectData.project_id);
 
-    // Retrieve user data from AsyncStorage
+    // AsyncStorage에서 사용자 데이터 가져오기
     const storedUserData = await AsyncStorage.getItem('finalData');
     if (!storedUserData) {
       console.error('No user data found in AsyncStorage.');
       return;
     }
     const parsedUserData = JSON.parse(storedUserData);
-    console.log('Parsed user data:', parsedUserData);
 
-    // Ensure `fullResponse` is properly parsed
+    // fullResponse 데이터 파싱
     const parsedFullResponse = fullResponse ? JSON.parse(fullResponse) : {};
     if (!parsedFullResponse?.custom_survey) {
       console.error('Invalid full response data.');
       return;
     }
 
+    // 이전 응답 데이터 가져오기
     const previousAnswers = JSON.parse(answers);
-    console.log('Previous answers:', previousAnswers);
 
     const allAnswers = [
       ...previousAnswers, 
       ...textAnswersRef.current, 
     ];
 
-    // Prepare survey data
+    
+    // 최종 설문 데이터 생성
     const surveyData = {
       project: parsedProjectData.project_id,
       essential_survey: {
@@ -81,18 +82,17 @@ const TextResponsePage = () => {
       participant: parsedUserData.user,
     };
 
-    console.log('Final survey data to save:', JSON.stringify(surveyData, null, 2));
-
     const response = await Survey_save(surveyData);
     console.log('Survey saved successfully:', response);
 
+    Alert.alert('Success', 'Survey data saved successfully.');
     router.push('home'); 
   } catch (error) {
     console.error('Error saving survey data:', error);
   }
 };
 
-  // Handle text response answers
+  /* [Function] 텍스트 응답 저장 함수 */
   const handleAnswer = (answer) => {
     textAnswersRef.current[currentIndex] = {
       question: currentPageData.content, 
@@ -102,25 +102,25 @@ const TextResponsePage = () => {
     console.log("Updated textAnswersRef: ", textAnswersRef.current); 
   };
 
-  // Handle moving to the next page
+  /* [Function] 다음 페이지로 이동 함수 */
   const handleNextPage = () => {
     if (currentIndex < textResponses.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
-      // Save all data to the backend on the last page
       survey_data_save();
     }
   };
 
+  /* UI */
   return (
     <View style={{ flex: 1 }}>
       <Surveytemplate
         currentPageData={{
           title: currentPageData?.content || 'No Content Available',
-          options: [] // Text responses do not have options
+          options: [] 
         }}
         onContinue={handleNextPage}
-        onAnswer={handleAnswer} // Handle text responses
+        onAnswer={handleAnswer} 
       />
     </View>
   );

@@ -192,7 +192,7 @@ const Setting = () => {
           <icons.arrow_right />
         </PressableItemContainer>
         <Separator />
-        
+
         {/* User Reset */}
         <PressableItemContainer
           onPress={() => setDeleteAccountModalVisible(true)}
@@ -347,6 +347,7 @@ const UserPhone = styled.Text`
 const MenuContainer = styled.View`
   padding: 0 24px;
   width: 100%;
+  marginTop: 15px;
 `;
 
 const Separator = styled.View`

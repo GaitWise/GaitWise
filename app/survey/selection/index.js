@@ -4,15 +4,16 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Survey_inquiry } from '../../../services/survey/customsurvey';
 import Surveytemplate from "../../../components/survey/Surveytemplate";
 
+/* [Screen] SelectionPage */
 const SelectionPage = () => {
-  const { projectId } = useLocalSearchParams(); // URL에서 projectId 가져오기
   const router = useRouter();
-  const [surveyData, setSurveyData] = useState(null); // 설문 데이터 상태
-  const [responseState, setResponseState] = useState(null); // 전체 응답 데이터 상태
-  const [currentIndex, setCurrentIndex] = useState(0); // 현재 페이지 인덱스
-  const answersRef = useRef([]); // 최신 답변 상태를 관리
+  const answersRef = useRef([]); 
+  const { projectId } = useLocalSearchParams(); 
+  const [surveyData, setSurveyData] = useState(null); 
+  const [currentIndex, setCurrentIndex] = useState(0); 
+  const [responseState, setResponseState] = useState(null); 
 
-  // 설문 데이터 가져오기
+  /* [Effect] 설문 데이터 가져오기 */
   useEffect(() => {
     const fetchSurveyData = async () => {
       try {
@@ -21,6 +22,7 @@ const SelectionPage = () => {
           return;
         }
 
+        // 설문 데이터 API 호출
         const response = await Survey_inquiry(projectId);
         console.log("response:", response);
 
@@ -39,6 +41,7 @@ const SelectionPage = () => {
           });
        
         } else if (text_responseData.length > 0) {
+          // 텍스트 응답 설문으로 이동
           router.push({
             pathname: '/survey/text_response',
             params: { 
@@ -64,26 +67,21 @@ const SelectionPage = () => {
 
   // 현재 페이지 데이터 가져오기
   const currentPageData = surveyData?.selection[currentIndex] || null;
-  console.log("currentPageData: ", currentPageData)
 
-  console.log(currentPageData?.options)
-
-  // 답변 저장 함수
+  /* [Function] 사용자가 선택한 답변을 저장하는 함수 */
   const handleAnswer = (answer) => {
     const updatedAnswers = [...answersRef.current];
     updatedAnswers[currentIndex] = {
-      question: surveyData?.selection[currentIndex]?.content, // 질문 내용 저장
-      options: surveyData?.selection[currentIndex]?.options || [], // options 추가
-      type: surveyData?.selection[currentIndex]?.type || '', // type 추가
-      answer: Array.isArray(answer) ? answer : [answer], // 답변을 배열로 저장
+      question: surveyData?.selection[currentIndex]?.content, 
+      options: surveyData?.selection[currentIndex]?.options || [], 
+      type: surveyData?.selection[currentIndex]?.type || '', 
+      answer: Array.isArray(answer) ? answer : [answer], 
     };
     answersRef.current = updatedAnswers; // 최신 답변 업데이트
-    console.log("Updated answers:", answersRef.current); // 디버깅용 로그
   };
 
-  // 다음 페이지로 이동
+  /* [Function] 다음 설문 페이지로 이동 함수 */
   const handleNextPage = () => {
-    console.log("answers before next page:", answersRef.current); // 디버깅용 로그
     if (currentIndex < (surveyData?.selection.length || 0) - 1) {
       setCurrentIndex((prevIndex) => prevIndex + 1);
     } else if (surveyData?.text_response?.length > 0) {
@@ -91,8 +89,8 @@ const SelectionPage = () => {
         pathname: '/survey/text_response',
         params: {
           textResponse: JSON.stringify(surveyData.text_response),
-          answers: JSON.stringify(answersRef.current), // 최신 답변 데이터 전달
-          fullResponse: JSON.stringify(responseState), // responseState 사용
+          answers: JSON.stringify(answersRef.current), 
+          fullResponse: JSON.stringify(responseState), 
         },
       });
     } else {
@@ -105,6 +103,7 @@ const SelectionPage = () => {
     }
   };
 
+  /* 설문 데이터 로드 중일 때 로딩 화면 표시 */
   if (!surveyData) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -113,6 +112,7 @@ const SelectionPage = () => {
     );
   }
 
+  /* UI */
   return (
     <View style={{ flex: 1 }}>
       <Surveytemplate
