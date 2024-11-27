@@ -8,63 +8,13 @@ import { ScrollView, Pressable, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Inquiry_stepHistory } from '../../../services/home/stephistory';
 
-const iconData = [
-  {
-    text: 'Walking',
-    IconComponent: icons.walking_people,
-    backgroundColor: COLORS.deep_maroon,
-    route: '/walking',
-  },
-  {
-    text: 'Survey',
-    IconComponent: icons.survey,
-    backgroundColor: COLORS.lavender_blush,
-    route: '/survey/selection',
-  },
-  {
-    text: 'Project',
-    IconComponent: icons.project,
-    backgroundColor: COLORS.rose_quartz,
-    route: '/project_select',
-  },
-  {
-    text: 'Setting',
-    IconComponent: icons.settings,
-    backgroundColor: COLORS.peach_puff,
-    route: '/setting',
-  },
-  {
-    text: 'Preparing',
-    IconComponent: icons.reset,
-    backgroundColor: COLORS.cosmic_purple,
-    route: '/comingSoon',
-  },
-  {
-    text: 'Preparing',
-    IconComponent: icons.reset,
-    backgroundColor: COLORS.teal_waters,
-    route: '/comingSoon',
-  },
-  {
-    text: 'Preparing',
-    IconComponent: icons.reset,
-    backgroundColor: COLORS.arctic_ice,
-    route: '/comingSoon',
-  },
-  {
-    text: 'Preparing',
-    IconComponent: icons.reset,
-    backgroundColor: COLORS.vintage_peach,
-    route: '/comingSoon',
-  },
-];
-
+/* [Screen] HomePage */
 const HomePage = () => {
   const router = useRouter();
   const [stepsData, setStepsData] = React.useState([]);
   const [isSurveyCompleted, setIsSurveyCompleted] = React.useState(true);
 
-  // Fetch step history data
+  /* [Function] Walking History 데이터를 서버에서 가져오는 함수 */
   const fetchStepHistory = async () => {
     try {
       const userData = await AsyncStorage.getItem('finalData');
@@ -73,6 +23,7 @@ const HomePage = () => {
         const user_id = parsedData.user;
         const stepHistory = await Inquiry_stepHistory(user_id);
 
+        // 데이터 포맷팅
         const formattedData = stepHistory.map((item) => ({
           date: `${new Date(item.createdAt).getFullYear()}Y ${new Date(item.createdAt).getMonth() + 1}M ${new Date(item.createdAt).getDate()}D`,
           steps: `${item.step_count}Steps/${item.walking_time}`,
@@ -87,12 +38,14 @@ const HomePage = () => {
     }
   };
 
+  /* 화면이 포커스를 얻을 때 스텝 히스토리를 가져옴 */
   useFocusEffect(
     React.useCallback(() => {
       fetchStepHistory();
     }, []),
   );
 
+  /* [Function] 화면 전환 처리 함수 */
   const handlePress = async (route) => {
     try {
       const storedData = await AsyncStorage.getItem('currentProject');
@@ -119,7 +72,7 @@ const HomePage = () => {
                   onPress: () =>
                     router.push({
                       pathname: route,
-                      params: { projectId: parsedData.project_id }, // projectId 전달
+                      params: { projectId: parsedData.project_id }, 
                     }),
                 },
               ],
@@ -145,7 +98,8 @@ const HomePage = () => {
       Alert.alert('Error', 'Failed to fetch current project.');
     }
   };
-
+  
+  /* UI */
   return (
     <HomePageWrapper>
       <Content>
@@ -205,7 +159,7 @@ const HomePage = () => {
   );
 };
 
-// Styled components
+/* styled-components */
 const HomePageWrapper = styled.View`
   flex: 1;
   width: 100%;
@@ -295,6 +249,7 @@ const TitleRow = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-self: stretch;
+  marginTop: 5px;
 `;
 
 const TitleText = styled.Text`
@@ -336,3 +291,55 @@ const StyledText = styled.Text`
 `;
 
 export default HomePage;
+
+/* 아이콘 데이터 */
+const iconData = [
+  {
+    text: 'Walking',
+    IconComponent: icons.walking_people,
+    backgroundColor: COLORS.deep_maroon,
+    route: '/walking',
+  },
+  {
+    text: 'Survey',
+    IconComponent: icons.survey,
+    backgroundColor: COLORS.lavender_blush,
+    route: '/survey/selection',
+  },
+  {
+    text: 'Project',
+    IconComponent: icons.project,
+    backgroundColor: COLORS.rose_quartz,
+    route: '/project_select',
+  },
+  {
+    text: 'Setting',
+    IconComponent: icons.settings,
+    backgroundColor: COLORS.peach_puff,
+    route: '/setting',
+  },
+  {
+    text: 'Preparing',
+    IconComponent: icons.reset,
+    backgroundColor: COLORS.cosmic_purple,
+    route: '/home',
+  },
+  {
+    text: 'Preparing',
+    IconComponent: icons.reset,
+    backgroundColor: COLORS.teal_waters,
+    route: '/home',
+  },
+  {
+    text: 'Preparing',
+    IconComponent: icons.reset,
+    backgroundColor: COLORS.arctic_ice,
+    route: '/home',
+  },
+  {
+    text: 'Preparing',
+    IconComponent: icons.reset,
+    backgroundColor: COLORS.vintage_peach,
+    route: '/home',
+  },
+];

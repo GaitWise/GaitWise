@@ -5,14 +5,14 @@ import { TouchableOpacity, StyleSheet } from 'react-native';
 export default function WalkingLayout() {
   const router = useRouter();
 
-  // 뒤로 가기 버튼 UI
+  /* [Function] 뒤로 가기 버튼 UI */
   const renderBackButton = () => (
     <TouchableOpacity style={styles.button} onPress={() => router.back()}>
       <icons.walking_arrow_back></icons.walking_arrow_back>
     </TouchableOpacity>
   );
 
-  // 분석가와 모니터링 연결 버튼 UI
+  /* [Function] 분석가와 모니터링 연결 버튼 UI */
   const renderConnectButton = () => (
     <TouchableOpacity
       style={styles.button}

@@ -5,18 +5,21 @@ import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// 스플래시 화면 지속 시간 (3초)
 const SPLASH_DURATION = 3000;
 
+/* [Screen] Splash 화면 */
 const Splash = () => {
   const router = useRouter();
 
+  /* [Effect] 앱 데이터 확인 후 네비게이션 */
   useEffect(() => {
     const checkDataAndNavigate = async () => {
       try {
         const storedData = await AsyncStorage.getItem('userData'); 
         setTimeout(() => {
           if (storedData) {
-            router.replace('/project_select'); 
+            router.replace('/home'); 
           } else {
             router.replace('/profile'); 
           }
@@ -30,6 +33,7 @@ const Splash = () => {
     checkDataAndNavigate();
   }, []);
 
+  /* UI */
   return (
     <View style={styles.container}>
       <Video
@@ -46,6 +50,7 @@ const Splash = () => {
   );
 };
 
+/* styled-components */
 const styles = {
   container: {
     flex: 1,

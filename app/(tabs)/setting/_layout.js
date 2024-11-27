@@ -26,7 +26,7 @@ export default function SettingLayout() {
   );
 }
 
-// styled-components로 스타일 정의
+// styled-components
 const BackButton = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;

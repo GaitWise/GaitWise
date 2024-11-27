@@ -1,57 +1,58 @@
 import { router } from 'expo-router';
-import React, { useState, useRef } from 'react';
 import { COLORS, icons } from '@/constants';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // 📌 Icon 라이브러리 추가
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  TouchableOpacity,
-  FlatList,
-  Dimensions,
-  TextInput,
-  Modal,
-} from 'react-native';
 import styled from 'styled-components/native';
+import React, { useState, useRef } from 'react';
+import Icon from 'react-native-vector-icons/MaterialIcons'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TouchableOpacity, FlatList, Dimensions, TextInput, Modal} from 'react-native';
 
+
+/* 화면 크기 가져오기 */
 const { width, height } = Dimensions.get('window');
 const ITEM_WEIGHT = width * 0.18;
 
+/* [Screen] Weight 화면 */
 const Weight = () => {
   const flatListRef = useRef(null);
   const [selectedKG, setSelectedKG] = useState('KG');
   const [selectedLB, setSelectedLB] = useState('LB');
   const [selectedWeight, setSelectedWeight] = useState(0);
   const [modalVisible, setModalVisible] = React.useState(false);
-  const [inputWeight, setInputWeight] = useState(selectedWeight.toString());
+  const [inputWeight, setInputWeight] = useState(selectedWeight);
   const weightArray = Array.from({ length: 201 }, (_, index) => index);
 
-  const selectedUnit = selectedKG === 'KG' ? 'kg' : 'lb'; // 현재 선택된 단위
+  const selectedUnit = selectedKG === 'KG' ? 'kg' : 'lb'; 
 
+  /* [Function] 스크롤 종료 시 몸무게 선택 함수 */
   const handleScrollEnd = (event) => {
     const offsetX = event.nativeEvent.contentOffset.x;
     const newIndex = Math.round(offsetX / ITEM_WEIGHT);
     setSelectedWeight(weightArray[newIndex]);
   };
 
+  /* [Function] 단위 변경 (KG/LB) 함수 */
   const toggleUnit = (unit) => {
     setSelectedKG(unit);
     setSelectedLB(unit);
   };
 
+  /* [Function] Form 유효성 검사 함수 */
   const isFormValid = () => {
     return selectedWeight;
   };
-
+  
+  /* 모달 열기 */
   handleWeightInput = () => {
     setModalVisible(true);
   };
 
-  // 📌 입력받은 몸무게 값을 정확히 selectedWeight에 반영하는 함수
+  /* [Function] 입력된 몸무게 확인 및 적용 함수 */
   const handleConfirmWeight = async () => {
-    const newWeight = parseInt(inputWeight); // 입력값을 정수로 변환하여 저장
+    const newWeight = parseInt(inputWeight); 
     if (!isNaN(newWeight) && newWeight >= 0 && newWeight <= 200) {
       setSelectedWeight(newWeight);
 
-      // 📌 스크롤 위치를 newWeight와 일치하게 조정
+      // 스크롤 위치를 newWeight와 일치하게 조정
       const targetIndex = weightArray.indexOf(newWeight);
       if (targetIndex !== -2) {
         flatListRef.current.scrollToIndex({
@@ -59,12 +60,13 @@ const Weight = () => {
           animated: true,
         });
       }
-      setModalVisible(false);
+      setModalVisible(false); // 모달 닫기
     } else {
       alert('Enter Your Weight');
     }
   };
 
+  /* [Function] Continue 버튼 동작 */
   const handleContinue = async () => {
     try {
       const weightData = {
@@ -79,6 +81,7 @@ const Weight = () => {
     }
   };
 
+  /* UI */
   return (
     <BaseFrameContainer>
       {/* Title */}
@@ -136,11 +139,10 @@ const Weight = () => {
 
       <icons.arrow_up />
 
-      {/* 📌 몸무게를 표시하고 터치 시 handleWeightInput 호출 */}
       <TouchableOpacity onPress={handleWeightInput}>
         <ResultContainer>
           <WeightText>
-            {selectedWeight} {selectedUnit} {/* 선택한 단위 표시 */}
+            {selectedWeight} {selectedUnit} 
             <Icon name="edit" size={height * 0.03} color={COLORS.dark_indigo} />
           </WeightText>
         </ResultContainer>
@@ -184,8 +186,8 @@ const Weight = () => {
 
 export default Weight;
 
-// Styled Components
 
+/* styled-components */
 const ModalContainer = styled.View`
   flex: 1;
   justify-content: center;

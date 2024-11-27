@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Dimensions, Image, View, Text } from 'react-native';
-import styled from 'styled-components/native';
-import Carousel from 'react-native-snap-carousel';
-import { COLORS } from '../../constants';
 import { Link } from 'expo-router';
+import { COLORS } from '../../constants';
+import styled from 'styled-components/native';
+import { Dimensions, Image} from 'react-native';
+import Carousel from 'react-native-snap-carousel';
+import React, { useEffect, useState } from 'react';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -116,7 +116,6 @@ export default function Banner() {
 }
 
 // Styled components
-
 const CarouselContainer = styled.View`
 `;
 

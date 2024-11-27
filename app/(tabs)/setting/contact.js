@@ -1,31 +1,24 @@
-import * as React from 'react';
-import styled from 'styled-components/native';
-import { useState, useEffect } from 'react';
-import { Pressable, Alert } from 'react-native';
 import { COLORS } from '@/constants';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import styled from 'styled-components/native';
+import { Pressable, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { contact_post } from '../../../services/setting/contact';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const Contact = () => {
-  const [inputs, setInputs] = useState({
-    title: '',
-    email: '',
-    message: '',
-  });
+  const [author, setAuthor] = useState(null);
+  const [inputs, setInputs] = useState({ title: '', email: '', message: ''});
 
-  const [author, setAuthor] = useState(null); // user_id 저장
-
-  // AsyncStorage에서 user_id 가져오기
+  /* [Effect] AsyncStorage에서 user_id 가져오기 */
   useEffect(() => {
     const fetchUserId = async () => {
       try {
         const userData = await AsyncStorage.getItem('finalData');
         if (userData) {
           const parsedData = JSON.parse(userData);
-          const userIdFromStorage = parsedData.user; // user_id 가져오기
+          const userIdFromStorage = parsedData.user; 
           setAuthor(userIdFromStorage);
-          console.log('Fetched user_id:', userIdFromStorage);
         }
       } catch (error) {
         console.error('Error fetching user_id:', error);
@@ -35,16 +28,24 @@ const Contact = () => {
     fetchUserId();
   }, []);
 
+  const isFormComplete = Object.values(inputs).every((value) => value !== '') && author !== null;
+
+  /* [Function] 입력값 업데이트 함수 */
   const handleChange = (name, value) => {
     setInputs({ ...inputs, [name]: value });
   };
 
-  const isFormComplete =
-    Object.values(inputs).every((value) => value !== '') && author !== null;
-
+  /* [Function] 유저 문의 제출 처리 함수 */
   const handleSend = async () => {
     if (!isFormComplete) {
       Alert.alert('Error', 'Please fill out all fields before submitting.');
+      return;
+    }
+    
+    // 이메일 유효성 검사
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(inputs.email)) {
+      Alert.alert('Error', 'Please enter a valid email address.');
       return;
     }
 
@@ -54,18 +55,14 @@ const Contact = () => {
       Alert.alert('Success', 'Your message has been sent!');
       console.log('Server response:', response);
 
-      // 폼 초기화
-      setInputs({
-        title: '',
-        email: '',
-        message: '',
-      });
+      setInputs({ title: '', email: '', message: ''});
     } catch (error) {
       Alert.alert('Error', 'Failed to send your message. Please try again.');
       console.error('Error sending contact form:', error);
     }
   };
 
+  /* 입력 필드 설정 */
   const fields = [
     { label: 'Title', name: 'title', placeholder: 'Title' },
     {
@@ -81,7 +78,8 @@ const Contact = () => {
       multiline: true,
     },
   ];
-
+  
+  /* UI */
   return (
     <KeyboardAwareScrollView
       resetScrollToCoords={{ x: 0, y: 0 }}
@@ -133,15 +131,9 @@ const Contact = () => {
 
 export default Contact;
 
-// InputField 컴포넌트
-const InputField = ({
-  label,
-  value,
-  onChangeText,
-  placeholder,
-  keyboardType,
-  multiline,
-}) => (
+/* [Function] InputField 컴포넌트 함수 */
+const InputField = ({ label, value, onChangeText, placeholder, keyboardType, multiline}) => 
+  (
   <InputWrapper style={{ height: multiline ? 200 : 50 }}>
     <InputLabel>{label}</InputLabel>
     <StyledTextInput
@@ -155,7 +147,7 @@ const InputField = ({
   </InputWrapper>
 );
 
-// Styled components
+/* styled-components */
 const Description = styled.View`
   margin: 10px;
 `;

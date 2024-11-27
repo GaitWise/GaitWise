@@ -17,14 +17,14 @@ const COLORS = {
   sky_blue: '#87ceeb',
   lime_green: '#32cd32',
   slate_gray: '#6b7280',
-  deep_maroon: '#93C19E', // 추가된 색상
-  lavender_blush: '#ACA1CD', // 추가된 색상
-  rose_quartz: '#DC9497', // 추가된 색상
-  peach_puff: '#F5AD7E', // 추가된 색상
-  cosmic_purple: '#352261', // 추가된 색상
-  teal_waters: '#4D9B91', // 추가된 색상
-  arctic_ice: '#89CCDB', // 추가된 색상
-  vintage_peach: '#DEB6B5', // 추가된 색상
+  deep_maroon: '#93C19E',
+  lavender_blush: '#ACA1CD',
+  rose_quartz: '#DC9497',
+  peach_puff: '#F5AD7E',
+  cosmic_purple: '#352261',
+  teal_waters: '#4D9B91',
+  arctic_ice: '#89CCDB',
+  vintage_peach: '#DEB6B5',
 };
 
 export { COLORS };

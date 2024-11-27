@@ -1,16 +1,8 @@
 import React, { useState } from 'react';
+import { COLORS, icons } from '@/constants';
 import styled from 'styled-components/native';
-import { COLORS, IMAGES, icons } from '@/constants';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import {
-  Image,
-  Pressable,
-  TextInput,
-  Keyboard,
-  Dimensions,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-} from 'react-native';
+import { Pressable, TextInput, Keyboard, Dimensions, TouchableWithoutFeedback, TouchableOpacity} from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -20,7 +12,6 @@ const SurveyTemplate = ({ currentPageData, onContinue, onAnswer }) => {
 
   console.log("currentPageData.type 값:", currentPageData.type);
   console.log(currentPageData.max) 
-  
 
   const handleOptionSelect = (optionValue) => {
     if (currentPageData.type === 'single-choice') {
@@ -67,7 +58,7 @@ const SurveyTemplate = ({ currentPageData, onContinue, onAnswer }) => {
     <KeyboardAwareScrollView
       contentContainerStyle={{ flexGrow: 1 }}
       enableOnAndroid={true} // Android에서도 동작하도록 설정
-      keyboardShouldPersistTaps="handled" // 키보드가 열린 상태에서도 버튼을 누를 수 있도록 설정
+      keyboardShouldPersistTaps="handled" 
     >
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <BaseFrameContainer>
@@ -75,13 +66,11 @@ const SurveyTemplate = ({ currentPageData, onContinue, onAnswer }) => {
             <TitleText>{currentPageData.title}</TitleText>
           </TitleContainer>
 
-        {/* <ProfileImage source={IMAGES.profile} /> */}
-
         <OptionsContainer height={optionsContainerHeight}>
             {currentPageData.options?.length ? (
               currentPageData.options.map((option) => (
                 <OptionButton
-                  key={option} // 문자열을 키로 사용
+                  key={option} 
                   isSelected={selectedOption.includes(option)}
                   onPress={() => handleOptionSelect(option)}
                 >

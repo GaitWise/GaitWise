@@ -2,39 +2,47 @@ import { COLORS } from '@/constants';
 import { router } from 'expo-router';
 import { useState, useRef } from 'react';
 import styled from 'styled-components/native';
-import { saveUserData } from '../../services/user/usersave'; 
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { saveUserData } from '../../services/user/usersave'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TouchableOpacity, FlatList, Dimensions, TextInput, Modal } from 'react-native';
+import { TouchableOpacity, FlatList, Dimensions, Modal } from 'react-native';
 
+/* 화면 크기 가져오기 */
 const { width, height } = Dimensions.get('window');
 const ITEM_HEIGHT = height * 0.0579;
 
+/* [Screen] Height 화면 */
 const Height = () => {
   const flatListRef = useRef(null);
+  const [inputHeight, setInputHeight] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedHeight, setSelectedHeight] = useState(0);
-  const [inputHeight, setInputHeight] = useState('');
 
   const heightArray = Array.from({ length: 251 }, (_, index) => index);
 
+  /* [Function] 입력값 검증 함수 */
+  const isFormValid = () => selectedHeight >= 0 && selectedHeight <= 250;
+
+  /* [Function] 스크롤 이벤트 처리 함수 */
   const handleScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y;
     const newIndex = Math.round(offsetY / ITEM_HEIGHT);
     setSelectedHeight(heightArray[newIndex]);
   };
 
-  const isFormValid = () => selectedHeight >= 0 && selectedHeight <= 250;
-
+  /* [Function] 모달 열기 함수 */
   const handleHeightInput = () => {
     setInputHeight(selectedHeight > 0 ? selectedHeight.toString() : '');
-    setModalVisible(true); // 모달 표시
+    setModalVisible(true); 
   };
 
+  /* [Function] 모달에서 입력값 확인 및 설정 함수 */
   const handleConfirmHeight = () => {
     const newHeight = parseInt(inputHeight);
     if (!isNaN(newHeight) && newHeight >= 0 && newHeight <= 250) {
       setSelectedHeight(newHeight);
+
+      // FlatList 스크롤 이동
       const targetIndex = heightArray.indexOf(newHeight);
       if (targetIndex !== -1) {
         flatListRef.current.scrollToIndex({
@@ -42,18 +50,19 @@ const Height = () => {
           animated: true,
         });
       }
-      setModalVisible(false); // 모달 닫기
+      setModalVisible(false); 
     } else {
       alert('Please enter a valid height (0-250 cm)');
     }
   };
 
+  /* [Function] Continue 버튼 동작 버튼 */
   const handleContinue = async () => {
     try {
-      const age = await AsyncStorage.getItem('selectedAge');
-      const weight = await AsyncStorage.getItem('selectedWeight');
-      const gender = await AsyncStorage.getItem('genderData');
       const profile = await AsyncStorage.getItem('input');
+      const age = await AsyncStorage.getItem('selectedAge');
+      const gender = await AsyncStorage.getItem('genderData');
+      const weight = await AsyncStorage.getItem('selectedWeight');
 
       const userData = {
         firstName: JSON.parse(profile).firstName,
@@ -64,7 +73,7 @@ const Height = () => {
         weight: JSON.parse(weight),
         height: selectedHeight,
         job: JSON.parse(profile).job,
-        profile_image_url: '',
+        profile_image_url: '', // 추후 업데이트
         password: JSON.parse(profile).passwd,
       };
 
@@ -81,12 +90,13 @@ const Height = () => {
 
       await AsyncStorage.setItem('finalData', JSON.stringify(allData));
 
-      router.push(`/project_select`); // 경로 수정
+      router.push(`/project_select`); 
     } catch (error) {
       console.error('Failed to save data:', error);
     }
   };
 
+  /* UI */
   return (
     <BaseContainer>
       <FrameContainer>
@@ -95,7 +105,6 @@ const Height = () => {
           <QuestionText>What Is Your Height?</QuestionText>
         </QuestionContainer>
 
-        {/* 📌 selectedHeight 표시 및 클릭 시 handleHeightInput 호출 */}
         <TouchableOpacity onPress={handleHeightInput}>
           <HeightTextContainer>
             <HeightText>{selectedHeight} cm</HeightText>
@@ -172,7 +181,7 @@ const Height = () => {
 
 export default Height;
 
-// Styled Components
+/* styled-components */
 const BaseContainer = styled.View`
   flex: 1;
   background-color: ${COLORS.white};

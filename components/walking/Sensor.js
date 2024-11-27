@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Accelerometer, Gyroscope, DeviceMotion, Pedometer } from 'expo-sensors';
 
 export const Sensors = (updateInterval = 25) => {
+    const stepCountRef = useRef(0)
     const sensorLogRef = useRef([]); 
     const accDataRef = useRef({ x: 0, y: 0, z: 0 });
     const gyroDataRef = useRef({ x: 0, y: 0, z: 0 });
     const rotationDataRef = useRef({ alpha: 0, beta: 0, gamma: 0 });
-    const stepCountRef = useRef(0)
 
     // Sensor Subscription
     const [accSubscription, setAccSubscription] = useState(null);

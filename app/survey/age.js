@@ -1,31 +1,36 @@
 import { useRouter } from 'expo-router';
 import { useState, useRef } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // 추가
 import { COLORS, icons } from '@/constants';
 import styled from 'styled-components/native';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import { TouchableOpacity, FlatList, Dimensions } from 'react-native';
 
+/* 화면 크기 가져오기 */
 const { width, height } = Dimensions.get('window');
 
+/* [Screen] Age 화면 */
 const Age = () => {
   const router = useRouter();
   const flatListRef = useRef(null);
   const [selectedAge, setSelectedAge] = useState(0);
-  const ageArray = Array.from({ length: 101 }, (_, index) => index);
+  const ageArray = Array.from({ length: 100 }, (_, index) => index); // 나이 배열 생성 (0~99)
 
+  /* [Function] 스크롤 시 나이 선택 힘수 */
   const handleScrollEnd = (event) => {
     const offsetX = event.nativeEvent.contentOffset.x;
     const newIndex = Math.round(offsetX / (width * 0.15));
     setSelectedAge(ageArray[newIndex]);
   };
 
+  /* [Function] Form 유효성 검사 함수 */
   const isFormValid = () => {
     return selectedAge;
   };
 
+   /* [Function] Continue 버튼 동작 함수 */
   const handleContinue = async () => {
     try {
-      // 📌 AsyncStorage에 선택한 나이를 저장
+      // AsyncStorage에 선택한 나이를 저장
       await AsyncStorage.setItem('selectedAge', JSON.stringify(selectedAge));
       router.push('/survey/weight'); // 다음 페이지로 이동
     } catch (error) {
@@ -33,9 +38,11 @@ const Age = () => {
     }
   };
 
+  /* UI */
   return (
     <BaseContainer>
       <FrameContainer>
+        
         <TitleContainer>
           <HowOldAreYouContainer>
             <HowOldAreText>How Old Are You?</HowOldAreText>
@@ -73,7 +80,7 @@ const Age = () => {
 
           <ButtonContainer>
             <ContinueButton
-              onPress={handleContinue} // 변경된 함수 호출
+              onPress={handleContinue}
               disabled={!isFormValid()}
               isFormValid={isFormValid()}
               activeOpacity={0.7}
@@ -81,6 +88,7 @@ const Age = () => {
               <ContinueText>Continue</ContinueText>
             </ContinueButton>
           </ButtonContainer>
+
         </ContentContainer>
       </FrameContainer>
     </BaseContainer>
@@ -89,6 +97,7 @@ const Age = () => {
 
 export default Age;
 
+/* styled-components */
 const BaseContainer = styled.View`
   flex: 1;
   background-color: ${COLORS.white};

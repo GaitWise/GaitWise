@@ -5,22 +5,27 @@ import styled from 'styled-components/native';
 import { Dimensions, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+/* 화면 크기 가져오기 */
 const { width, height } = Dimensions.get('window');
 
+/* [Screen] Gender 화면 */
 const Gender = () => {
   const [selectedMale, setSelectedMale] = useState(true);
   const [selectedFemale, setSelectedFemale] = useState(true);
 
+  /* [Function] 남성 버튼 선택 */
   const handleMaleSelect = () => {
     setSelectedMale(true);
     setSelectedFemale(false);
   };
 
+  /* [Function] 여성 버튼 선택 */
   const handleFemaleSelect = () => {
     setSelectedFemale(true);
     setSelectedMale(false);
   };
 
+  /* [Function] Continue 버튼 동작 */
   const handleContinue = async () => {
     try {
       const gender = selectedMale ? 'Male' : selectedFemale ? 'Female' : null;
@@ -30,9 +35,7 @@ const Gender = () => {
         return;
       }
 
-      console.log('Gender to save:', gender); // 디버깅용 로그
-
-      // AsyncStorage에 저장
+      // AsyncStorage에 성별 데이터 저장
       await AsyncStorage.setItem('genderData', JSON.stringify(gender));
 
       // 다음 페이지로 이동
@@ -42,11 +45,14 @@ const Gender = () => {
     }
   };
 
+  /* UI */
   return (
     <GenderContainer>
       <GenderContent>
         <TitleText>What’s Your Gender?</TitleText>
+        
         <GenderSelection>
+        
           {/* 남 버튼 */}
           <GenderButton onPress={handleMaleSelect}>
             <MaleIconContainer selected={selectedMale}>
@@ -80,6 +86,7 @@ const Gender = () => {
 
 export default Gender;
 
+/* styled-components */
 const GenderContainer = styled.View`
   flex: 1;
   align-items: center;

@@ -1,19 +1,18 @@
 import 'react-native-get-random-values';
-import { icons, COLORS } from '../../../constants';
 import { DeviceMotion } from 'expo-sensors';
-import React, { useCallback, useState, useRef } from 'react';
+import styled from 'styled-components/native';
+import { icons, COLORS } from '../../../constants';
 import { useFocusEffect } from '@react-navigation/native';
 import { Sensors } from '../../../components/walking/Sensor';
+import React, { useCallback, useState, useRef } from 'react';
+import { ActivityIndicator, Modal, Animated } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { insertSensorData } from '../../../components/walking/SQLite';
 import { sendDatabaseFile } from '../../../components/walking/api/Senddata';
 import { useTimerAnimation } from '../../../components/walking/UseTimerAnimation';
 import { chunkData, generateHash} from '../../../components/walking/DataProcessing';
 import { sendChunk, compareHash, resendMissingChunks,} from '../../../components/walking/api/Senddata';
-import { ActivityIndicator, Modal, Animated } from 'react-native';
-import styled from 'styled-components/native';
 
-// TODO
 const Walking = () => {
   const formattedTimeRef = useRef('');
   const [loading, setLoading] = useState(false);
@@ -29,16 +28,13 @@ const Walking = () => {
   // Timer Animation
   const { seconds, setIsActive, setIsStop, formatTime, animation, Timerreset, isActive, isStop} = useTimerAnimation(2500);
 
-
-  // 디바이스 모션 감지 함수
+  /* [Function] 디바이스 모션 감지 함수 */
   const subscribeToDeviceMotion = () => {
     DeviceMotion.setUpdateInterval(1000);
 
     const subscription = DeviceMotion.addListener((data) => {
       const { orientation } = data;
       const { beta } = data.rotation;
-      console.log("orientation: ", orientation);
-      console.log("beta: ", beta);
 
       const isFacingForward = beta > -0.3 && beta < 0.3;
       const isTiltedRight = orientation === -90;
@@ -57,9 +53,10 @@ const Walking = () => {
     deviceMotionSubscriptionRef.current = subscription;
   };
 
+  /* 화면 진입 시 디바이스 모션 구독 및 나가기 시 해제 */
   useFocusEffect(
     React.useCallback(() => {
-      subscribeToDeviceMotion(); // 화면에 들어올 때 디바이스 모션 구독
+      subscribeToDeviceMotion(); 
       return () => {
         deviceMotionSubscriptionRef.current?.remove(); // 화면에서 나갈 때 구독 해제
         deviceMotionSubscriptionRef.current = null; // 메모리 정리
@@ -69,6 +66,7 @@ const Walking = () => {
   );
   
   // TODO 추후 UDP 통신 구현
+  /* [Function] 센서 데이터 서버로 전송 함수 */
   const handleSendDatabaseFile = useCallback(async () => {
     setLoading(true); 
     setModalVisible(true);
@@ -76,17 +74,18 @@ const Walking = () => {
     try {
       const userData = await AsyncStorage.getItem('finalData');
       const parsedUserData = JSON.parse(userData);
-      console.log('Fetched user_id:', parsedUserData.user);
 
       const chunkSize = 100000;
       const dataHash = generateHash(sensorLog.current);
       const chunks = chunkData(sensorLog.current, chunkSize);
 
+      // 데이터 청크 전송
       for (let i = 0; i < chunks.length; i++) {
         const result = await sendChunk(chunks[i], i, chunks.length, parsedUserData.user);
         console.log(`Chunk ${i} upload status:`, result);
       }
 
+      // 데이터 동기화 확인
       const compareResult = await compareHash(dataHash, parsedUserData.user, formattedTimeRef.current);
 
       if (compareResult.status === 'incomplete') {
@@ -104,12 +103,13 @@ const Walking = () => {
     } catch (error) {
       console.error('Error during the process:', error);
     } finally {
-      setLoading(false); // 로딩 중지
-      setModalVisible(false); // 모달 닫기
-      handleReset(); // 데이터 저장 완료 후 초기화
+      setLoading(false); 
+      setModalVisible(false);
+      handleReset(); 
     }
   }, []);
 
+  /* [Function] 측정 시작 버튼 함수 */
   const handleStart = () => {
     setIsStop(false);
     setIsActive(true);
@@ -117,14 +117,15 @@ const Walking = () => {
     deviceMotionSubscriptionRef.current?.remove();
   };
 
+  /* [Function] 측정 중지 버튼 함수 */
   const handleStop = () => {
     setIsStop(true);
     unsubscribeSensors();
     animation.stopAnimation();
     formattedTimeRef.current = formatTime(); 
-    console.log('Formatted Time:', formattedTimeRef.current);
   };
 
+  /* [Function] 측정 초기화 버튼 함수 */
   const handleReset = () => {
     sensorLog.current = [];
     Timerreset();
@@ -135,14 +136,16 @@ const Walking = () => {
     subscribeToDeviceMotion();
   };
 
+  /* [Function] 측정 재시작 버튼 함수 */
   const handleResume = () => {
     setIsStop(false);
     subscribeSensors();
   };
-
+  
+  /* UI */
   return (
     <Container>
-      <TitleText>{seconds > 0 ? 'Recording...' : 'Ready to walk'}</TitleText>
+      <TitleText>{seconds > 0 ? 'Recording...' : 'Turn left and start walking'}</TitleText>
       <TimerText>{formatTime()}</TimerText>
 
       <Modal
@@ -208,7 +211,7 @@ const Walking = () => {
 
 export default Walking;
 
-// styled-components
+/* styled-components */
 const Container = styled.View`
   flex: 1;
   justify-content: center;

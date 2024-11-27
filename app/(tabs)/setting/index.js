@@ -1,28 +1,28 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
-import { icons, COLORS, IMAGES } from '@/constants';
-import { Button, Modal, Alert } from 'react-native';
+import { useState, useEffect } from 'react';
+import { Modal, Alert } from 'react-native';
 import styled from 'styled-components/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
-import { Inquiry_User } from '../../../services/setting/usernquiry';
+import { icons, COLORS, IMAGES } from '@/constants';
 import { Delete_User } from '../../../services/setting/userdelete';
+import { Inquiry_User } from '../../../services/setting/usernquiry';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// 페이지 이동
+// 페이지 이동 경로
 const contact = 'setting/contact';
 const requierdsurvey = 'survey/gender';
-const templetesurvey = 'survey/selection';
 
+/* [Screen] Setting 페이지 */
 const Setting = () => {
   const [image, setImage] = React.useState(null);
+  const [currentProject, setCurrentProject] = useState(null);
+  const [userInfo, setUserInfo] = useState({ firstName: '', lastName: ''});
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
   const [editSurveyModalVisible, setEditSurveyModalVisible] = React.useState(false);
   const [deleteAccountModalVisible, setDeleteAccountModalVisible] = React.useState(false);
-  const [userInfo, setUserInfo] = useState({ firstName: '', lastName: ''});
-  const [currentProject, setCurrentProject] = useState(null);
 
-  // 내 갤러리 이미지 고르기 기능
+  /* [Function] 갤러리에서 이미지 선택 함수 */
   const pickImage = async () => {
     if (!status.granted) {
       const permission = await requestPermission();
@@ -40,7 +40,7 @@ const Setting = () => {
     }
   };
 
-  // AsyncStorage에서 user_id 및 currentProject 가져오기
+  /* [Effect] AsyncStorage에서 사용자 ID 및 프로젝트 정보 가져오기 */
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -48,8 +48,7 @@ const Setting = () => {
         const projectData = await AsyncStorage.getItem('currentProject');
         if (userData) {
           const parsedUserData = JSON.parse(userData);
-          const userIdFromStorage = parsedUserData.user; // user_id 가져오기
-          console.log('Fetched user_id:', userIdFromStorage);
+          const userIdFromStorage = parsedUserData.user; 
 
           // 서버에서 사용자 정보 요청
           const response = await Inquiry_User(userIdFromStorage);
@@ -70,7 +69,7 @@ const Setting = () => {
           }
         }
 
-        // currentProject 데이터 가져오기
+        // 현재 프로젝트 ID 저장
         if (projectData) {
           const parsedProjectData = JSON.parse(projectData);
           console.log('Parsed current project:', parsedProjectData.project_id);
@@ -85,6 +84,7 @@ const Setting = () => {
     fetchUserData();
   }, []);
 
+   /* [Function] 계정 삭제 처리 함수 */
   const deleteAccount = async () => {
     try {
       const userData = await AsyncStorage.getItem('finalData');
@@ -103,13 +103,14 @@ const Setting = () => {
       console.log('response: ', response);
 
       Alert.alert('Success', 'Your account has been deleted successfully.');
-      router.push('/profile'); // 성공 시 프로필 화면으로 이동
+      router.push('/profile'); 
     } catch (error) {
       console.error('Error deleting account:', error);
       Alert.alert('Error', 'An unexpected error occurred. Please try again.');
     }
   };
-
+  
+  /* UI */
   return (
     <ProfileContainer>
       {/* 프로필 텍스트 */}
@@ -159,12 +160,12 @@ const Setting = () => {
               </TitleWrapper>
               <ButtonWrapper>
                 <AButton
-                  title="Required Survey"
+                  title="Essential Survey"
                   onPress={() => router.push(requierdsurvey)}
                   color={COLORS.deep_slate_blue}
                 />
                 <AButton
-                  title="Template Survey"
+                  title="Custom Survey"
                   onPress={() => {
                     if (currentProject) {
                       router.push({
@@ -191,6 +192,7 @@ const Setting = () => {
           <icons.arrow_right />
         </PressableItemContainer>
         <Separator />
+        
         {/* User Reset */}
         <PressableItemContainer
           onPress={() => setDeleteAccountModalVisible(true)}
@@ -246,8 +248,7 @@ const Setting = () => {
 
 export default Setting;
 
-// Styled-components
-
+/* styled-components */
 const EditPicPressable = styled.Pressable`
   position: relative;
   justify-content: center;

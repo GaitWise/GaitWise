@@ -1,44 +1,43 @@
 import * as React from 'react';
+import { router } from 'expo-router';
 import { COLORS, icons } from '@/constants';
 import styled from 'styled-components/native';
-import { router } from 'expo-router';
+import { ScrollView, Modal, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView, Modal, TextInput, Button, Dimensions } from 'react-native';
-import { Participation_project, Inquiry_project} from '@/services/project/projectinquiry';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Participation_project, Inquiry_project} from '@/services/project/projectinquiry';
 
+/* 화면 크기 가져오기 */
 const { width, height } = Dimensions.get('window');
 
+/* [Screen] ProjectSelect */
 const ProjectSelect = () => {
   const [pName, setpName] = React.useState('');
   const [userid, setUserId] = React.useState(null);
   const [codeInput, setCodeInput] = React.useState('');
-  const [stepsData, setStepsData] = React.useState([]);
+  const [projectsData, setProjectData] = React.useState([]);
   const [modalVisible, setModalVisible] = React.useState(false);
 
   React.useEffect(() => {
+    /* [Function] 사용자의 프로젝트 데이터를 불러오는 함수 */
     const fetchProjects = async () => {
       try {
         // AsyncStorage에서 user_id를 가져옴
         const userData = await AsyncStorage.getItem('finalData');
         if (userData) {
           const parsedData = JSON.parse(userData);
-          const userIdFromStorage = parsedData.user; // user_id 가져오기
+          const userIdFromStorage = parsedData.user; 
           setUserId(parsedData.user);
-          console.log('Fetched user_id:', userIdFromStorage);
 
           // 프로젝트 목록 가져오기
-          console.log('Fetching projects for user_id:', userIdFromStorage);
           const response = await Inquiry_project(userIdFromStorage);
-          console.log('Projects response:', response);
           if (response.projects) {
             const formattedProjects = response.projects.map((project) => ({
               project_id: project.id,
               project_name: project.name,
               project_description: project.description,
             }));
-            setStepsData(formattedProjects);
-            console.log('stepsData: id', stepsData);
+            setProjectData(formattedProjects);
           }
         }
       } catch (error) {
@@ -46,33 +45,28 @@ const ProjectSelect = () => {
       }
     };
 
-    fetchProjects(); // 컴포넌트가 마운트될 때 한 번만 실행
+    fetchProjects();
   }, []);
 
+  // State 변경 시 디버깅용 로그 출력
   React.useEffect(() => {
-    console.log('stepsData changed:', stepsData);
-  }, [stepsData]);
+    console.log('projectsData changed:', projectsData);
+  }, [projectsData]);
 
-  // 프로젝트 추가하기
+  /* [Function] 사용자 프로젝트 참여 함수 */
   const addProject = async () => {
     if (codeInput.trim() !== '' && pName.trim() !== '') {
       try {
-        const newProject = await Participation_project(
-          userid,
-          pName,
-          codeInput,
-        );
-        console.log('New project added:', newProject);
+        const newProject = await Participation_project( userid, pName, codeInput);
 
-        setStepsData((prevStepsData) => [
-          ...prevStepsData,
+        setProjectData((prevProjectsData) => [
+          ...prevProjectsData,
           {
             project_id: newProject.project.id,
             project_name: newProject.project.name,
             project_description: newProject.project.description,
           },
         ]);
-        console.log('stepsData add : ', stepsData);
 
         setpName('');
         setCodeInput('');
@@ -83,6 +77,7 @@ const ProjectSelect = () => {
     }
   };
 
+  /* [Function] 특정 프로젝트 선택 시 홈 화면 이동 함수*/
   const navigateToHome = async (projectName, project_id) => {
     if (!project_id) {
       console.error('Error: project_id is undefined');
@@ -94,11 +89,7 @@ const ProjectSelect = () => {
       project_name: projectName,
     };
 
-    await AsyncStorage.setItem(
-      'currentProject',
-      JSON.stringify(selectedProject),
-    );
-    console.log('selectedProject: ', selectedProject);
+    await AsyncStorage.setItem('currentProject', JSON.stringify(selectedProject));
 
     router.push({
       pathname: 'home',
@@ -107,6 +98,7 @@ const ProjectSelect = () => {
     console.log(`${projectName} 프로젝트로 이동합니다.`);
   };
 
+  /* UI */
   return (
     <KeyboardAwareScrollView
       resetScrollToCoords={{ x: 0, y: 0 }}
@@ -173,7 +165,7 @@ const ProjectSelect = () => {
 
         <Content>
           <ScrollViewContainer>
-            {stepsData.length === 0 ? (
+            {projectsData.length === 0 ? (
               <NoProjectsText>Please add the project.</NoProjectsText>
             ) : (
               <ScrollView
@@ -181,7 +173,7 @@ const ProjectSelect = () => {
                 horizontal={false}
                 showsHorizontalScrollIndicator={false}
               >
-                {stepsData.map((item, index) => (
+                {projectsData.map((item, index) => (
                   <CardShadowBox key={index}>
                     <CardContent>
                       <TextRow
@@ -210,6 +202,7 @@ const ProjectSelect = () => {
 
 export default ProjectSelect;
 
+/* styled-components */
 const ConfirmText = styled.Text`
   color: ${COLORS.white};
   font-size: ${width * 0.045}px;
@@ -325,7 +318,9 @@ const TextRow = styled.Pressable`
   align-items: center;
 `;
 
-const TextWrapper = styled.View``;
+const TextWrapper = styled.View`
+  gap: 5px;
+`;
 
 const CardTitle = styled.Text`
   font-size: ${height * 0.02}px;

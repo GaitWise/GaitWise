@@ -1,6 +1,6 @@
-import { COLORS, icons } from '../../../constants';
-import styled from 'styled-components/native';
 import React, { useState } from 'react';
+import { COLORS } from '../../../constants';
+import styled from 'styled-components/native';
 import { Stack, useFocusEffect } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -15,16 +15,16 @@ export default function HomeLayout() {
           if (storedData) {
             const parsedData = JSON.parse(storedData);
             console.log('Parsed current project:', parsedData);
-            setCurrentProject(parsedData); // 상태에 저장
+            setCurrentProject(parsedData); 
           } else {
-            setCurrentProject({ project_name: 'No project selected' }); // 기본값 설정
+            setCurrentProject({ project_name: 'No project selected' }); 
           }
         } catch (error) {
           console.error('Error fetching current project:', error);
         }
       };
 
-      fetchCurrentProject(); // 화면에 진입하거나 포커스될 때마다 실행
+      fetchCurrentProject(); 
     }, []),
   );
 

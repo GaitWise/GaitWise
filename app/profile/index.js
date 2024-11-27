@@ -1,68 +1,39 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
-import { COLORS, IMAGES, icons } from '@/constants';
 import styled from 'styled-components/native';
 import * as ImagePicker from 'expo-image-picker';
+import { COLORS, IMAGES, icons } from '@/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Image, TouchableOpacity, TextInput, Dimensions, Alert } from 'react-native';
 
+/* 화면 크기 가져오기 */
 const { width, height } = Dimensions.get('window');
 
+/* [Screen] Profile 화면 */
 const Profile = () => {
-  const [inputs, setInputs] = useState({ firstName: '', lastName: '', job: '', email: '', passwd: '', Cpasswd: ''});
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;  // 이메일 형식 검증용 정규식
   const [image, setImage] = useState(IMAGES.profile); 
+  const [inputs, setInputs] = useState({ firstName: '', lastName: '', job: '', email: '', passwd: '', Cpasswd: ''});
   const { firstName, lastName, job, email, passwd, Cpasswd } = inputs;
 
+  /* [Funciton] 입력값 변경 핸들러 함수 */
   const handleInputChange = (name, value) => {
-    setInputs({
-      ...inputs,
-      [name]: value,
-    });
+    setInputs({ ...inputs, [name]: value});
   };
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+  /* [Funciton] Form 유효성 검사 함수 */
   const isFormValid = () => {
     return (
-      firstName &&
-      lastName &&
-      job &&
-      email &&
-      passwd &&
-      Cpasswd &&
+      firstName && lastName &&
+      job && email &&
+      passwd && Cpasswd &&
       passwd === Cpasswd &&
       emailRegex.test(email)
     );
   };
 
-  const fields = [
-    {
-      name: 'firstName',
-      label: 'First Name',
-      placeholder: 'Enter Your First Name',
-    },
-    {
-      name: 'lastName',
-      label: 'Last Name',
-      placeholder: 'Enter Your Last Name',
-    },
-    { name: 'job', label: 'Job', placeholder: 'Enter Your Job' },
-    { name: 'email', label: 'Email', placeholder: 'Enter Your Email' },
-    {
-      name: 'passwd',
-      label: 'Password',
-      placeholder: 'Enter Your Password',
-      secureTextEntry: true,
-    },
-    {
-      name: 'Cpasswd',
-      label: '',
-      placeholder: 'Please Enter It Again',
-      secureTextEntry: true,
-    },
-  ];
-
+  /* [Funciton] 갤러리에서 이미지 선택 함수 */
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -72,16 +43,15 @@ const Profile = () => {
 
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
+      allowsEditing: true, // 이미지 편집 허용
+      aspect: [1, 1], // 정사각형 비율
+      quality: 1, // 품질 설정
     });
 
-    if (!result.canceled) {
-      setImage({ uri: result.assets[0].uri });
-    }
+    if (!result.canceled) { setImage({ uri: result.assets[0].uri })}
   };
 
+  /* [Funciton] Continue 버튼 기능 함수 */
   const handleContinue = async () => {
     if (!emailRegex.test(email)) {
       Alert.alert('Invalid Email', 'Please enter a valid email address.');
@@ -97,6 +67,7 @@ const Profile = () => {
     }
   };
 
+  /* UI */
   return (
     <KeyboardAwareScrollView
       resetScrollToCoords={{ x: 0, y: 0 }}
@@ -106,6 +77,7 @@ const Profile = () => {
         <Header>
           <HeaderText>Fill Your Profile</HeaderText>
         </Header>
+
         <ProfileFrame>
           <EditPic onPress={pickImage}>
             <ProfileImage source={image} resizeMode="cover" />
@@ -148,7 +120,7 @@ const Profile = () => {
 
 export default Profile;
 
-// styled-components
+/* styled-components */
 const EditPic = styled(TouchableOpacity)`
   width: 150px;
   height: 150px;
@@ -204,6 +176,7 @@ const Form = styled.View`
   flex-direction: center;
   align-items: center;
   width: 100%;
+  gap: 5px;
 `;
 
 const InputField = styled.View`
@@ -245,3 +218,31 @@ const ButtonText = styled.Text`
   font-weight: bold;
   text-align: center;
 `;
+
+/* 입력 필드 정의 */
+const fields = [
+  {
+    name: 'firstName',
+    label: 'First Name',
+    placeholder: 'Enter Your First Name',
+  },
+  {
+    name: 'lastName',
+    label: 'Last Name',
+    placeholder: 'Enter Your Last Name',
+  },
+  { name: 'job', label: 'Job', placeholder: 'Enter Your Job' },
+  { name: 'email', label: 'Email', placeholder: 'Enter Your Email' },
+  {
+    name: 'passwd',
+    label: 'Password',
+    placeholder: 'Enter Your Password',
+    secureTextEntry: true,
+  },
+  {
+    name: 'Cpasswd',
+    label: '',
+    placeholder: 'Please Enter It Again',
+    secureTextEntry: true,
+  },
+];
