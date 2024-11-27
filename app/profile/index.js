@@ -5,7 +5,7 @@ import styled from 'styled-components/native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Image, TouchableOpacity, TextInput, Dimensions } from 'react-native';
+import { Image, TouchableOpacity, TextInput, Dimensions, Alert } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -28,6 +28,8 @@ const Profile = () => {
     });
   };
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   const isFormValid = () => {
     return (
       firstName &&
@@ -36,7 +38,8 @@ const Profile = () => {
       email &&
       passwd &&
       Cpasswd &&
-      passwd === Cpasswd
+      passwd === Cpasswd &&
+      emailRegex.test(email)
     );
   };
 
@@ -87,6 +90,11 @@ const Profile = () => {
   };
 
   const handleContinue = async () => {
+    if (!emailRegex.test(email)) {
+      Alert.alert('Invalid Email', 'Please enter a valid email address.');
+      return;
+    }
+
     const { Cpasswd, ...dataToSave } = inputs;
     try {
       await AsyncStorage.setItem('input', JSON.stringify(dataToSave));
