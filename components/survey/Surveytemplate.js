@@ -75,7 +75,7 @@ const SurveyTemplate = ({ currentPageData, onContinue, onAnswer }) => {
             <TitleText>{currentPageData.title}</TitleText>
           </TitleContainer>
 
-        <ProfileImage source={IMAGES.profile} />
+        {/* <ProfileImage source={IMAGES.profile} /> */}
 
         <OptionsContainer height={optionsContainerHeight}>
             {currentPageData.options?.length ? (

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
-import { icons, COLORS } from '@/constants';
+import { icons, COLORS, IMAGES } from '@/constants';
 import { Button, Modal, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -17,14 +17,9 @@ const templetesurvey = 'survey/selection';
 const Setting = () => {
   const [image, setImage] = React.useState(null);
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
-  const [editSurveyModalVisible, setEditSurveyModalVisible] =
-    React.useState(false);
-  const [deleteAccountModalVisible, setDeleteAccountModalVisible] =
-    React.useState(false);
-  const [userInfo, setUserInfo] = useState({
-    firstName: '',
-    lastName: '',
-  });
+  const [editSurveyModalVisible, setEditSurveyModalVisible] = React.useState(false);
+  const [deleteAccountModalVisible, setDeleteAccountModalVisible] = React.useState(false);
+  const [userInfo, setUserInfo] = useState({ firstName: '', lastName: ''});
   const [currentProject, setCurrentProject] = useState(null);
 
   // 내 갤러리 이미지 고르기 기능
@@ -124,7 +119,7 @@ const Setting = () => {
 
       {/* 프로필 사진 */}
       <EditPicPressable onPress={pickImage}>
-        <EditPic source={image ? { uri: image } : icons.profile} />
+        <EditPic source={image ? { uri: image } : IMAGES.profile} />
         <EditIconContainer>
           <icons.pen />
         </EditIconContainer>

@@ -1,16 +1,16 @@
 import 'react-native-get-random-values';
 import { icons, COLORS } from '../../../constants';
 import { DeviceMotion } from 'expo-sensors';
-import React, { useCallback, useState, useRef, useEffect } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { Sensors } from '../../../components/walking/Sensor';
-import * as ScreenOrientation from 'expo-screen-orientation'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { insertSensorData } from '../../../components/walking/SQLite';
 import { sendDatabaseFile } from '../../../components/walking/api/Senddata';
 import { useTimerAnimation } from '../../../components/walking/UseTimerAnimation';
 import { chunkData, generateHash} from '../../../components/walking/DataProcessing';
 import { sendChunk, compareHash, resendMissingChunks,} from '../../../components/walking/api/Senddata';
-import { ActivityIndicator, Modal, Animated, Alert } from 'react-native';
+import { ActivityIndicator, Modal, Animated } from 'react-native';
 import styled from 'styled-components/native';
 
 // TODO
@@ -57,12 +57,16 @@ const Walking = () => {
     deviceMotionSubscriptionRef.current = subscription;
   };
 
-  useEffect(() => {
-    subscribeToDeviceMotion();
-    return () => {
-      deviceMotionSubscriptionRef.current?.remove();
-    };
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      subscribeToDeviceMotion(); // 화면에 들어올 때 디바이스 모션 구독
+      return () => {
+        deviceMotionSubscriptionRef.current?.remove(); // 화면에서 나갈 때 구독 해제
+        deviceMotionSubscriptionRef.current = null; // 메모리 정리
+        console.log("Device Motion subscription removed.");
+      };
+    }, [])
+  );
   
   // TODO 추후 UDP 통신 구현
   const handleSendDatabaseFile = useCallback(async () => {
