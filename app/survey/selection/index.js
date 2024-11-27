@@ -29,6 +29,7 @@ const SelectionPage = () => {
         const selectionData = response?.custom_survey?.selection || [];
         const text_responseData = response?.custom_survey?.text_response || [];
 
+
         if (selectionData.length > 0) {
           setSurveyData({
             title: response.custom_survey.title,
@@ -36,6 +37,7 @@ const SelectionPage = () => {
             selection: selectionData,
             text_response: text_responseData,
           });
+       
         } else if (text_responseData.length > 0) {
           router.push({
             pathname: '/survey/text_response',
@@ -64,7 +66,7 @@ const SelectionPage = () => {
   const currentPageData = surveyData?.selection[currentIndex] || null;
   console.log("currentPageData: ", currentPageData)
 
-  
+  console.log(currentPageData?.options)
 
   // 답변 저장 함수
   const handleAnswer = (answer) => {
