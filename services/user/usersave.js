@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://192.168.25.38:4000'; // 서버 주소 설정
+const API_BASE_URL = 'http://192.168.45.63:4000'; // 서버 주소 설정
 
 const api = axios.create({
-  baseURL: API_BASE_URL, 
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -12,8 +12,8 @@ const api = axios.create({
 // 사용자 데이터 저장
 export const saveUserData = async (userData) => {
   try {
-    console.log("userData:", userData)
-    const response = await api.post('/User/UserDataSave', userData); 
+    console.log('userData:', userData);
+    const response = await api.post('/User/UserDataSave', userData);
     return response.data;
   } catch (error) {
     console.error('Error saving user data:', error);

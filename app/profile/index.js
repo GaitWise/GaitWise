@@ -1,16 +1,23 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
-import { COLORS, IMAGES } from '@/constants';
+import { COLORS, IMAGES, icons } from '@/constants';
 import styled from 'styled-components/native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Image, TouchableOpacity, TextInput, Dimensions, Button} from 'react-native';
+import { Image, TouchableOpacity, TextInput, Dimensions } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
 const Profile = () => {
-  const [inputs, setInputs] = useState({ firstName: '', lastName: '', job: '', email: '', passwd: '', Cpasswd: '',});
+  const [inputs, setInputs] = useState({
+    firstName: '',
+    lastName: '',
+    job: '',
+    email: '',
+    passwd: '',
+    Cpasswd: '',
+  });
   const [image, setImage] = useState(IMAGES.profile); // 초기 프로필 이미지
   const { firstName, lastName, job, email, passwd, Cpasswd } = inputs;
 
@@ -21,7 +28,17 @@ const Profile = () => {
     });
   };
 
-  const isFormValid = () => { return ( firstName && lastName && job && email && passwd && Cpasswd && passwd === Cpasswd)};
+  const isFormValid = () => {
+    return (
+      firstName &&
+      lastName &&
+      job &&
+      email &&
+      passwd &&
+      Cpasswd &&
+      passwd === Cpasswd
+    );
+  };
 
   const fields = [
     {
@@ -44,7 +61,7 @@ const Profile = () => {
     },
     {
       name: 'Cpasswd',
-      label: 'Please Enter It Again',
+      label: '',
       placeholder: 'Please Enter It Again',
       secureTextEntry: true,
     },
@@ -70,10 +87,10 @@ const Profile = () => {
   };
 
   const handleContinue = async () => {
-    const { Cpasswd, ...dataToSave } = inputs; 
+    const { Cpasswd, ...dataToSave } = inputs;
     try {
-      await AsyncStorage.setItem('input', JSON.stringify(dataToSave)); 
-      router.push('../survey/gender'); 
+      await AsyncStorage.setItem('input', JSON.stringify(dataToSave));
+      router.push('../survey/gender');
     } catch (error) {
       console.error('Failed to save profile data:', error);
     }
@@ -89,13 +106,20 @@ const Profile = () => {
           <HeaderText>Fill Your Profile</HeaderText>
         </Header>
         <ProfileFrame>
-          <ProfileImage source={image} />
-          <Button title="Choose Your Profile Image" onPress={pickImage} />
+          <EditPic onPress={pickImage}>
+            <ProfileImage source={image} resizeMode="cover" />
+            <EditIconContainer>
+              <icons.pen size={24} color={COLORS.dark_indigo} />
+            </EditIconContainer>
+          </EditPic>
         </ProfileFrame>
 
         <Form>
           {fields.map((field) => (
-            <InputField key={field.name}>
+            <InputField
+              key={field.name}
+              style={{ marginTop: field.name === 'Cpasswd' ? -20 : 0 }}
+            >
               <Label>{field.label}</Label>
               <Input
                 value={inputs[field.name]}
@@ -124,15 +148,32 @@ const Profile = () => {
 export default Profile;
 
 // styled-components
+const EditPic = styled(TouchableOpacity)`
+  width: 150px;
+  height: 150px;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+`;
+
+const EditIconContainer = styled.View`
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  border-radius: 50px;
+  padding: 5px;
+`;
+
 const Container = styled.View`
   flex: 1;
   width: 100%;
   background-color: ${COLORS.white};
   overflow: hidden;
+  height: 100%;
 `;
 
 const Header = styled.View`
-  height: ${height * 0.1}px;
+  height: 50px;
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -149,17 +190,16 @@ const ProfileFrame = styled.View`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 10px;
 `;
 
 const ProfileImage = styled(Image)`
   border-radius: ${width * 0.3}px;
-  width: ${width * 0.33}px;
-  height: ${width * 0.33}px;
+  width: ${width * 0.36}px;
+  height: ${width * 0.36}px;
 `;
 
 const Form = styled.View`
-  padding: ${height * 0.02}px ${width * 0.03}px;
+  padding: 5px;
   flex-direction: center;
   align-items: center;
   width: 100%;
@@ -195,7 +235,7 @@ const StartButton = styled(TouchableOpacity)`
   justify-content: center;
   align-items: center;
   align-self: center;
-  margin: ${height * 0.02}px;
+  margin: 5px;
 `;
 
 const ButtonText = styled.Text`

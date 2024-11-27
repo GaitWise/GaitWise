@@ -1,15 +1,16 @@
 import { router } from 'expo-router';
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { COLORS, icons } from '@/constants';
-import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // 📌 Icon 라이브러리 추가
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   TouchableOpacity,
   FlatList,
-  Alert, // 📌 Alert 추가
   Dimensions,
+  TextInput,
+  Modal,
 } from 'react-native';
+import styled from 'styled-components/native';
 
 const { width, height } = Dimensions.get('window');
 const ITEM_WEIGHT = width * 0.18;
@@ -19,6 +20,8 @@ const Weight = () => {
   const [selectedKG, setSelectedKG] = useState('KG');
   const [selectedLB, setSelectedLB] = useState('LB');
   const [selectedWeight, setSelectedWeight] = useState(0);
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [inputWeight, setInputWeight] = useState(selectedWeight.toString());
   const weightArray = Array.from({ length: 201 }, (_, index) => index);
 
   const selectedUnit = selectedKG === 'KG' ? 'kg' : 'lb'; // 현재 선택된 단위
@@ -38,38 +41,28 @@ const Weight = () => {
     return selectedWeight;
   };
 
-  // 📌 입력받은 몸무게 값을 정확히 selectedWeight에 반영하는 함수
-  const handleWeightInput = async () => {
-    Alert.prompt(
-      'Enter Your Weight',
-      'Please enter your weight',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: (input) => {
-            const newWeight = parseInt(input); // 입력값을 정수로 변환하여 저장
-            if (!isNaN(newWeight) && newWeight >= 0 && newWeight <= 200) {
-              setSelectedWeight(newWeight);
+  handleWeightInput = () => {
+    setModalVisible(true);
+  };
 
-              // 📌 스크롤 위치를 newWeight와 일치하게 조정
-              const targetIndex = weightArray.indexOf(newWeight);
-              if (targetIndex !== -2) {
-                flatListRef.current.scrollToIndex({
-                  index: targetIndex,
-                  animated: true,
-                });
-              }
-            }
-          },
-        },
-      ],
-      'plain-text',
-      selectedWeight.toString(),
-    );
+  // 📌 입력받은 몸무게 값을 정확히 selectedWeight에 반영하는 함수
+  const handleConfirmWeight = async () => {
+    const newWeight = parseInt(inputWeight); // 입력값을 정수로 변환하여 저장
+    if (!isNaN(newWeight) && newWeight >= 0 && newWeight <= 200) {
+      setSelectedWeight(newWeight);
+
+      // 📌 스크롤 위치를 newWeight와 일치하게 조정
+      const targetIndex = weightArray.indexOf(newWeight);
+      if (targetIndex !== -2) {
+        flatListRef.current.scrollToIndex({
+          index: targetIndex,
+          animated: true,
+        });
+      }
+      setModalVisible(false);
+    } else {
+      alert('Enter Your Weight');
+    }
   };
 
   const handleContinue = async () => {
@@ -88,6 +81,7 @@ const Weight = () => {
 
   return (
     <BaseFrameContainer>
+      {/* Title */}
       <QContainer>
         <QText>What Is Your Weight?</QText>
       </QContainer>
@@ -152,6 +146,29 @@ const Weight = () => {
         </ResultContainer>
       </TouchableOpacity>
 
+      {/* Modal 구현 */}
+      <Modal visible={modalVisible} transparent animationType="slide">
+        <ModalContainer>
+          <ModalContent>
+            <ModalTitle>Enter Your Weight</ModalTitle>
+            <StyledTextInput
+              value={inputWeight}
+              onChangeText={setInputWeight}
+              keyboardType="numeric"
+              placeholder="Enter Yout Weight"
+            />
+            <ModalButtonContainer>
+              <ModalButton onPress={() => setModalVisible(false)}>
+                <ModalButtonText>Cancel</ModalButtonText>
+              </ModalButton>
+              <ModalButton onPress={handleConfirmWeight}>
+                <ModalButtonText>OK</ModalButtonText>
+              </ModalButton>
+            </ModalButtonContainer>
+          </ModalContent>
+        </ModalContainer>
+      </Modal>
+
       {/* continue 버튼 */}
       <ContinueButton
         onPress={handleContinue}
@@ -168,6 +185,57 @@ const Weight = () => {
 export default Weight;
 
 // Styled Components
+
+const ModalContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+`;
+
+const ModalContent = styled.View`
+  width: 80%;
+  padding: 20px;
+  background-color: ${COLORS.white};
+  border-radius: 10px;
+  align-items: center;
+`;
+
+const ModalTitle = styled.Text`
+  font-size: ${width * 0.05}px;
+  font-weight: bold;
+  color: ${COLORS.dark_indigo};
+  margin-bottom: 20px;
+`;
+
+const StyledTextInput = styled(TextInput)`
+  width: 100%;
+  border: 1px solid ${COLORS.light_mist_grey};
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+`;
+
+const ModalButtonContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+const ModalButton = styled.TouchableOpacity`
+  flex: 1;
+  align-items: center;
+  padding: 10px;
+  margin: 0 5px;
+  border-radius: 5px;
+  background-color: ${COLORS.soft_blue};
+`;
+
+const ModalButtonText = styled.Text`
+  color: ${COLORS.white};
+  font-weight: bold;
+`;
+
 const WeightText = styled.Text`
   font-size: ${width * 0.1}px;
   color: ${COLORS.dark_indigo};

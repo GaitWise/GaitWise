@@ -1,22 +1,30 @@
 const COLORS = {
-  dark_indigo: "#27187E",
-  soft_blue: "#758BFD",
-  pastel_lavender: "#AEB8FE",
-  light_mist_grey: "#F1F2F6",
-  deep_slate_blue: "#1C2A3A",
-  charcoal_blue: "#363B59",
-  bright_pink: "#F163AC",
-  continue_gray: "#D9D9D9",
-  circle_gray: "#E8E8E8",
-  black: "#000000",
-  white: "#FFFFFF",
-  dark_gray: "#717171",
-  medium_gray: "#8d8d8d",
-  light_gray: "#e5e7eb",
-  tomato: "#ff6347",
-  sky_blue: "#87ceeb",
-  lime_green: "#32cd32",
-  slate_gray: "#6b7280",
+  dark_indigo: '#27187E',
+  soft_blue: '#758BFD',
+  pastel_lavender: '#AEB8FE',
+  light_mist_grey: '#F1F2F6',
+  deep_slate_blue: '#1C2A3A',
+  charcoal_blue: '#363B59',
+  bright_pink: '#F163AC',
+  continue_gray: '#D9D9D9',
+  circle_gray: '#E8E8E8',
+  black: '#000000',
+  white: '#FFFFFF',
+  dark_gray: '#717171',
+  medium_gray: '#8d8d8d',
+  light_gray: '#e5e7eb',
+  tomato: '#ff6347',
+  sky_blue: '#87ceeb',
+  lime_green: '#32cd32',
+  slate_gray: '#6b7280',
+  deep_maroon: '#93C19E', // 추가된 색상
+  lavender_blush: '#ACA1CD', // 추가된 색상
+  rose_quartz: '#DC9497', // 추가된 색상
+  peach_puff: '#F5AD7E', // 추가된 색상
+  cosmic_purple: '#352261', // 추가된 색상
+  teal_waters: '#4D9B91', // 추가된 색상
+  arctic_ice: '#89CCDB', // 추가된 색상
+  vintage_peach: '#DEB6B5', // 추가된 색상
 };
 
 export { COLORS };

@@ -1,4 +1,4 @@
-import { COLORS } from '../../../constants';
+import { COLORS, icons } from '../../../constants';
 import styled from 'styled-components/native';
 import React, { useState } from 'react';
 import { Stack, useFocusEffect } from 'expo-router';
@@ -25,19 +25,19 @@ export default function HomeLayout() {
       };
 
       fetchCurrentProject(); // 화면에 진입하거나 포커스될 때마다 실행
-    }, [])
+    }, []),
   );
 
   return (
     <>
       <Section>
         <RowWrapper>
-          <CommonText>
-            {currentProject
-              ? `Project: ${currentProject.project_name}`
-              : 'Loading project...'}
-          </CommonText>
+          <icons.project />
+          <ProjectText>Project</ProjectText>
         </RowWrapper>
+        <ProjectNameText>
+          {currentProject ? currentProject.project_name : 'Loading project...'}
+        </ProjectNameText>
       </Section>
       <Stack screenOptions={{ headerShown: false }} />
     </>
@@ -49,21 +49,26 @@ const Section = styled.View`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 15px;
+  gap: 5px;
   background-color: ${COLORS.white};
 `;
 
 const RowWrapper = styled.View`
-  width: 100%;
+  margin-top: 20px;
   flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
 `;
 
-const CommonText = styled.Text`
-  font-size: 17px;
+const ProjectText = styled.Text`
+  font-size: 15px;
+  color: ${COLORS.black};
+  font-weight: bold;
+  margin-left: 7px; /* 아이콘과 텍스트 간격 */
+`;
+
+const ProjectNameText = styled.Text`
+  font-size: 25px;
   color: ${COLORS.dark_indigo};
-  text-align: center;
+  margin-bottom: 10px;
+  font-style: italic; /* 기울임체 (선택 사항) */
   font-weight: bold;
 `;

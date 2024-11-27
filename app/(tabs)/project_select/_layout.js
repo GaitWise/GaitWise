@@ -8,7 +8,7 @@ export function SurveyLayout() {
   // 뒤로 가기 버튼 UI
   const renderBackButton = () => (
     <BackButton onPress={() => router.back()}>
-      <icons.arrow_back/>
+      <icons.arrow_back />
     </BackButton>
   );
 
@@ -18,6 +18,7 @@ export function SurveyLayout() {
         title: 'Back',
         headerTitleStyle: { fontSize: 20 },
         headerLeft: renderBackButton,
+        headerShadowVisible: false,
       }}
     />
   );
@@ -31,5 +32,3 @@ const BackButton = styled.TouchableOpacity`
   align-items: center;
   padding-horizontal: 10px;
 `;
-
-

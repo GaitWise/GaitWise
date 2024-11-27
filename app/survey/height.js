@@ -1,18 +1,27 @@
 import { COLORS } from '@/constants';
 import { router } from 'expo-router';
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components/native';
-import { saveUserData } from '../../services/user/usersave'; 
+import { saveUserData } from '../../services/user/usersave';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TouchableOpacity, FlatList, Dimensions, Alert } from 'react-native';
+import {
+  TouchableOpacity,
+  FlatList,
+  Dimensions,
+  Alert,
+  TextInput,
+  Modal,
+} from 'react-native';
 
 const { width, height } = Dimensions.get('window');
-const ITEM_HEIGHT = height * 0.0579; 
+const ITEM_HEIGHT = height * 0.0579;
 
 const Height = () => {
   const flatListRef = useRef(null);
   const [selectedHeight, setSelectedHeight] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [inputHeight, setInputHeight] = useState(selectedHeight.toString());
   const heightArray = Array.from({ length: 251 }, (_, index) => index);
 
   const handleScroll = (event) => {
@@ -25,38 +34,29 @@ const Height = () => {
     return selectedHeight;
   };
 
-  const handleHeightInput = () => {
-    Alert.prompt(
-      'Enter Your Height',
-      'Please enter your height in cm',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: (input) => {
-            const newHeight = parseInt(input);
-            if (!isNaN(newHeight) && newHeight >= 0 && newHeight <= 250) {
-              setSelectedHeight(newHeight);
+  const handleContinue = () => {
+    const newHeight = parseInt(inputHeight);
+    if (!isNaN(newHeight) && newHeight >= 0 && newHeight <= 250) {
+      setSelectedHeight(newHeight);
 
-              const targetIndex = heightArray.indexOf(newHeight);
-              if (targetIndex !== -1) {
-                flatListRef.current.scrollToIndex({
-                  index: targetIndex,
-                  animated: true,
-                });
-              }
-            }
-          },
-        },
-      ],
-      'plain-text',
-      selectedHeight.toString(),
-    );
+      const targetIndex = heightArray.indexOf(newHeight);
+      if (targetIndex !== -1) {
+        flatListRef.current.scrollToIndex({
+          index: targetIndex,
+          animated: true,
+        });
+      }
+      setModalVisible(false);
+    } else {
+      alert('Enter Your Height');
+    }
   };
-  const handleContinue = async () => {
+
+  const handleHeightInput = () => {
+    setModalVisible(true);
+  };
+
+  const handleConfirmHeight = async () => {
     try {
       // 📌 AsyncStorage에서 모든 데이터 읽어오기
       const age = await AsyncStorage.getItem('selectedAge');
@@ -73,12 +73,12 @@ const Height = () => {
         weight: JSON.parse(weight),
         height: selectedHeight,
         job: JSON.parse(profile).job,
-        profile_image_url: " ",
+        profile_image_url: ' ',
         password: JSON.parse(profile).passwd,
       };
-      
+
       const response = await saveUserData(userData);
-      console.log('Data saved successfully:', response); 
+      console.log('Data saved successfully:', response);
 
       const allData = {
         user: response.user._id,
@@ -86,10 +86,10 @@ const Height = () => {
         gender: JSON.parse(gender),
         age: JSON.parse(age),
         weight: JSON.parse(weight),
-        height: selectedHeight, 
+        height: selectedHeight,
       };
 
-      console.log("allData", allData)
+      console.log('allData', allData);
 
       // 📌 한꺼번에 저장
       await AsyncStorage.setItem('finalData', JSON.stringify(allData));
@@ -98,7 +98,6 @@ const Height = () => {
         pathname: '/project_select',
         params: { user_id: response.user._id },
       });
-
     } catch (error) {
       console.error('Failed to save data:', error);
     }
@@ -151,6 +150,29 @@ const Height = () => {
           />
         </HeightScrollContainer>
 
+        {/* Modal */}
+        <Modal visible={modalVisible} transparent animationType="slide">
+          <ModalContainer>
+            <ModalContent>
+              <ModalTitle>Enter Your Height</ModalTitle>
+              <StyledTextInput
+                value={inputHeight}
+                onChangeText={setInputHeight}
+                keyboardType="numeric"
+                placeholder="Enter Your Height"
+              />
+              <ModalButtonContainer>
+                <ModalButton onPress={() => setModalVisible(false)}>
+                  <ModalButtonText>Cancel</ModalButtonText>
+                </ModalButton>
+                <ModalButton onPress={handleConfirmHeight}>
+                  <ModalButtonText>OK</ModalButtonText>
+                </ModalButton>
+              </ModalButtonContainer>
+            </ModalContent>
+          </ModalContainer>
+        </Modal>
+
         {/* Continue Button */}
         <ContinueButton
           onPress={() => {
@@ -172,6 +194,57 @@ const Height = () => {
 export default Height;
 
 // Styled Components
+
+const ModalContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+`;
+
+const ModalContent = styled.View`
+  width: 80%;
+  padding: 20px;
+  background-color: ${COLORS.white};
+  border-radius: 10px;
+  align-items: center;
+`;
+
+const ModalTitle = styled.Text`
+  font-size: ${width * 0.05}px;
+  font-weight: bold;
+  color: ${COLORS.dark_indigo};
+  margin-bottom: 20px;
+`;
+
+const StyledTextInput = styled(TextInput)`
+  width: 100%;
+  border: 1px solid ${COLORS.light_mist_grey};
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+`;
+
+const ModalButtonContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+const ModalButton = styled.TouchableOpacity`
+  flex: 1;
+  align-items: center;
+  padding: 10px;
+  margin: 0 5px;
+  border-radius: 5px;
+  background-color: ${COLORS.soft_blue};
+`;
+
+const ModalButtonText = styled.Text`
+  color: ${COLORS.white};
+  font-weight: bold;
+`;
+
 const BaseContainer = styled.View`
   flex: 1;
   background-color: ${COLORS.white};

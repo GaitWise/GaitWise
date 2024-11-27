@@ -12,57 +12,57 @@ const iconData = [
   {
     text: 'Walking',
     IconComponent: icons.walking_people,
-    backgroundColor: COLORS.sky_blue,
+    backgroundColor: COLORS.deep_maroon,
     route: '/walking',
   },
   {
     text: 'Survey',
-    IconComponent: icons.male,
-    backgroundColor: COLORS.sky_blue,
+    IconComponent: icons.survey,
+    backgroundColor: COLORS.lavender_blush,
     route: '/survey/selection',
   },
   {
     text: 'Project',
-    IconComponent: icons.female,
-    backgroundColor: COLORS.sky_blue,
+    IconComponent: icons.project,
+    backgroundColor: COLORS.rose_quartz,
     route: '/project_select',
   },
   {
+    text: 'Setting',
+    IconComponent: icons.settings,
+    backgroundColor: COLORS.peach_puff,
+    route: '/setting',
+  },
+  {
     text: 'Preparing',
-    IconComponent: icons.male,
-    backgroundColor: COLORS.sky_blue,
+    IconComponent: icons.reset,
+    backgroundColor: COLORS.cosmic_purple,
     route: '/comingSoon',
   },
   {
     text: 'Preparing',
-    IconComponent: icons.male,
-    backgroundColor: COLORS.sky_blue,
+    IconComponent: icons.reset,
+    backgroundColor: COLORS.teal_waters,
     route: '/comingSoon',
   },
   {
     text: 'Preparing',
-    IconComponent: icons.male,
-    backgroundColor: COLORS.sky_blue,
+    IconComponent: icons.reset,
+    backgroundColor: COLORS.arctic_ice,
     route: '/comingSoon',
   },
   {
     text: 'Preparing',
-    IconComponent: icons.male,
-    backgroundColor: COLORS.sky_blue,
-    route: '/comingSoon',
-  },
-  {
-    text: 'Preparing',
-    IconComponent: icons.male,
-    backgroundColor: COLORS.sky_blue,
+    IconComponent: icons.reset,
+    backgroundColor: COLORS.vintage_peach,
     route: '/comingSoon',
   },
 ];
 
 const HomePage = () => {
   const router = useRouter();
-  const [stepsData, setStepsData] = React.useState([]); 
-  const [isSurveyCompleted, setIsSurveyCompleted] = React.useState(true); 
+  const [stepsData, setStepsData] = React.useState([]);
+  const [isSurveyCompleted, setIsSurveyCompleted] = React.useState(true);
 
   // Fetch step history data
   const fetchStepHistory = async () => {
@@ -70,15 +70,15 @@ const HomePage = () => {
       const userData = await AsyncStorage.getItem('finalData');
       if (userData) {
         const parsedData = JSON.parse(userData);
-        const user_id = parsedData.user; 
-        const stepHistory = await Inquiry_stepHistory(user_id); 
-  
+        const user_id = parsedData.user;
+        const stepHistory = await Inquiry_stepHistory(user_id);
+
         const formattedData = stepHistory.map((item) => ({
           date: `${new Date(item.createdAt).getFullYear()}Y ${new Date(item.createdAt).getMonth() + 1}M ${new Date(item.createdAt).getDate()}D`,
           steps: `${item.step_count}Steps/${item.walking_time}`,
         }));
-  
-        setStepsData(formattedData); 
+
+        setStepsData(formattedData);
       } else {
         console.error('No user data found in AsyncStorage.');
       }
@@ -90,7 +90,7 @@ const HomePage = () => {
   useFocusEffect(
     React.useCallback(() => {
       fetchStepHistory();
-    }, [])
+    }, []),
   );
 
   const handlePress = async (route) => {
@@ -98,14 +98,17 @@ const HomePage = () => {
       const storedData = await AsyncStorage.getItem('currentProject');
       if (storedData) {
         const parsedData = JSON.parse(storedData);
-  
+
         // 설문 페이지로 이동할 때만 project_id를 전달
         if (route === '/survey/selection') {
           if (!parsedData.project_id) {
-            Alert.alert('Error', 'No project selected. Please select a project first.');
+            Alert.alert(
+              'Error',
+              'No project selected. Please select a project first.',
+            );
             return;
           }
-  
+
           if (!isSurveyCompleted) {
             Alert.alert(
               'Required survey not completed',
@@ -119,11 +122,11 @@ const HomePage = () => {
                       params: { projectId: parsedData.project_id }, // projectId 전달
                     }),
                 },
-              ]
+              ],
             );
             return;
           }
-  
+
           router.push({
             pathname: route,
             params: { projectId: parsedData.project_id },
@@ -132,14 +135,16 @@ const HomePage = () => {
           router.push(route);
         }
       } else {
-        Alert.alert('Error', 'No project selected. Please select a project first.');
+        Alert.alert(
+          'Error',
+          'No project selected. Please select a project first.',
+        );
       }
     } catch (error) {
       console.error('Error fetching current project:', error);
       Alert.alert('Error', 'Failed to fetch current project.');
     }
   };
-  
 
   return (
     <HomePageWrapper>

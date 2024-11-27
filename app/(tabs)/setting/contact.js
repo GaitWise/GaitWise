@@ -83,7 +83,13 @@ const Contact = () => {
   ];
 
   return (
-    <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }} scrollEnabled={true}>
+    <KeyboardAwareScrollView
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      scrollEnabled={true}
+      contentContainerStyle={{
+        flexGrow: 1,
+      }} /* 스크롤 컨테이너가 화면 전체를 채우도록 설정 */
+    >
       <ProfileContainer>
         <MainFrame>
           <ContactSection>
@@ -111,7 +117,11 @@ const Contact = () => {
               ))}
             </InputGroup>
             {/* Send Button */}
-            <SendButton onPress={handleSend} disabled={!isFormComplete} isDisabled={!isFormComplete}>
+            <SendButton
+              onPress={handleSend}
+              disabled={!isFormComplete}
+              isDisabled={!isFormComplete}
+            >
               <SendButtonText>Send Message</SendButtonText>
             </SendButton>
           </ContactSection>
@@ -124,7 +134,14 @@ const Contact = () => {
 export default Contact;
 
 // InputField 컴포넌트
-const InputField = ({ label, value, onChangeText, placeholder, keyboardType, multiline }) => (
+const InputField = ({
+  label,
+  value,
+  onChangeText,
+  placeholder,
+  keyboardType,
+  multiline,
+}) => (
   <InputWrapper style={{ height: multiline ? 200 : 50 }}>
     <InputLabel>{label}</InputLabel>
     <StyledTextInput
@@ -148,7 +165,7 @@ const TitleContainer = styled.View`
   height: 30px;
   justify-content: center;
   align-items: center;
-  margin-top: 38px;
+  margin-top: 10px;
 `;
 
 const ProfileContainer = styled.View`
@@ -187,11 +204,12 @@ const ContactDescription = styled.Text`
 
 const InputGroup = styled.View`
   align-items: center;
-  margin-top: 30px;
+  margin-top: 5px;
 `;
 
 const InputWrapper = styled.View`
-  width: 278px;
+  width: 100%;
+  height: 100%;
   margin-bottom: 30px;
 `;
 
@@ -200,7 +218,7 @@ const InputLabel = styled.Text`
   color: ${COLORS.dark_gray};
   font-family: Poppins-Medium;
   text-align: left;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 `;
 
 const StyledTextInput = styled.TextInput`
@@ -210,24 +228,24 @@ const StyledTextInput = styled.TextInput`
   border: 1px solid ${COLORS.dark_gray};
   padding: 10px;
   border-radius: 5px;
-  height: 100%;
+  height: 90%;
 `;
 
 const SendButton = styled(Pressable)`
-  padding: 10px;
-  border-radius: 10px;
+  border-radius: 15px;
   background-color: ${(props) =>
     props.isDisabled ? COLORS.light_gray : COLORS.dark_indigo};
   width: 285px;
-  height: 38px;
-  justify-content: center;
-  align-items: center;
-  margin: 45px;
+  height: 45px; /* 버튼 높이 지정 */
+  justify-content: center; /* 세로 중앙 정렬 */
+  align-items: center; /* 가로 중앙 정렬 */
+  margin: 5px;
 `;
 
 const SendButtonText = styled.Text`
-  font-size: 13px;
+  font-size: 14px; /* 조금 더 명확한 크기 지정 */
   color: ${COLORS.white};
   font-family: Poppins-Medium;
-  text-align: center;
+  text-align: center; /* 텍스트 정렬 */
+  line-height: 38px; /* 버튼 높이와 동일하게 설정 */
 `;

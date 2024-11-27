@@ -4,13 +4,17 @@ import styled from 'styled-components/native';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, Modal, TextInput, Button, Dimensions } from 'react-native';
-import { Participation_project, Inquiry_project } from '../../../services/project/projectinquiry'; 
+import {
+  Participation_project,
+  Inquiry_project,
+} from '@/services/project/projectinquiry';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const { width, height } = Dimensions.get('window');
 
 const ProjectSelect = () => {
   const [pName, setpName] = React.useState('');
-  const [userid, setUserId] = React.useState(null); 
+  const [userid, setUserId] = React.useState(null);
   const [codeInput, setCodeInput] = React.useState('');
   const [stepsData, setStepsData] = React.useState([]);
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -23,9 +27,9 @@ const ProjectSelect = () => {
         if (userData) {
           const parsedData = JSON.parse(userData);
           const userIdFromStorage = parsedData.user; // user_id 가져오기
-          setUserId(parsedData.user)
+          setUserId(parsedData.user);
           console.log('Fetched user_id:', userIdFromStorage);
-  
+
           // 프로젝트 목록 가져오기
           console.log('Fetching projects for user_id:', userIdFromStorage);
           const response = await Inquiry_project(userIdFromStorage);
@@ -34,17 +38,17 @@ const ProjectSelect = () => {
             const formattedProjects = response.projects.map((project) => ({
               project_id: project.id,
               project_name: project.name,
-              project_description: project.description, 
+              project_description: project.description,
             }));
-            setStepsData(formattedProjects); 
-            console.log("stepsData: id", stepsData)
+            setStepsData(formattedProjects);
+            console.log('stepsData: id', stepsData);
           }
         }
       } catch (error) {
         console.error('Error fetching projects or user_id:', error);
       }
     };
-  
+
     fetchProjects(); // 컴포넌트가 마운트될 때 한 번만 실행
   }, []);
 
@@ -56,18 +60,22 @@ const ProjectSelect = () => {
   const addProject = async () => {
     if (codeInput.trim() !== '' && pName.trim() !== '') {
       try {
-        const newProject = await Participation_project(userid, pName, codeInput);
+        const newProject = await Participation_project(
+          userid,
+          pName,
+          codeInput,
+        );
         console.log('New project added:', newProject);
 
         setStepsData((prevStepsData) => [
           ...prevStepsData,
-          { 
+          {
             project_id: newProject.project.id,
             project_name: newProject.project.name,
             project_description: newProject.project.description,
           },
         ]);
-        console.log("stepsData add : ", stepsData)
+        console.log('stepsData add : ', stepsData);
 
         setpName('');
         setCodeInput('');
@@ -78,20 +86,22 @@ const ProjectSelect = () => {
     }
   };
 
-  const navigateToHome = async(projectName, project_id) => {
+  const navigateToHome = async (projectName, project_id) => {
     if (!project_id) {
-      console.error("Error: project_id is undefined");
+      console.error('Error: project_id is undefined');
       return;
     }
-    
+
     const selectedProject = {
       project_id: project_id,
       project_name: projectName,
     };
-    
 
-    await AsyncStorage.setItem('currentProject', JSON.stringify(selectedProject));
-    console.log("selectedProject: ", selectedProject)
+    await AsyncStorage.setItem(
+      'currentProject',
+      JSON.stringify(selectedProject),
+    );
+    console.log('selectedProject: ', selectedProject);
 
     router.push({
       pathname: 'home',
@@ -101,99 +111,139 @@ const ProjectSelect = () => {
   };
 
   return (
-    <HomePageWrapper>
-      <StatusBarContainer>
-        <MainText>Join Your Project</MainText>
-        <AddButton onPress={() => setModalVisible(true)}>
-          <icons.add />
-        </AddButton>
-      </StatusBarContainer>
+    <KeyboardAwareScrollView
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      scrollEnabled={true}
+    >
+      <HomePageWrapper>
+        <StatusBarContainer>
+          <MainText>Join Your Project</MainText>
+          <AddButton onPress={() => setModalVisible(true)}>
+            <icons.add />
+          </AddButton>
+        </StatusBarContainer>
 
-      <Modal
-        visible={modalVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <ModalContainer>
-          <ModalContent>
-            <XButtonWrapper>
-              <XButton onPress={() => setModalVisible(false)}>
-                <icons.close />
-              </XButton>
-            </XButtonWrapper>
+        <Modal
+          visible={modalVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <ModalContainer>
+            <ModalContent>
+              <XButtonWrapper>
+                <XButton onPress={() => setModalVisible(false)}>
+                  <icons.close />
+                </XButton>
+              </XButtonWrapper>
 
-            <ModalTitle>
-              Enter your participation code and project name
-            </ModalTitle>
+              <ModalTitle>Enter participation code & project name</ModalTitle>
+              <InputWrraper>
+                <StyledTextInput
+                  placeholder="Engagement Code."
+                  placeholderTextColor={COLORS.slate_gray}
+                  value={codeInput}
+                  onChangeText={setCodeInput}
+                  style={{
+                    borderBottomWidth: 2,
+                    borderColor: COLORS.slate_gray,
+                    marginBottom: 16,
+                    width: width * 0.39,
+                    height: height * 0.06,
+                  }}
+                />
+                <StyledTextInput
+                  placeholder="Project Name."
+                  placeholderTextColor={COLORS.slate_gray}
+                  value={pName}
+                  onChangeText={setpName}
+                  style={{
+                    borderBottomWidth: 2,
+                    borderColor: COLORS.slate_gray,
+                    marginBottom: 16,
+                    width: width * 0.39,
+                    height: height * 0.06,
+                  }}
+                />
+              </InputWrraper>
 
-            <TextInput
-              placeholder="Engagement Code."
-              placeholderTextColor={COLORS.slate_gray}
-              value={codeInput}
-              onChangeText={setCodeInput}
-              style={{
-                borderBottomWidth: 2,
-                borderColor: COLORS.slate_gray,
-                marginBottom: 16,
-                width: '100%',
-                height: height * 0.04,
-              }}
-            />
-            <TextInput
-              placeholder="Project Name."
-              placeholderTextColor={COLORS.slate_gray}
-              value={pName}
-              onChangeText={setpName}
-              style={{
-                borderBottomWidth: 2,
-                borderColor: COLORS.slate_gray,
-                marginBottom: 16,
-                width: '100%',
-                height: height * 0.04,
-              }}
-            />
+              <ConfirmButton onPress={addProject}>
+                <ConfirmText>Confirm</ConfirmText>
+              </ConfirmButton>
+            </ModalContent>
+          </ModalContainer>
+        </Modal>
 
-            <Button
-              title="Confirm"
-              onPress={addProject}
-              color={COLORS.deep_slate_blue}
-            />
-          </ModalContent>
-        </ModalContainer>
-      </Modal>
-
-      <Content>
-        <ScrollViewContainer>
-          {stepsData.length === 0 ? (
-            <NoProjectsText>Please add the project.</NoProjectsText>
-          ) : (
-            <ScrollView
-              contentContainerStyle={{ paddingBottom: 16 }}
-              horizontal={false}
-              showsHorizontalScrollIndicator={false}
-            >
-              {stepsData.map((item, index) => (
-                <CardShadowBox key={index}>
-                  <CardContent>
-                    <TextRow onPress={() => navigateToHome(item.project_name, item.project_id)}>
-                      <TextWrapper>
-                        <CardTitle>{item.project_name}</CardTitle>
-                        <CardSubtitle>{item.project_description}</CardSubtitle>
-                      </TextWrapper>
-                    </TextRow>
-                  </CardContent>
-                </CardShadowBox>
-              ))}
-            </ScrollView>
-          )}
-        </ScrollViewContainer>
-      </Content>
-    </HomePageWrapper>
+        <Content>
+          <ScrollViewContainer>
+            {stepsData.length === 0 ? (
+              <NoProjectsText>Please add the project.</NoProjectsText>
+            ) : (
+              <ScrollView
+                contentContainerStyle={{ paddingBottom: 16 }}
+                horizontal={false}
+                showsHorizontalScrollIndicator={false}
+              >
+                {stepsData.map((item, index) => (
+                  <CardShadowBox key={index}>
+                    <CardContent>
+                      <TextRow
+                        onPress={() =>
+                          navigateToHome(item.project_name, item.project_id)
+                        }
+                      >
+                        <TextWrapper>
+                          <CardTitle>{item.project_name}</CardTitle>
+                          <CardSubtitle>
+                            {item.project_description}
+                          </CardSubtitle>
+                        </TextWrapper>
+                      </TextRow>
+                    </CardContent>
+                  </CardShadowBox>
+                ))}
+              </ScrollView>
+            )}
+          </ScrollViewContainer>
+        </Content>
+      </HomePageWrapper>
+    </KeyboardAwareScrollView>
   );
 };
 
 export default ProjectSelect;
+
+const ConfirmText = styled.Text`
+  color: ${COLORS.white};
+  font-size: ${width * 0.045}px;
+  font-weight: bold;
+  text-align: center;
+`;
+
+const ConfirmButton = styled.TouchableOpacity`
+  height: 45px;
+  width: 100px;
+  border-radius: 15px;
+  background-color: ${COLORS.dark_indigo};
+  padding: ${height * 0.01}px;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  margin: 5px;
+`;
+
+const StyledTextInput = styled.TextInput`
+  width: 100%;
+  border: 1px solid ${COLORS.light_mist_grey};
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+`;
+
+const InputWrraper = styled.View`
+  flex-direction: row;
+  gap: 10px;
+`;
 
 const NoProjectsText = styled.Text`
   font-size: ${height * 0.025}px;
@@ -210,14 +260,15 @@ const XButtonWrapper = styled.View`
 
 const XButton = styled.TouchableOpacity`
   width: ${width * 0.08}px;
-  height: ${height * 0.04}px;
-  justify-content: center;
+  height: ${height * 0.06}px;
+  justify-content: right;
   align-items: center;
 `;
 
 const HomePageWrapper = styled.View`
   flex: 1;
   width: 100%;
+  height: 100%;
   background-color: ${COLORS.white};
 `;
 
@@ -241,14 +292,15 @@ const AddButton = styled.Pressable`
 
 const Content = styled.View`
   margin: ${height * 0.02}px ${width * 0.05}px;
-  flex: 1;
+  height: 100%;
   background-color: ${COLORS.white};
 `;
 
 const ScrollViewContainer = styled.View`
   flex: 1;
   align-self: stretch;
-  height: ${height * 0.5}px;
+  height: ${height * 1.0}px;
+  weight: ${width * 1.0}px;
   border-radius: 20px;
 `;
 
@@ -296,8 +348,8 @@ const ModalContainer = styled.View`
 `;
 
 const ModalContent = styled.View`
-  width: ${width * 0.85}px;
-  padding: ${height * 0.04}px ${width * 0.06}px;
+  width: ${width * 0.88}px;
+  padding: ${height * 0.03}px ${width * 0.06}px;
   background-color: ${COLORS.white};
   border-radius: 10px;
   align-items: center;
