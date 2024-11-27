@@ -6,8 +6,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { insertSensorData } from '../../../components/walking/SQLite';
 import { sendDatabaseFile } from '../../../components/walking/api/Senddata';
 import { useTimerAnimation } from '../../../components/walking/UseTimerAnimation';
-import { chunkData, generateHash} from '../../../components/walking/DataProcessing';
-import { sendChunk, compareHash, resendMissingChunks,} from '../../../components/walking/api/Senddata';
+import {
+  chunkData,
+  generateHash,
+} from '../../../components/walking/DataProcessing';
+import {
+  sendChunk,
+  compareHash,
+  resendMissingChunks,
+} from '../../../components/walking/api/Senddata';
 import { ActivityIndicator, Modal, Animated } from 'react-native';
 import styled from 'styled-components/native';
 
@@ -18,15 +25,22 @@ const Walking = () => {
   // 로딩 및 모달 상태 관리
   const formattedTimeRef = useRef('');
   const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false); 
-
+  const [modalVisible, setModalVisible] = useState(false);
 
   // Sensor
   const { subscribeSensors, unsubscribeSensors, sensorLog } = Sensors(25);
-  
-  // Timer Animation
-  const { seconds, setIsActive, setIsStop, formatTime, animation, Timerreset, isActive, isStop} = useTimerAnimation(2500);
 
+  // Timer Animation
+  const {
+    seconds,
+    setIsActive,
+    setIsStop,
+    formatTime,
+    animation,
+    Timerreset,
+    isActive,
+    isStop,
+  } = useTimerAnimation(2500);
 
   // TODO 추후 UDP 통신 구현
   const handleSendDatabaseFile = useCallback(async () => {
@@ -43,12 +57,21 @@ const Walking = () => {
       const chunks = chunkData(sensorLog.current, chunkSize);
 
       for (let i = 0; i < chunks.length; i++) {
-        const result = await sendChunk(chunks[i], i, chunks.length, parsedUserData.user);
+        const result = await sendChunk(
+          chunks[i],
+          i,
+          chunks.length,
+          parsedUserData.user,
+        );
         console.log(`Chunk ${i} upload status:`, result);
       }
 
-      console.log(formattedTimeRef.current)
-      const compareResult = await compareHash(dataHash, parsedUserData.user, formattedTimeRef.current);
+      console.log(formattedTimeRef.current);
+      const compareResult = await compareHash(
+        dataHash,
+        parsedUserData.user,
+        formattedTimeRef.current,
+      );
       console.log('compareResult: ', compareResult);
 
       if (compareResult.status === 'incomplete') {
@@ -82,7 +105,7 @@ const Walking = () => {
     setIsStop(true);
     unsubscribeSensors();
     animation.stopAnimation();
-    formattedTimeRef.current = formatTime(); 
+    formattedTimeRef.current = formatTime();
     console.log('Formatted Time:', formattedTimeRef.current);
   };
 
@@ -194,7 +217,7 @@ const ModalContent = styled.View`
 
 const ModalText = styled.Text`
   font-size: 18px;
-  `;
+`;
 
 const ActivityIndicatorContainer = styled.View`
   justify-content: center;
@@ -223,11 +246,12 @@ const ButtonRow = styled.View`
   flex-direction: row;
   justify-content: space-between;
   margin-bottom: 20px;
-  gap: 55px;
+  gap: 30px;
+  padding: 0 20px;
 `;
 
 const StartButton = styled.TouchableOpacity`
-  background-color: ${COLORS.soft_blue};
+  background-color: ${COLORS.dark_indigo};
   border-radius: 30px;
   padding: 15px 40px;
   width: 90%;
@@ -236,6 +260,7 @@ const StartButton = styled.TouchableOpacity`
   shadow-opacity: 0.4;
   shadow-radius: 5px;
   shadow-offset: 0px 3px;
+  elevation: 2;
 `;
 
 const SText = styled.Text`
@@ -247,21 +272,21 @@ const SText = styled.Text`
 
 const StopText = styled.Text`
   color: ${COLORS.white};
-  font-size: 18px;
+  font-size: 17px;
   font-weight: bold;
   text-align: center;
 `;
 
 const ResetText = styled.Text`
   color: ${COLORS.soft_blue};
-  font-size: 18px;
+  font-size: 17px;
   font-weight: bold;
   text-align: center;
 `;
 
 const ResumeText = styled.Text`
   color: ${COLORS.dark_indigo};
-  font-size: 18px;
+  font-size: 17px;
   font-weight: bold;
   text-align: center;
 `;
@@ -270,42 +295,47 @@ const ResetButton = styled.TouchableOpacity`
   background-color: ${COLORS.white};
   padding: 15px 40px;
   border-radius: 30px;
-  width: 154px;
+  width: 146px;
   shadow-color: ${COLORS.black};
   shadow-opacity: 0.4;
   shadow-radius: 5px;
   shadow-offset: 0px 3px;
+  elevation: 2;
 `;
 
 const StopButton = styled.TouchableOpacity`
   background-color: ${COLORS.soft_blue};
   padding: 15px 40px;
   border-radius: 30px;
-  width: 154px;
+  width: 146px;
   shadow-color: ${COLORS.black};
   shadow-opacity: 0.4;
   shadow-radius: 5px;
   shadow-offset: 0px 3px;
+  elevation: 2;
 `;
 
 const ResumeButton = styled.TouchableOpacity`
   background-color: ${COLORS.white};
   padding: 15px 40px;
   border-radius: 30px;
-  width: 154px;
+  width: 146px;
   shadow-color: ${COLORS.black};
   shadow-opacity: 0.4;
   shadow-radius: 5px;
   shadow-offset: 0px 3px;
+  elevation: 2;
 `;
 
 const SaveButton = styled.TouchableOpacity`
   background-color: ${COLORS.soft_blue};
-  padding: 15px 160px;
   border-radius: 30px;
-  margin-top: 20px;
+  padding: 15px 40px;
+  width: 90%;
+  margin-bottom: 20px;
   shadow-color: ${COLORS.black};
   shadow-opacity: 0.4;
   shadow-radius: 5px;
   shadow-offset: 0px 3px;
+  elevation: 2;
 `;

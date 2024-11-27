@@ -22,6 +22,9 @@ import walking_arrow_back from '../assets/icons/walking_arrow_back.svg';
 import logo from '../assets/icons/logo.svg';
 import add from '../assets/icons/add.svg';
 import close from '../assets/icons/close.svg';
+import project from '../assets/icons/project.svg';
+import settings from '../assets/icons/settings.svg';
+import survey from '../assets/icons/survey.svg';
 
 export default {
   male,
@@ -48,4 +51,7 @@ export default {
   logo,
   add,
   close,
+  project,
+  settings,
+  survey,
 };

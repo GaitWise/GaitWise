@@ -7,7 +7,7 @@ import styled from 'styled-components/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import { Inquiry_User } from '../../../services/setting/usernquiry';
-import {Delete_User} from '../../../services/setting/userdelete'
+import { Delete_User } from '../../../services/setting/userdelete';
 
 // 페이지 이동
 const contact = 'setting/contact';
@@ -22,8 +22,8 @@ const Setting = () => {
   const [deleteAccountModalVisible, setDeleteAccountModalVisible] =
     React.useState(false);
   const [userInfo, setUserInfo] = useState({
-      firstName: '',
-      lastName: '',
+    firstName: '',
+    lastName: '',
   });
   const [currentProject, setCurrentProject] = useState(null);
 
@@ -60,7 +60,12 @@ const Setting = () => {
           const response = await Inquiry_User(userIdFromStorage);
           console.log('User info response:', response);
 
-          if (response && response.user && response.user.firstname && response.user.lastname) {
+          if (
+            response &&
+            response.user &&
+            response.user.firstname &&
+            response.user.lastname
+          ) {
             setUserInfo({
               firstName: response.user.firstname,
               lastName: response.user.lastname,
@@ -85,7 +90,6 @@ const Setting = () => {
     fetchUserData();
   }, []);
 
-
   const deleteAccount = async () => {
     try {
       const userData = await AsyncStorage.getItem('finalData');
@@ -94,15 +98,15 @@ const Setting = () => {
         Alert.alert('Error', 'User ID is required to delete the account.');
         return;
       }
-  
+
       const parsedUserData = JSON.parse(userData);
       const userId = parsedUserData.user;
-      console.log("userId: ", userId)
+      console.log('userId: ', userId);
 
       // API 호출을 통해 사용자 상태를 'deleted'로 변경
       const response = await Delete_User(userId);
-      console.log("response: ", response)
-  
+      console.log('response: ', response);
+
       Alert.alert('Success', 'Your account has been deleted successfully.');
       router.push('/profile'); // 성공 시 프로필 화면으로 이동
     } catch (error) {
@@ -113,20 +117,22 @@ const Setting = () => {
 
   return (
     <ProfileContainer>
-      
       {/* 프로필 텍스트 */}
       <TitleContainer>
         <Title>Profile</Title>
       </TitleContainer>
 
       {/* 프로필 사진 */}
-      <EditPicInfo>
+      <EditPicPressable onPress={pickImage}>
         <EditPic source={image ? { uri: image } : icons.profile} />
-        <Button title="Change Profile Picture" onPress={pickImage} />
-        <InfoContainer>
-          <UserName>{`${userInfo.firstName} ${userInfo.lastName}`}</UserName>
-        </InfoContainer>
-      </EditPicInfo>
+        <EditIconContainer>
+          <icons.pen />
+        </EditIconContainer>
+      </EditPicPressable>
+
+      <UserInfoContainer>
+        <UserName>{`${userInfo.firstName} ${userInfo.lastName}`}</UserName>
+      </UserInfoContainer>
 
       {/* 메뉴 */}
       <MenuContainer>
@@ -167,8 +173,8 @@ const Setting = () => {
                   onPress={() => {
                     if (currentProject) {
                       router.push({
-                        pathname: 'survey/selection',
-                        params: { projectId: currentProject }, 
+                        pathname: '/survey/selection',
+                        params: { projectId: currentProject },
                       });
                     } else {
                       console.error('No current project found.');
@@ -181,7 +187,6 @@ const Setting = () => {
           </ModalContainer>
         </Modal>
 
-      
         {/* Contact */}
         <PressableItemContainer onPress={() => router.push(contact)}>
           <PressableItem>
@@ -248,6 +253,31 @@ export default Setting;
 
 // Styled-components
 
+const EditPicPressable = styled.Pressable`
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+`;
+
+const EditIcon = styled.Image`
+  width: 20px;
+  height: 20px;
+  tint-color: ${COLORS.white};
+`;
+
+const EditIconContainer = styled.View`
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background-color: ${COLORS.soft_blue};
+  border-radius: 20px;
+  width: 35px;
+  height: 35px;
+  justify-content: center;
+  align-items: center;
+`;
+
 const TitleWrapper = styled.View`
   margin-horizontal: 20px;
   align-items: center;
@@ -286,26 +316,19 @@ const TitleContainer = styled.View`
 
 const Title = styled.Text`
   font-size: 25px;
-  font-weight: 600;
+  font-weight: bold;
   color: ${COLORS.dark_indigo};
   font-family: 'Inter-SemiBold';
-`;
-
-const EditPicInfo = styled.View`
-  padding: 16px;
-  justify-content: center;
-  align-items: center;
-  margin: 10px;
 `;
 
 const EditPic = styled.Image`
   width: 150px;
   height: 150px;
-  border-radius: 90px;
+  border-radius: 75px; /* 원형 */
   background-color: ${COLORS.light_gray};
 `;
 
-const InfoContainer = styled.View`
+const UserInfoContainer = styled.View`
   align-items: center;
   gap: 4px;
   margin-top: 20px;

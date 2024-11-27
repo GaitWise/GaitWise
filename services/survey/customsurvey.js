@@ -1,16 +1,16 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://192.168.25.38:4000'; // 서버 주소 설정
+const API_BASE_URL = 'http://192.168.45.63:4000'; // 서버 주소 설정
 
 const api = axios.create({
-  baseURL: API_BASE_URL, 
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
 export const Survey_inquiry = async (project_id) => {
-  console.log(project_id)
+  console.log(project_id);
   try {
     const response = await api.post('/Survey/custom_survey', {
       project_id,
@@ -36,4 +36,3 @@ export const Survey_save = async (surveyData) => {
     throw error;
   }
 };
-

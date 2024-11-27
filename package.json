@@ -13,6 +13,7 @@
   "dependencies": {
     "@material-tailwind/react": "^2.1.10",
     "@react-native-async-storage/async-storage": "1.23.1",
+    "@react-native-community/cli": "^15.1.2",
     "@react-navigation/native": "^7.0.0",
     "@types/react": "~18.3.12",
     "axios": "^1.7.7",

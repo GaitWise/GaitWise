@@ -118,7 +118,6 @@ export default function Banner() {
 // Styled components
 
 const CarouselContainer = styled.View`
-  margin-top: 20px;
 `;
 
 const CarouselItem = styled.View`
