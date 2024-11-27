@@ -3,17 +3,17 @@ import { View, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Surveytemplate from "../../../components/survey/Surveytemplate";
-import { Survey_save } from "../../../services/survey/customsurvey"; // Backend API call function
+import { Survey_save } from "../../../services/survey/customsurvey"; 
 
 const TextResponsePage = () => {
   const router = useRouter();
-  const { textResponse, answers, fullResponse } = useLocalSearchParams(); // Retrieve textResponse, previous answers, and full survey response
+  const { textResponse, answers, fullResponse } = useLocalSearchParams(); 
 
-  const textResponses = textResponse ? JSON.parse(textResponse) : []; // Parse textResponse
-  const [currentIndex, setCurrentIndex] = useState(0); // Track the current question index
-  const textAnswersRef = useRef([]); // Store text response answers
+  const textResponses = textResponse ? JSON.parse(textResponse) : []; 
+  const [currentIndex, setCurrentIndex] = useState(0); 
+  const textAnswersRef = useRef([]); 
 
-  const currentPageData = textResponses[currentIndex]; // Current question data
+  const currentPageData = textResponses[currentIndex]; 
 
   // Save all survey data to the backend
  const survey_data_save = async () => {
@@ -21,8 +21,6 @@ const TextResponsePage = () => {
     // Retrieve current project data from AsyncStorage
     const storedProjectData = await AsyncStorage.getItem('currentProject');
     if (!storedProjectData) {
-      console.error('No project data found in AsyncStorage.');
-      Alert.alert('Error', 'No project data found.');
       return;
     }
     const parsedProjectData = JSON.parse(storedProjectData);
@@ -32,7 +30,6 @@ const TextResponsePage = () => {
     const storedUserData = await AsyncStorage.getItem('finalData');
     if (!storedUserData) {
       console.error('No user data found in AsyncStorage.');
-      Alert.alert('Error', 'No user data found.');
       return;
     }
     const parsedUserData = JSON.parse(storedUserData);
@@ -42,17 +39,15 @@ const TextResponsePage = () => {
     const parsedFullResponse = fullResponse ? JSON.parse(fullResponse) : {};
     if (!parsedFullResponse?.custom_survey) {
       console.error('Invalid full response data.');
-      Alert.alert('Error', 'Invalid full response data.');
       return;
     }
 
     const previousAnswers = JSON.parse(answers);
     console.log('Previous answers:', previousAnswers);
 
-    // Combine selection and text responses
     const allAnswers = [
-      ...previousAnswers, // Previous selection answers
-      ...textAnswersRef.current, // Current text response answers
+      ...previousAnswers, 
+      ...textAnswersRef.current, 
     ];
 
     // Prepare survey data
@@ -91,22 +86,20 @@ const TextResponsePage = () => {
     const response = await Survey_save(surveyData);
     console.log('Survey saved successfully:', response);
 
-    Alert.alert('Success', 'Survey data saved successfully.');
-    router.push('home'); // Navigate back to home after saving
+    router.push('home'); 
   } catch (error) {
     console.error('Error saving survey data:', error);
-    Alert.alert('Error', 'Failed to save survey data.');
   }
 };
 
   // Handle text response answers
   const handleAnswer = (answer) => {
     textAnswersRef.current[currentIndex] = {
-      question: currentPageData.content, // Store the current question content
-      answer: answer, // Store the user input
-      type: "text_response", // Mark as a text response
+      question: currentPageData.content, 
+      answer: answer, 
+      type: "text_response", 
     };
-    console.log("Updated textAnswersRef: ", textAnswersRef.current); // Debugging: Updated answers
+    console.log("Updated textAnswersRef: ", textAnswersRef.current); 
   };
 
   // Handle moving to the next page

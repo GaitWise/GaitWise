@@ -9,13 +9,14 @@ const SurveyTemplate = ({ currentPageData, onContinue, onAnswer }) => {
   const [inputValue, setInputValue] = useState('');
   const [selectedOption, setSelectedOption] = useState([]);
 
-  console.log(currentPageData.type)
-  console.log(currentPageData.max)
+  console.log("currentPageData.type 값:", currentPageData.type);
+  console.log(currentPageData.max) 
+  
 
   const handleOptionSelect = (optionValue) => {
-    if (currentPageData.type === 'Single') {
+    if (currentPageData.type === 'single-choice') {
       setSelectedOption([optionValue]);
-    } else if (currentPageData.type === 'Multiple') {
+    } else if (currentPageData.type === 'multi-choice') {
       setSelectedOption((prevSelected) => {
         if (prevSelected.includes(optionValue)) {
           return prevSelected.filter((value) => value !== optionValue);
@@ -59,36 +60,36 @@ const SurveyTemplate = ({ currentPageData, onContinue, onAnswer }) => {
         <ProfileImage source={IMAGES.profile} />
 
         <OptionsContainer height={optionsContainerHeight}>
-          {currentPageData.options?.length ? (
-            currentPageData.options.map((option) => (
-              <OptionButton
-                key={option.value}
-                isSelected={selectedOption.includes(option.value)}
-                onPress={() => handleOptionSelect(option.value)}
-              >
-                <IconWithMargin>
-                  {selectedOption.includes(option.value) ? (
-                    <icons.checked />
-                  ) : (
-                    <icons.check />
-                  )}
-                </IconWithMargin>
-                <OptionText>{option.label}</OptionText>
-              </OptionButton>
-            ))
-          ) : (
-            <InputContainer>
-              <StyledInput
-                placeholder="ex : good"
-                placeholderTextColor={COLORS.pastel_lavender}
-                value={inputValue}
-                onChangeText={setInputValue}
-                multiline
-                numberOfLines={4}
-              />
-            </InputContainer>
-          )}
-        </OptionsContainer>
+            {currentPageData.options?.length ? (
+              currentPageData.options.map((option) => (
+                <OptionButton
+                  key={option} // 문자열을 키로 사용
+                  isSelected={selectedOption.includes(option)}
+                  onPress={() => handleOptionSelect(option)}
+                >
+                  <IconWithMargin>
+                    {selectedOption.includes(option) ? (
+                      <icons.checked />
+                    ) : (
+                      <icons.check />
+                    )}
+                  </IconWithMargin>
+                  <OptionText>{option}</OptionText> 
+                </OptionButton>
+              ))
+            ) : (
+              <InputContainer>
+                <StyledInput
+                  placeholder="ex : good"
+                  placeholderTextColor={COLORS.pastel_lavender}
+                  value={inputValue}
+                  onChangeText={setInputValue}
+                  multiline
+                  numberOfLines={4}
+                />
+              </InputContainer>
+            )}
+          </OptionsContainer>
         <ContinueButton
           onPress={handleContinue}
           disabled={!isContinueEnabled}
