@@ -1,27 +1,21 @@
 import { COLORS } from '@/constants';
 import { router } from 'expo-router';
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import styled from 'styled-components/native';
-import { saveUserData } from '../../services/user/usersave';
+import { saveUserData } from '../../services/user/usersave'; 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  TouchableOpacity,
-  FlatList,
-  Dimensions,
-  Alert,
-  TextInput,
-  Modal,
-} from 'react-native';
+import { TouchableOpacity, FlatList, Dimensions, TextInput, Modal } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 const ITEM_HEIGHT = height * 0.0579;
 
 const Height = () => {
   const flatListRef = useRef(null);
-  const [selectedHeight, setSelectedHeight] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
-  const [inputHeight, setInputHeight] = useState(selectedHeight.toString());
+  const [selectedHeight, setSelectedHeight] = useState(0);
+  const [inputHeight, setInputHeight] = useState('');
+
   const heightArray = Array.from({ length: 251 }, (_, index) => index);
 
   const handleScroll = (event) => {
@@ -30,15 +24,17 @@ const Height = () => {
     setSelectedHeight(heightArray[newIndex]);
   };
 
-  const isFormValid = () => {
-    return selectedHeight;
+  const isFormValid = () => selectedHeight >= 0 && selectedHeight <= 250;
+
+  const handleHeightInput = () => {
+    setInputHeight(selectedHeight > 0 ? selectedHeight.toString() : '');
+    setModalVisible(true); // 모달 표시
   };
 
-  const handleContinue = () => {
+  const handleConfirmHeight = () => {
     const newHeight = parseInt(inputHeight);
     if (!isNaN(newHeight) && newHeight >= 0 && newHeight <= 250) {
       setSelectedHeight(newHeight);
-
       const targetIndex = heightArray.indexOf(newHeight);
       if (targetIndex !== -1) {
         flatListRef.current.scrollToIndex({
@@ -46,19 +42,14 @@ const Height = () => {
           animated: true,
         });
       }
-      setModalVisible(false);
+      setModalVisible(false); // 모달 닫기
     } else {
-      alert('Enter Your Height');
+      alert('Please enter a valid height (0-250 cm)');
     }
   };
 
-  const handleHeightInput = () => {
-    setModalVisible(true);
-  };
-
-  const handleConfirmHeight = async () => {
+  const handleContinue = async () => {
     try {
-      // 📌 AsyncStorage에서 모든 데이터 읽어오기
       const age = await AsyncStorage.getItem('selectedAge');
       const weight = await AsyncStorage.getItem('selectedWeight');
       const gender = await AsyncStorage.getItem('genderData');
@@ -73,12 +64,11 @@ const Height = () => {
         weight: JSON.parse(weight),
         height: selectedHeight,
         job: JSON.parse(profile).job,
-        profile_image_url: ' ',
+        profile_image_url: '',
         password: JSON.parse(profile).passwd,
       };
 
       const response = await saveUserData(userData);
-      console.log('Data saved successfully:', response);
 
       const allData = {
         user: response.user._id,
@@ -89,15 +79,9 @@ const Height = () => {
         height: selectedHeight,
       };
 
-      console.log('allData', allData);
-
-      // 📌 한꺼번에 저장
       await AsyncStorage.setItem('finalData', JSON.stringify(allData));
 
-      router.push({
-        pathname: '/project_select',
-        params: { user_id: response.user._id },
-      });
+      router.push(`/project_select`); // 경로 수정
     } catch (error) {
       console.error('Failed to save data:', error);
     }
@@ -111,10 +95,10 @@ const Height = () => {
           <QuestionText>What Is Your Height?</QuestionText>
         </QuestionContainer>
 
-        {/* 📌 selectedHeight를 표시하고 클릭 시 handleHeightInput 호출 */}
+        {/* 📌 selectedHeight 표시 및 클릭 시 handleHeightInput 호출 */}
         <TouchableOpacity onPress={handleHeightInput}>
           <HeightTextContainer>
-            <HeightText>{selectedHeight}cm</HeightText>
+            <HeightText>{selectedHeight} cm</HeightText>
             <Icon name="edit" size={height * 0.03} color={COLORS.dark_indigo} />
           </HeightTextContainer>
         </TouchableOpacity>
@@ -144,13 +128,13 @@ const Height = () => {
               index,
             })}
             contentContainerStyle={{
-              paddingVertical: (height * 0.4 - ITEM_HEIGHT) / 2, // 📌 중앙에 숫자를 위치시키기 위한 패딩
+              paddingVertical: (height * 0.4 - ITEM_HEIGHT) / 2,
             }}
-            initialNumToRender={251} // 모든 항목을 렌더링
+            initialNumToRender={251}
           />
         </HeightScrollContainer>
 
-        {/* Modal */}
+        {/* 모달 */}
         <Modal visible={modalVisible} transparent animationType="slide">
           <ModalContainer>
             <ModalContent>
@@ -173,13 +157,8 @@ const Height = () => {
           </ModalContainer>
         </Modal>
 
-        {/* Continue Button */}
         <ContinueButton
-          onPress={() => {
-            if (isFormValid()) {
-              handleContinue(); // 📌 함수 호출로 수정
-            }
-          }}
+          onPress={handleContinue}
           disabled={!isFormValid()}
           isFormValid={isFormValid()}
           activeOpacity={0.7}
@@ -194,57 +173,6 @@ const Height = () => {
 export default Height;
 
 // Styled Components
-
-const ModalContainer = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-`;
-
-const ModalContent = styled.View`
-  width: 80%;
-  padding: 20px;
-  background-color: ${COLORS.white};
-  border-radius: 10px;
-  align-items: center;
-`;
-
-const ModalTitle = styled.Text`
-  font-size: ${width * 0.05}px;
-  font-weight: bold;
-  color: ${COLORS.dark_indigo};
-  margin-bottom: 20px;
-`;
-
-const StyledTextInput = styled(TextInput)`
-  width: 100%;
-  border: 1px solid ${COLORS.light_mist_grey};
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 20px;
-`;
-
-const ModalButtonContainer = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
-`;
-
-const ModalButton = styled.TouchableOpacity`
-  flex: 1;
-  align-items: center;
-  padding: 10px;
-  margin: 0 5px;
-  border-radius: 5px;
-  background-color: ${COLORS.soft_blue};
-`;
-
-const ModalButtonText = styled.Text`
-  color: ${COLORS.white};
-  font-weight: bold;
-`;
-
 const BaseContainer = styled.View`
   flex: 1;
   background-color: ${COLORS.white};
@@ -322,4 +250,55 @@ const ContinueButtonText = styled.Text`
   font-size: ${height * 0.025}px;
   font-weight: 700;
   text-align: center;
+`;
+
+const ModalContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+`;
+
+const ModalContent = styled.View`
+  width: 80%;
+  padding: 20px;
+  background-color: ${COLORS.white};
+  border-radius: 10px;
+  align-items: center;
+`;
+
+const ModalTitle = styled.Text`
+  font-size: ${width * 0.05}px;
+  font-weight: bold;
+  color: ${COLORS.dark_indigo};
+  margin-bottom: 20px;
+`;
+
+const StyledTextInput = styled.TextInput`
+  width: 100%;
+  border: 1px solid ${COLORS.light_mist_grey};
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: ${COLORS.white};
+`;
+
+const ModalButtonContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+const ModalButton = styled.TouchableOpacity`
+  flex: 1;
+  align-items: center;
+  padding: 10px;
+  margin: 0 5px;
+  border-radius: 5px;
+  background-color: ${COLORS.soft_blue};
+`;
+
+const ModalButtonText = styled.Text`
+  color: ${COLORS.white};
+  font-weight: bold;
 `;

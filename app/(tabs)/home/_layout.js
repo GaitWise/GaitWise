@@ -31,10 +31,6 @@ export default function HomeLayout() {
   return (
     <>
       <Section>
-        <RowWrapper>
-          <icons.project />
-          <ProjectText>Project</ProjectText>
-        </RowWrapper>
         <ProjectNameText>
           {currentProject ? currentProject.project_name : 'Loading project...'}
         </ProjectNameText>

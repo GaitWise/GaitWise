@@ -10,15 +10,8 @@ import { Image, TouchableOpacity, TextInput, Dimensions, Alert } from 'react-nat
 const { width, height } = Dimensions.get('window');
 
 const Profile = () => {
-  const [inputs, setInputs] = useState({
-    firstName: '',
-    lastName: '',
-    job: '',
-    email: '',
-    passwd: '',
-    Cpasswd: '',
-  });
-  const [image, setImage] = useState(IMAGES.profile); // 초기 프로필 이미지
+  const [inputs, setInputs] = useState({ firstName: '', lastName: '', job: '', email: '', passwd: '', Cpasswd: ''});
+  const [image, setImage] = useState(IMAGES.profile); 
   const { firstName, lastName, job, email, passwd, Cpasswd } = inputs;
 
   const handleInputChange = (name, value) => {

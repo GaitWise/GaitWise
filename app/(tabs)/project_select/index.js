@@ -4,10 +4,7 @@ import styled from 'styled-components/native';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, Modal, TextInput, Button, Dimensions } from 'react-native';
-import {
-  Participation_project,
-  Inquiry_project,
-} from '@/services/project/projectinquiry';
+import { Participation_project, Inquiry_project} from '@/services/project/projectinquiry';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const { width, height } = Dimensions.get('window');
@@ -137,7 +134,7 @@ const ProjectSelect = () => {
                 </XButton>
               </XButtonWrapper>
 
-              <ModalTitle>Enter participation code & project name</ModalTitle>
+              <ModalTitle>Enter project</ModalTitle>
               <InputWrraper>
                 <StyledTextInput
                   placeholder="Engagement Code."
