@@ -10,7 +10,7 @@ import { Participation_project, Inquiry_project} from '@/services/project/projec
 /* 화면 크기 가져오기 */
 const { width, height } = Dimensions.get('window');
 
-/* [Screen] ProjectSelect */
+/* [Screen] ProjectSelect 페이지 */
 const ProjectSelect = () => {
   const [pName, setpName] = React.useState('');
   const [userid, setUserId] = React.useState(null);

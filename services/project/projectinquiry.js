@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const API_BASE_URL = 'http://192.168.25.38:4000'; 
+import { API_BASE_URL } from '@env';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -9,6 +8,7 @@ const api = axios.create({
   },
 });
 
+/* [Function] 유저를 프로젝트에 참여시키는 함수 */
 export const Participation_project = async (
   user_id,
   project_name,
@@ -28,6 +28,7 @@ export const Participation_project = async (
   }
 };
 
+/* [Function] 유저가 참여한 프로젝트 조회 함수 */
 export const Inquiry_project = async (user_id) => {
   try {
     console.log('user_id: ', user_id);

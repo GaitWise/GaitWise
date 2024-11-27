@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const API_BASE_URL = 'http://192.168.25.38:4000'; // 서버 주소 설정
+import { API_BASE_URL } from '@env';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -9,10 +8,10 @@ const api = axios.create({
   },
 });
 
+/* [Function] 유저 Walking 데이터 조회 함수 */
 export const Inquiry_stepHistory = async (user_id) => {
   try {
-    console.log('user_id: ', user_id);
-    const response = await api.post(`/User/stepHistory`, { user_id }); // Send user_id in the request body
+    const response = await api.post(`/User/stepHistory`, { user_id }); 
     return response.data;
   } catch (error) {
     console.error('Error fetching step history:', error);

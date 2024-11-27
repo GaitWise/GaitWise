@@ -11,6 +11,13 @@ module.exports = function (api) {
           },
         },
       ],
+      [
+        'module:react-native-dotenv',
+        {
+          moduleName: '@env', // 사용할 모듈 이름
+          path: '.env', // .env 파일 경로
+        },
+      ],
     ],
   };
 };

@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const API_BASE_URL = 'http://192.168.25.38:4000'; // 서버 주소 설정
+import { API_BASE_URL } from '@env';
 
 const api = axios.create({
   baseURL: API_BASE_URL, 
@@ -9,6 +8,7 @@ const api = axios.create({
   },
 });
 
+/* [Function] 유저 문의사항 데이터 요청 함수 */
 export const contact_post = async (title, content, author, email) => {
   console.log(title, content, author, email)
   try {

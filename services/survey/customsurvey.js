@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const API_BASE_URL = 'http://192.168.25.38:4000'; // 서버 주소 설정
+import { API_BASE_URL } from '@env';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -9,6 +8,7 @@ const api = axios.create({
   },
 });
 
+/* [Function] 유저가 참여한 프로젝트 Custom Survey 데이터 조회하는 함수 */
 export const Survey_inquiry = async (project_id) => {
   console.log(project_id);
   try {
@@ -22,6 +22,7 @@ export const Survey_inquiry = async (project_id) => {
   }
 };
 
+/* [Function] 유저가 작성한 프로젝트 Custom Survey 데이터를 저장하는 함수 */
 export const Survey_save = async (surveyData) => {
   try {
     const response = await api.post('/Survey/survey_save', {

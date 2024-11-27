@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const API_BASE_URL = 'http://192.168.25.38:4000'; // 서버 주소 설정
+import { API_BASE_URL } from '@env';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -9,7 +8,7 @@ const api = axios.create({
   },
 });
 
-// 사용자 데이터 저장
+/* [Function] 유저 데이터 생성 함수 */
 export const saveUserData = async (userData) => {
   try {
     console.log('userData:', userData);

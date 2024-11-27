@@ -14,7 +14,6 @@ export default function HomeLayout() {
           const storedData = await AsyncStorage.getItem('currentProject');
           if (storedData) {
             const parsedData = JSON.parse(storedData);
-            console.log('Parsed current project:', parsedData);
             setCurrentProject(parsedData); 
           } else {
             setCurrentProject({ project_name: 'No project selected' }); 

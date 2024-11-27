@@ -1,4 +1,8 @@
 const { getDefaultConfig } = require('expo/metro-config');
+const dotenv = require('dotenv');
+
+// .env 파일 로드
+dotenv.config();
 
 module.exports = (() => {
   const config = getDefaultConfig(__dirname);
