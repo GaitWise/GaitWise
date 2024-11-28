@@ -124,7 +124,7 @@ const BaseFrameContainer = styled.View`
 
 const TitleContainer = styled.View`
   align-items: center;
-  margin: 45px auto;
+  margin: 25px auto;
 `;
 
 const TitleText = styled.Text`
@@ -178,7 +178,7 @@ const ContinueButton = styled(TouchableOpacity)`
   width: ${width * 0.5}px;
   padding: 12px;
   position: absolute;
-  bottom: 35px;
+  bottom: 20px;
   justify-content: center;
   align-items: center;
   align-self: center;

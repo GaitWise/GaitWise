@@ -8,7 +8,7 @@ export default function WalkingLayout() {
   /* [Function] 뒤로 가기 버튼 UI */
   const renderBackButton = () => (
     <TouchableOpacity style={styles.button} onPress={() => router.back()}>
-      <icons.walking_arrow_back></icons.walking_arrow_back>
+      <icons.walking_arrow_back />
     </TouchableOpacity>
   );
 
