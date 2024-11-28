@@ -7,7 +7,7 @@ export default function SettingLayout() {
 
   // 뒤로 가기 버튼 UI
   const renderBackButton = () => (
-    <BackButton onPress={() => router.back()}>
+    <BackButton onPress={() => router.back('./index.js')}>
       <BackbuttonContainer>
         <Ionicons name="arrow-back" size={24} color="black" />
       </BackbuttonContainer>
