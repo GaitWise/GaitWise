@@ -129,10 +129,10 @@ const ProjectSelect = () => {
               <ModalTitle>Enter project</ModalTitle>
               <InputWrraper>
                 <StyledTextInput
-                  placeholder="Engagement Code."
+                  placeholder="Project Name."
                   placeholderTextColor={COLORS.slate_gray}
-                  value={codeInput}
-                  onChangeText={setCodeInput}
+                  value={pName}
+                  onChangeText={setpName}
                   style={{
                     borderBottomWidth: 2,
                     borderColor: COLORS.slate_gray,
@@ -142,10 +142,10 @@ const ProjectSelect = () => {
                   }}
                 />
                 <StyledTextInput
-                  placeholder="Project Name."
+                  placeholder="Engagement Code."
                   placeholderTextColor={COLORS.slate_gray}
-                  value={pName}
-                  onChangeText={setpName}
+                  value={codeInput}
+                  onChangeText={setCodeInput}
                   style={{
                     borderBottomWidth: 2,
                     borderColor: COLORS.slate_gray,

@@ -22,9 +22,11 @@ const HomePage = () => {
         const parsedData = JSON.parse(userData);
         const user_id = parsedData.user;
         const stepHistory = await Inquiry_stepHistory(user_id);
+        console.log("parsedData: ", parsedData)
 
         // 데이터 포맷팅
         const formattedData = stepHistory.map((item) => ({
+          id: item._id, 
           date: `${new Date(item.createdAt).getFullYear()}Y ${new Date(item.createdAt).getMonth() + 1}M ${new Date(item.createdAt).getDate()}D`,
           steps: `${item.step_count}Steps/${item.walking_time}`,
         }));
@@ -142,13 +144,51 @@ const HomePage = () => {
             {stepsData.map((item, index) => (
               <CardShadowBox key={index}>
                 <CardContent>
-                  <TextRow>
-                    <CardTitle>{item.date}</CardTitle>
-                    <StepWrapper>
-                      <StyledImage source={icons.steps} />
-                      <StepsText>{item.steps}</StepsText>
-                    </StepWrapper>
-                  </TextRow>
+                <Pressable
+                  onPress={() =>
+                    Alert.alert(
+                      "Report Confirmation", 
+                      "Do you want to receive the result report?", 
+                      [
+                        { text: "Cancel", style: "cancel" },
+                        {
+                          text: "Yes",
+                          onPress: async () => {
+                            try {
+                              const userData = await AsyncStorage.getItem("finalData");
+                              if (userData) {
+                                const parsedData = JSON.parse(userData);
+                                console.log('walkingId: ', item.id)
+
+                                // walking _id와 user height, weight 전달
+                                router.push({
+                                  pathname: "/report",
+                                  params: {
+                                    walkingId: item.id, 
+                                    height: parsedData.height, 
+                                    weight: parsedData.weight, 
+                                  },
+                                });
+                              }
+                            } catch (error) {
+                              console.error("Error fetching user data:", error);
+                              Alert.alert("Error", "Failed to fetch user data.");
+                            }
+                          },
+                        },
+                      ],
+                      { cancelable: true }
+                    )
+                  }
+                >
+                    <TextRow>
+                      <CardTitle>{item.date}</CardTitle>
+                      <StepWrapper>
+                        <StyledImage source={icons.steps} />
+                        <StepsText>{item.steps}</StepsText>
+                      </StepWrapper>
+                    </TextRow>
+                  </Pressable>
                 </CardContent>
               </CardShadowBox>
             ))}
@@ -319,10 +359,10 @@ const iconData = [
     route: '/setting',
   },
   {
-    text: 'Preparing',
+    text: 'Report',
     IconComponent: icons.reset,
     backgroundColor: COLORS.cosmic_purple,
-    route: '/home',
+    route: '/report',
   },
   {
     text: 'Preparing',
