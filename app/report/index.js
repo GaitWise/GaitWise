@@ -6,17 +6,15 @@ import { gait_report } from "../../services/report/gait_report";
 
 export default function App() {
     const router = useRouter();
-    const { walkingId, height, weight } = useLocalSearchParams();
     const [report, setReport] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { walkingId, height, weight, weight_type } = useLocalSearchParams();
   
     useEffect(() => {
       const fetchReport = async () => {
         try {
-          if (walkingId && height && weight) {
-            console.log("Fetching report with params:", { walkingId, height, weight });
-            console.log("weight:", weight.values)
-            const reportData = await gait_report(walkingId, height, weight);
+          if (walkingId && height && weight && weight_type) {
+            const reportData = await gait_report(walkingId, height, weight, weight_type);
             setReport(reportData);
             console.log("Report Data:", reportData);
           }

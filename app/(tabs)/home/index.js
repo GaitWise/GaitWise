@@ -158,15 +158,13 @@ const HomePage = () => {
                               const userData = await AsyncStorage.getItem("finalData");
                               if (userData) {
                                 const parsedData = JSON.parse(userData);
-                                console.log('walkingId: ', item.id)
-
-                                // walking _id와 user height, weight 전달
                                 router.push({
                                   pathname: "/report",
                                   params: {
                                     walkingId: item.id, 
                                     height: parsedData.height, 
-                                    weight: parsedData.weight, 
+                                    weight: parsedData.weight.value,
+                                    weight_type: parsedData.weight.type
                                   },
                                 });
                               }
