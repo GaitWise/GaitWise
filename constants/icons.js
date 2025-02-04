@@ -25,11 +25,20 @@ import walking_line from '../assets/icons/walking_line.svg';
 import walking_people from '../assets/icons/walking_people.svg';
 import walking_connect from '../assets/icons/walking_connect.svg';
 import walking_arrow_back from '../assets/icons/walking_arrow_back.svg';
+import footprint from '../assets/icons/footprint.svg'
+import fire from '../assets/icons/fire.svg'
+import pin from '../assets/icons/pin.svg'
+import scales from '../assets/icons/scales.svg'
+
 
 
 
 
 export default {
+  scales,
+  pin,
+  fire,
+  footprint,
   male,
   female,
   arrow_left,

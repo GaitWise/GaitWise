@@ -70,6 +70,8 @@ const Walking = () => {
   const handleSendDatabaseFile = useCallback(async () => {
     setLoading(true); 
     setModalVisible(true);
+    const startTime = Date.now(); // 타이머 시작
+    console.log("Data transmission started...");
 
     try {
       const userData = await AsyncStorage.getItem('finalData');
@@ -103,6 +105,9 @@ const Walking = () => {
     } catch (error) {
       console.error('Error during the process:', error);
     } finally {
+      const endTime = Date.now(); // 타이머 종료
+      const elapsedTime = (endTime - startTime) / 1000; // ms -> 초 변환
+      console.log(`Data transmission completed in ${elapsedTime} seconds`);
       setLoading(false); 
       setModalVisible(false);
       handleReset(); 

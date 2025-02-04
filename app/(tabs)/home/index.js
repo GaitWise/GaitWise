@@ -357,10 +357,10 @@ const iconData = [
     route: '/setting',
   },
   {
-    text: 'Report',
+    text: 'Preparing',
     IconComponent: icons.reset,
     backgroundColor: COLORS.cosmic_purple,
-    route: '/report',
+    route: '/home',
   },
   {
     text: 'Preparing',

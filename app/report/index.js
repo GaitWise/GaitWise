@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { icons } from "../../constants";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { View, Text, StyleSheet, ScrollView, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, ActivityIndicator } from "react-native";
 import { gait_report } from "../../services/report/gait_report";
 
 export default function App() {
@@ -15,7 +14,7 @@ export default function App() {
         try {
           if (walkingId && height && weight && weight_type) {
             const reportData = await gait_report(walkingId, height, weight, weight_type);
-            setReport(reportData);
+            setReport(reportData); // API 결과를 상태에 저장
             console.log("Report Data:", reportData);
           }
         } catch (error) {
@@ -28,66 +27,68 @@ export default function App() {
       fetchReport();
     }, [walkingId, height, weight]);
   
+    // 로딩 중 UI
+    if (loading) {
+      return (
+        <SafeAreaView style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#4C2A86" />
+          <Text style={styles.loadingText}>Loading Report...</Text>
+        </SafeAreaView>
+      );
+    }
 
-    const reportContent = `
-    **Walking Report**
-    - Steps: 4,670
-    - Distance: 2.3 km
-    - Calories burned: 230 kcal
-    - Balance score: 0.98
-    - Gait Status: Normal
+    // 데이터가 없을 때 UI
+    if (!report) {
+      return (
+        <SafeAreaView style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>No Report Available</Text>
+        </SafeAreaView>
+      );
+    }
 
-    **Insights**
-    The user's walking performance is healthy and consistent. No abnormalities detected. 
-    Continue regular walking for sustained benefits. For improvement, consider increasing step count or distance.
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView>
+          {/* Header */}
+          <Text style={styles.headerTitle}>Your Walking Report</Text>
 
-    **Recommendations**
-    - Maintain daily walking routines.
-    - Incorporate incline walking or faster pace for better calorie burn.
-    - Monitor progress weekly for balance and stability.
-    `;
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView>
-        {/* Header */}
-        <Text style={styles.headerTitle}>Your Walking Report</Text>
-
-        {/* Grid Cards */}
-        <View style={styles.grid}>
-          <View style={styles.card}>
-            <icons.walking_arrow_back></icons.walking_arrow_back>
-            <Text style={styles.cardTitle}>Gait Status</Text>
-            <Text style={styles.cardValue}>4,670</Text>
+          {/* Grid Cards */}
+          <View style={styles.grid}>
+            {report && report.data ? (
+              <>
+                <View style={styles.card}>
+                  <Text style={styles.cardTitle}>Steps</Text>
+                  <Text style={styles.cardValue}>{report.data.steps}</Text>
+                </View>
+                <View style={styles.card}>
+                  <Text style={styles.cardTitle}>Calories</Text>
+                  <Text style={styles.cardValue}>{report.data.calories}</Text>
+                </View>
+                <View style={styles.card}>
+                  <Text style={styles.cardTitle}>Distance</Text>
+                  <Text style={styles.cardValue}>{report.data.distance}</Text>
+                </View>
+                <View style={styles.card}>
+                  <Text style={styles.cardTitle}>Balance</Text>
+                  <Text style={styles.cardValue}>{report.data.balance_score}</Text>
+                </View>
+              </>
+            ) : (
+              <Text style={styles.loadingText}>No Data Available</Text>
+            )}
           </View>
-          <View style={styles.card}>
-            <icons.walking_arrow_back></icons.walking_arrow_back>
-            <Text style={styles.cardTitle}>Calories</Text>
-            <Text style={styles.cardValue}>230 kcal</Text>
-          </View>
-          <View style={styles.card}>
-            <icons.walking_arrow_back></icons.walking_arrow_back>
-            <Text style={styles.cardTitle}>Distance</Text>
-            <Text style={styles.cardValue}>2.3 km</Text>
-          </View>
-          <View style={styles.card}>
-            <icons.walking_arrow_back></icons.walking_arrow_back>
-            <Text style={styles.cardTitle}>Balance</Text>
-            <Text style={styles.cardValue}>0.98</Text>
-          </View>
-        </View>
 
-        {/* Divider */}
-        <View style={styles.divider} />
+          {/* Divider */}
+          <View style={styles.divider} />
 
-        {/* Report Content */}
-        <View style={styles.reportSection}>
-          <Text style={styles.reportHeader}>Detailed Report</Text>
-          <Text style={styles.reportContent}>{reportContent}</Text>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
+          {/* Report Content */}
+          <View style={styles.reportSection}>
+            <Text style={styles.reportHeader}>Detailed Report</Text>
+            <Text style={styles.reportContent}>{report.report}</Text>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -95,13 +96,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F2F7FB", 
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F2F7FB",
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#4C2A86",
+    fontWeight: "500",
+  },
   headerTitle: {
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
     marginTop: 20,
     color: "#333",
-    fontFamily: "System",
   },
   grid: {
     flexDirection: "row",
@@ -122,11 +134,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 6,
     elevation: 4,
-  },
-  icon: {
-    width: 40,
-    height: 40,
-    marginBottom: 10,
   },
   cardTitle: {
     fontSize: 14,
